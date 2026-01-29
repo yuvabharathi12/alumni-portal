@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Portal - Complete Project Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            border-bottom: 3px solid #1e40af;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #1e40af;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .date {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        h2 {
+            color: #1e40af;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1e40af;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #2563eb;
+            font-size: 1.4em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        
+        h4 {
+            color: #3b82f6;
+            font-size: 1.1em;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table thead {
+            background-color: #1e40af;
+            color: white;
+        }
+        
+        table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        
+        table tbody tr:hover {
+            background-color: #eff6ff;
+        }
+        
+        .info-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .code-block {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .stars {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .flow-diagram {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-family: monospace;
+            text-align: center;
+            line-height: 2;
+        }
+        
+        .importance-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .critical {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .high {
+            background-color: #f59e0b;
+            color: white;
+        }
+        
+        .medium {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .low {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .toc {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .toc ol {
+            margin-left: 20px;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .container {
+                max-width: 100%;
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            h2 {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>Alumni Portal</h1>
+            <p class="subtitle">Complete Project Architecture & Documentation</p>
+            <p class="subtitle">CAHCET Alumni Network</p>
+            <p class="date">Generated: January 29, 2026</p>
+        </header>
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc">
+            <h3 style="margin-top: 0;">Table of Contents</h3>
+            <ol>
+                <li>Project Overview</li>
+                <li>Client (Frontend) Structure</li>
+                <li>Server (Backend) Structure</li>
+                <li>Authentication & Security</li>
+                <li>Data Models & Relationships</li>
+                <li>API Endpoints</li>
+                <li>Request Flow Examples</li>
+                <li>Importance Summary</li>
+            </ol>
+        </div>
+
+        <!-- SECTION 1: PROJECT OVERVIEW -->
+        <div class="section">
+            <h2>1. Project Overview</h2>
+            
+            <h3>What is Alumni Portal?</h3>
+            <p>
+                The Alumni Portal is a full-stack web application built with React (frontend) and Node.js/Express (backend) 
+                that connects college alumni with current students. It facilitates networking, job opportunities, event management, 
+                and profile sharing among CAHCET (C Abdul Hakeem College of Engineering & Technology) community members.
+            </p>
+            
+            <h3>Technology Stack</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Frontend</strong></td>
+                        <td>React 19, React Router, Axios</td>
+                        <td>User interface & navigation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backend</strong></td>
+                        <td>Node.js, Express 5</td>
+                        <td>API server & business logic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td>MongoDB, Mongoose</td>
+                        <td>Data storage & validation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Authentication</strong></td>
+                        <td>JWT, bcryptjs</td>
+                        <td>Secure login & permissions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File Upload</strong></td>
+                        <td>Multer</td>
+                        <td>Handle file uploads</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 2: CLIENT STRUCTURE -->
+        <div class="section">
+            <h2>2. Client (Frontend) Structure</h2>
+            <p>
+                The client folder contains all React components, pages, and utilities for the user interface. 
+                It runs on `http://localhost:3000` during development.
+            </p>
+
+            <h3>📦 `/client/package.json`</h3>
+            <p><strong>Role:</strong> Project configuration and dependency manifest</p>
+            <p><strong>Why Used:</strong> Defines all npm packages required to run the React application</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <p><strong>Key Dependencies:</strong></p>
+            <ul>
+                <li><strong>react (19.2.4)</strong> - UI framework</li>
+                <li><strong>react-router-dom (7.13.0)</strong> - Page navigation</li>
+                <li><strong>axios (1.13.3)</strong> - HTTP requests to backend</li>
+                <li><strong>jwt-decode (4.0.0)</strong> - Decode authentication tokens</li>
+            </ul>
+
+            <h3>📄 `/client/public/` - Static Assets</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Purpose</th>
+                        <th>Importance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>index.html</strong></td>
+                        <td>Main HTML file where React app loads</td>
+                        <td><span class="importance-badge critical">⭐⭐⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td>manifest.json</td>
+                        <td>Progressive Web App metadata</td>
+                        <td><span class="importance-badge high">⭐⭐⭐</span></td>
+                    </tr>
+                    <tr>
+                        <td>robots.txt</td>
+                        <td>Search engine crawling rules</td>
+                        <td><span class="importance-badge low">⭐⭐</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>⚛️ `/client/src/index.js`</h3>
+            <p><strong>Role:</strong> React application entry point</p>
+            <p><strong>Why Used:</strong> Mounts the React app to the DOM (to index.html)</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <div class="code-block">
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(&lt;App /&gt;);
+            </div>
+
+            <h3>⚛️ `/client/src/App.js`</h3>
+            <p><strong>Role:</strong> Main routing and navigation component</p>
+            <p><strong>Why Used:</strong> Controls all page routes and access protection</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li><code>ProtectedRoute</code> - Prevents unauthorized access</li>
+                <li>Admin routes (approvals, bulk upload, carousel, events)</li>
+                <li>Alumni routes (profile, directory)</li>
+                <li>Public routes (login, register)</li>
+            </ul>
+
+            <h3>📂 `/client/src/pages/` - Page Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Purpose</th>
+                        <th>Accessible By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Login.js</strong></td>
+                        <td>User authentication page</td>
+                        <td>Everyone (public)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Register.js</strong></td>
+                        <td>User registration & signup</td>
+                        <td>Everyone (public)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dashboard.js</strong></td>
+                        <td>Main hub/navigation center</td>
+                        <td>All logged-in users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AdminApprovals.js</strong></td>
+                        <td>Manage pending user approvals</td>
+                        <td>Admins only</td>
+                    </tr>
+                    <tr style="background-color: #fff3cd !important;">
+                        <td><strong>AdminBulkUpload.js</strong></td>
+                        <td><strong>Bulk upload users via CSV</strong></td>
+                        <td><strong>Admins only (NEW)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>AdminCarousel.js</strong></td>
+                        <td>Manage carousel/banner images</td>
+                        <td>Admins only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AdminCreateEvent.js</strong></td>
+                        <td>Create new events</td>
+                        <td>Admins only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AlumniDirectory.js</strong></td>
+                        <td>Browse and search alumni</td>
+                        <td>All users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AlumniProfile.js</strong></td>
+                        <td>View and edit personal profile</td>
+                        <td>Alumni users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Events.js</strong></td>
+                        <td>View all events</td>
+                        <td>All users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jobs.js</strong></td>
+                        <td>Browse job postings</td>
+                        <td>All users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PostJob.js</strong></td>
+                        <td>Alumni post job openings</td>
+                        <td>Alumni users</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🎨 `/client/src/components/` - Reusable UI Components</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                        <th>Used In</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Navbar.js</strong></td>
+                        <td>Navigation header with logo and logout</td>
+                        <td>Every page</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ImageCarousel.js</strong></td>
+                        <td>Rotating banner with images</td>
+                        <td>Dashboard</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>🔧 `/client/src/services/api.js`</h3>
+            <p><strong>Role:</strong> Centralized HTTP client for backend communication</p>
+            <p><strong>Why Used:</strong> All API requests go through this file</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <p><strong>Key Feature - Auto-Token Injection:</strong> Automatically adds JWT token to every API request header</p>
+            <div class="code-block">
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+            </div>
+
+            <h3>🎨 `/client/src/styles/theme.js`</h3>
+            <p><strong>Role:</strong> Centralized design system and color palette</p>
+            <p><strong>Why Used:</strong> Keeps UI consistent across all pages</p>
+            <p><strong>Importance:</strong> <span class="importance-badge high">⭐⭐⭐ Important</span></p>
+            <p><strong>Contains:</strong> Colors, fonts, spacing, button styles, card styles</p>
+
+            <h3>⚙️ `/client/src/utils/constants.js`</h3>
+            <p><strong>Role:</strong> App-wide constant values</p>
+            <p><strong>Why Used:</strong> Store fixed values (dropdown options, labels, etc.)</p>
+            <p><strong>Importance:</strong> <span class="importance-badge high">⭐⭐ Nice-to-have</span></p>
+
+            <h3>🖼️ `/client/src/assets/`</h3>
+            <p><strong>Role:</strong> Images, logos, and icons</p>
+            <p><strong>Contents:</strong> logo.png, favicon, banner images</p>
+            <p><strong>Importance:</strong> <span class="importance-badge high">⭐⭐ Visual elements</span></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 3: SERVER STRUCTURE -->
+        <div class="section">
+            <h2>3. Server (Backend) Structure</h2>
+            <p>
+                The server folder contains the Express.js API that handles all business logic, database operations, 
+                and authentication. It runs on `http://localhost:5000` during development.
+            </p>
+
+            <h3>📦 `/server/package.json`</h3>
+            <p><strong>Role:</strong> Backend dependencies and scripts configuration</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <p><strong>Key Dependencies:</strong></p>
+            <ul>
+                <li><strong>express (5.2.1)</strong> - Web server framework</li>
+                <li><strong>mongoose (9.1.5)</strong> - MongoDB object modeling</li>
+                <li><strong>bcryptjs (3.0.3)</strong> - Password hashing</li>
+                <li><strong>jsonwebtoken (9.0.3)</strong> - JWT token creation</li>
+                <li><strong>cors (2.8.6)</strong> - Cross-origin resource sharing</li>
+                <li><strong>dotenv (17.2.3)</strong> - Environment variables</li>
+                <li><strong>multer (2.0.2)</strong> - File upload handling</li>
+            </ul>
+
+            <h3>🚀 `/server/server.js`</h3>
+            <p><strong>Role:</strong> Main server entry point</p>
+            <p><strong>Why Used:</strong> Sets up Express app, connects to database, registers API routes</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <p><strong>What it does:</strong></p>
+            <ul>
+                <li>Load environment variables from .env file</li>
+                <li>Connect to MongoDB database</li>
+                <li>Set up Express middleware (CORS, JSON parsing)</li>
+                <li>Register all API routes</li>
+                <li>Start listening on PORT (default 5000)</li>
+            </ul>
+
+            <h3>📝 `/server/.env`</h3>
+            <p><strong>Role:</strong> Secret configuration and environment variables</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL - SECURITY!</span></p>
+            <p class="warning-box">
+                <strong>⚠️ WARNING:</strong> This file should NEVER be committed to git. It contains sensitive data like database passwords and JWT secrets.
+            </p>
+            <p><strong>Must contain:</strong></p>
+            <div class="code-block">
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+JWT_SECRET=your_secret_key_here
+PORT=5000
+NODE_ENV=development
+            </div>
+
+            <h3>📂 `/server/config/db.js`</h3>
+            <p><strong>Role:</strong> Database connection setup</p>
+            <p><strong>Why Used:</strong> Connects to MongoDB using Mongoose</p>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL</span></p>
+            <div class="code-block">
+const mongoose = require("mongoose");
+
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;
+            </div>
+
+            <h3>📂 `/server/models/` - Database Schemas</h3>
+            <p>
+                These files define how data is structured and validated in MongoDB using Mongoose schemas.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Purpose</th>
+                        <th>Key Fields</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>User.js</strong></td>
+                        <td>User accounts (login credentials)</td>
+                        <td>name, email, password (hashed), role, status, timestamps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AlumniProfile.js</strong></td>
+                        <td>Extended alumni information</td>
+                        <td>userId (reference), registerNumber, department, batchYear, company, skills, bio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event.js</strong></td>
+                        <td>Events and conferences</td>
+                        <td>title, description, date, location, createdBy (admin)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Job.js</strong></td>
+                        <td>Job postings</td>
+                        <td>title, company, description, salary, location, postedBy (alumni)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CarouselImage.js</strong></td>
+                        <td>Banner/carousel images</td>
+                        <td>imageUrl, title, description, uploadedBy (admin)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📂 `/server/controllers/` - Business Logic</h3>
+            <p>
+                Controllers contain the business logic that handles what happens when API requests arrive.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Controller</th>
+                        <th>Purpose</th>
+                        <th>Key Functions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>authController.js</strong></td>
+                        <td>Handle login and registration</td>
+                        <td>register(), login(), validateToken()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>adminController.js</strong></td>
+                        <td>Admin-specific operations</td>
+                        <td>Currently empty - can be expanded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>alumniController.js</strong></td>
+                        <td>Alumni profile operations</td>
+                        <td>createOrUpdateProfile(), getAllProfiles(), getMyProfile()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>eventController.js</strong></td>
+                        <td>Event management</td>
+                        <td>createEvent(), getEvents(), deleteEvent()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>jobController.js</strong></td>
+                        <td>Job posting management</td>
+                        <td>postJob(), getJobs(), deleteJob()</td>
+                    </tr>
+                    <tr>
+                        <td><strong>carouselController.js</strong></td>
+                        <td>Carousel image management</td>
+                        <td>uploadImage(), getImages(), deleteImage()</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📂 `/server/routes/` - API Endpoints</h3>
+            <p>
+                Routes connect HTTP requests to controller functions. They define the API endpoints and which middleware to use.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Route File</th>
+                        <th>Base URL</th>
+                        <th>Key Endpoints</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>authRoutes.js</strong></td>
+                        <td>/api/auth</td>
+                        <td>POST /register, POST /login</td>
+                    </tr>
+                    <tr>
+                        <td><strong>adminRoutes.js</strong></td>
+                        <td>/api/admin</td>
+                        <td>GET /pending-users, PUT /approve/:id, <strong>POST /bulk-upload (NEW)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>alumniRoutes.js</strong></td>
+                        <td>/api/alumni</td>
+                        <td>GET /profiles, POST /profile, GET /profile/:id</td>
+                    </tr>
+                    <tr>
+                        <td><strong>jobRoutes.js</strong></td>
+                        <td>/api/jobs</td>
+                        <td>GET /list, POST /post, DELETE /:id</td>
+                    </tr>
+                    <tr>
+                        <td><strong>eventRoutes.js</strong></td>
+                        <td>/api/events</td>
+                        <td>GET /list, POST /create, DELETE /:id</td>
+                    </tr>
+                    <tr>
+                        <td><strong>carouselRoutes.js</strong></td>
+                        <td>/api/carousel</td>
+                        <td>GET /images, POST /upload, DELETE /:id</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📂 `/server/middleware/` - Security & Permission Checks</h3>
+            <p>
+                Middleware functions check permissions and validate requests before they reach controllers.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Middleware</th>
+                        <th>What it Checks</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>authMiddleware.js</strong></td>
+                        <td>Is user logged in?</td>
+                        <td>Verify JWT token is valid and hasn't expired</td>
+                    </tr>
+                    <tr>
+                        <td><strong>adminMiddleware.js</strong></td>
+                        <td>Is user an admin?</td>
+                        <td>Only allow admins to access admin-only routes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>roleMiddleware.js</strong></td>
+                        <td>Does user have required role?</td>
+                        <td>Role-based access control (admin, alumni, student)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>How Middleware Works (Example):</strong></p>
+            <div class="code-block">
+router.put("/approve/:id", auth, admin, approveUser);
+// 1. auth checks if JWT token exists and is valid
+// 2. admin checks if user has admin role
+// 3. approveUser executes only if both checks pass
+            </div>
+            <p><strong>Importance:</strong> <span class="importance-badge critical">⭐⭐⭐⭐⭐ CRITICAL - SECURITY</span></p>
+
+            <h3>🌱 `/server/seedAdmin.js` & `/server/seedAlumni.js`</h3>
+            <p><strong>Role:</strong> Populate database with test data</p>
+            <p><strong>Why Used:</strong> Quick testing without manual data entry</p>
+            <p><strong>How to Use:</strong> Run `node seedAdmin.js` or `node seedAlumni.js` in terminal</p>
+            <p><strong>Importance:</strong> <span class="importance-badge high">⭐⭐ Development Helper</span></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 4: AUTHENTICATION & SECURITY -->
+        <div class="section">
+            <h2>4. Authentication & Security</h2>
+
+            <h3>JWT (JSON Web Token) Authentication</h3>
+            <p>
+                The application uses JWT for stateless authentication. When users log in, they receive a token 
+                that proves they're authenticated without storing session data on the server.
+            </p>
+
+            <h3>Authentication Flow Diagram</h3>
+            <div class="flow-diagram">
+User enters email &amp; password
+        ↓
+POST /api/auth/login
+        ↓
+authController validates credentials
+        ↓
+Password matches? → Generate JWT token
+        ↓
+Send token to frontend (stored in localStorage)
+        ↓
+User sends token with every API request
+        ↓
+authMiddleware verifies token signature &amp; expiry
+        ↓
+Access granted or denied
+            </div>
+
+            <h3>Password Security</h3>
+            <p>
+                Passwords are hashed using <strong>bcryptjs</strong> (bcrypt algorithm) before storing in database. 
+                This means:
+            </p>
+            <ul>
+                <li>Plain passwords are NEVER stored</li>
+                <li>Even database leaks don't expose passwords</li>
+                <li>Passwords are salted (random data added) for extra security</li>
+            </ul>
+
+            <h3>Token Storage</h3>
+            <p>
+                The JWT token is stored in browser's <code>localStorage</code>. The <strong>api.js</strong> interceptor 
+                automatically includes this token in every API request header:
+            </p>
+            <div class="code-block">
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            </div>
+
+            <h3>Role-Based Access Control (RBAC)</h3>
+            <p>
+                Three user roles control what features users can access:
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Capabilities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ADMIN</strong></td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li>Approve pending users</li>
+                                <li>Bulk upload users (NEW)</li>
+                                <li>Manage carousel images</li>
+                                <li>Create events</li>
+                                <li>View all user data</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>ALUMNI / STUDENT</strong></td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li>Create and edit own profile</li>
+                                <li>Browse alumni directory</li>
+                                <li>Apply to jobs</li>
+                                <li>Post job openings</li>
+                                <li>Register for events</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>User Status States</h3>
+            <p>
+                Users go through different status states during their lifecycle:
+            </p>
+            <ul>
+                <li><strong>PENDING</strong> - Just registered, waiting for admin approval</li>
+                <li><strong>APPROVED</strong> - Admin approved, can access platform</li>
+                <li><strong>BLOCKED</strong> - Admin blocked user, cannot login</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 5: DATA RELATIONSHIPS -->
+        <div class="section">
+            <h2>5. Data Models & Relationships</h2>
+
+            <h3>Entity Relationship Diagram</h3>
+            <div class="flow-diagram" style="text-align: left; font-family: monospace; padding: 20px;">
+User (Account)
+├── role: "admin" | "alumni" | "student"
+├── status: "pending" | "approved" | "blocked"
+├── name, email, password (hashed)
+├── 1:1 → AlumniProfile (Optional)
+│        ├── registerNumber, department, batchYear
+│        ├── currentCompany, designation
+│        └── skills, bio, linkedinUrl
+│
+├── 1:M → Job (Posted by alumni)
+│        ├── title, description
+│        ├── salary, location
+│        └── postedBy: userId
+│
+└── 1:M → Event (Attending)
+         ├── title, date
+         ├── description, location
+         └── createdBy: userId
+
+Admin User
+├── 1:M → CarouselImage (Manages)
+│        ├── imageUrl, title
+│        └── uploadedBy: userId
+│
+└── 1:M → Event (Creates)
+         └── createdBy: userId
+            </div>
+
+            <h3>Key Relationships</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Type</th>
+                        <th>Optional?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>User</td>
+                        <td>AlumniProfile</td>
+                        <td>One-to-One</td>
+                        <td>Yes - can exist without profile</td>
+                    </tr>
+                    <tr>
+                        <td>AlumniProfile</td>
+                        <td>User</td>
+                        <td>Many-to-One</td>
+                        <td>No - must reference a user</td>
+                    </tr>
+                    <tr>
+                        <td>Job</td>
+                        <td>User</td>
+                        <td>Many-to-One</td>
+                        <td>No - must have poster</td>
+                    </tr>
+                    <tr>
+                        <td>Event</td>
+                        <td>User</td>
+                        <td>Many-to-One</td>
+                        <td>No - must have creator</td>
+                    </tr>
+                    <tr>
+                        <td>CarouselImage</td>
+                        <td>User</td>
+                        <td>Many-to-One</td>
+                        <td>No - must have uploader</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 6: BULK UPLOAD FEATURE -->
+        <div class="section">
+            <h2>6. Bulk Upload Feature (NEW)</h2>
+
+            <h3>Overview</h3>
+            <p>
+                The bulk upload feature allows admins to add multiple users to the system at once by uploading a CSV file. 
+                This is much faster than registering users one-by-one.
+            </p>
+
+            <h3>Files Involved</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Location</th>
+                        <th>What it Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>AdminBulkUpload.js</strong></td>
+                        <td>client/src/pages/</td>
+                        <td>Frontend page with file upload UI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>adminRoutes.js</strong></td>
+                        <td>server/routes/</td>
+                        <td>Defines POST /api/admin/bulk-upload endpoint</td>
+                    </tr>
+                    <tr>
+                        <td><strong>App.js</strong></td>
+                        <td>client/src/</td>
+                        <td>Defines route /admin/bulk-upload</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dashboard.js</strong></td>
+                        <td>client/src/pages/</td>
+                        <td>Shows "Bulk Upload Users" card</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>CSV Format Required</h3>
+            <div class="code-block">
+name,email,password,role
+John Doe,john@example.com,password123,alumni
+Jane Smith,jane@example.com,password456,alumni
+Ahmed Khan,ahmed@example.com,pass789,student
+            </div>
+
+            <h3>Upload Process</h3>
+            <div class="flow-diagram">
+User selects CSV file
+        ↓
+Frontend parses CSV
+        ↓
+Shows preview of users to upload
+        ↓
+User clicks "Upload Users"
+        ↓
+POST /api/admin/bulk-upload (with user data)
+        ↓
+Server validates each user:
+  - Check required fields
+  - Check email doesn't exist
+  - Hash password
+  - Save to database
+        ↓
+Return results (success count, failed count)
+        ↓
+Show detailed report to admin
+            </div>
+
+            <h3>Backend Validation</h3>
+            <ul>
+                <li><strong>Required fields:</strong> name, email, password</li>
+                <li><strong>Email uniqueness:</strong> No duplicate emails allowed</li>
+                <li><strong>Password hashing:</strong> All passwords hashed with bcryptjs</li>
+                <li><strong>Default role:</strong> "alumni" if not specified</li>
+                <li><strong>Auto-approval:</strong> Bulk users marked as "approved" by default</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 7: REQUEST EXAMPLES -->
+        <div class="section">
+            <h2>7. Complete Request Flow Examples</h2>
+
+            <h3>Example 1: User Registration</h3>
+            <div class="info-box">
+                <strong>User Action:</strong> Clicks "Register" and fills form
+            </div>
+            <div class="flow-diagram">
+1. User fills form: name, email, password, role
+2. Register.js calls axios.post("/api/auth/register", data)
+3. api.js doesn't add token (no login yet)
+4. Server receives POST /api/auth/register
+5. authRoutes directs to authController.register()
+6. Controller checks if email exists
+7. Controller hashes password with bcryptjs
+8. Controller saves new User with status="pending"
+9. Server responds: "Registration successful"
+10. Frontend shows: "Waiting for admin approval"
+            </div>
+
+            <h3>Example 2: Admin Bulk Upload</h3>
+            <div class="info-box">
+                <strong>Admin Action:</strong> Uploads CSV with 50 new users
+            </div>
+            <div class="flow-diagram">
+1. Admin on AdminBulkUpload.js selects users.csv
+2. Frontend parses CSV → 50 user objects
+3. Admin clicks "Upload Users"
+4. api.js adds JWT token automatically
+5. POST /api/admin/bulk-upload with 50 users
+6. authMiddleware checks token ✓
+7. adminMiddleware checks if user is admin ✓
+8. adminRoutes directs to controller
+9. Controller loops through each user:
+   - Validate name, email, password present
+   - Check if email exists (fail if duplicate)
+   - Hash password
+   - Save to database
+10. Collect results: 48 succeeded, 2 failed
+11. Send back detailed report
+12. Frontend displays success/failure list
+            </div>
+
+            <h3>Example 3: View Alumni Directory</h3>
+            <div class="info-box">
+                <strong>User Action:</strong> Clicks "View All Alumni"
+            </div>
+            <div class="flow-diagram">
+1. User clicks "View All Alumni" link
+2. Router navigates to /alumni/directory
+3. AlumniDirectory.js loads
+4. useEffect calls fetchProfiles()
+5. api.js adds JWT token
+6. GET /api/alumni/profiles
+7. authMiddleware checks token ✓
+8. alumniRoutes directs to controller.getAllProfiles()
+9. Controller queries:
+   - Get all approved alumni from User collection
+   - Get all AlumniProfiles from AlumniProfile collection
+   - Merge them (show all users + their profiles if exists)
+10. Return array of 150 alumni
+11. Frontend displays cards with name, department, company
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 8: IMPORTANCE SUMMARY -->
+        <div class="section">
+            <h2>8. Folder & File Importance Summary</h2>
+
+            <h3>Critical Files (⭐⭐⭐⭐⭐ Must-Have)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File/Folder</th>
+                        <th>Location</th>
+                        <th>Why Critical</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>server.js</td>
+                        <td>server/</td>
+                        <td>Starts the entire backend server</td>
+                    </tr>
+                    <tr>
+                        <td>.env</td>
+                        <td>server/</td>
+                        <td>Contains database credentials and secrets</td>
+                    </tr>
+                    <tr>
+                        <td>config/db.js</td>
+                        <td>server/config/</td>
+                        <td>Connects to MongoDB database</td>
+                    </tr>
+                    <tr>
+                        <td>models/</td>
+                        <td>server/models/</td>
+                        <td>Defines all data structures</td>
+                    </tr>
+                    <tr>
+                        <td>routes/</td>
+                        <td>server/routes/</td>
+                        <td>Defines all API endpoints</td>
+                    </tr>
+                    <tr>
+                        <td>controllers/</td>
+                        <td>server/controllers/</td>
+                        <td>Contains all business logic</td>
+                    </tr>
+                    <tr>
+                        <td>middleware/</td>
+                        <td>server/middleware/</td>
+                        <td>Protects routes with auth/permissions</td>
+                    </tr>
+                    <tr>
+                        <td>App.js</td>
+                        <td>client/src/</td>
+                        <td>Defines all page routes</td>
+                    </tr>
+                    <tr>
+                        <td>index.js</td>
+                        <td>client/src/</td>
+                        <td>Starts React application</td>
+                    </tr>
+                    <tr>
+                        <td>services/api.js</td>
+                        <td>client/src/services/</td>
+                        <td>Handles all backend communication</td>
+                    </tr>
+                    <tr>
+                        <td>pages/</td>
+                        <td>client/src/pages/</td>
+                        <td>All user-facing pages</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Important Files (⭐⭐⭐⭐)</h3>
+            <ul>
+                <li><strong>package.json</strong> (both client and server) - Dependencies management</li>
+                <li><strong>Navbar.js</strong> - Navigation on every page</li>
+                <li><strong>Dashboard.js</strong> - Main hub showing all features</li>
+                <li><strong>public/index.html</strong> - HTML entry point for React</li>
+            </ul>
+
+            <h3>Useful Files (⭐⭐⭐)</h3>
+            <ul>
+                <li><strong>styles/theme.js</strong> - Design consistency</li>
+                <li><strong>components/</strong> - Reusable UI components</li>
+                <li><strong>seedAdmin.js & seedAlumni.js</strong> - Test data</li>
+            </ul>
+
+            <h3>Nice-to-Have Files (⭐⭐)</h3>
+            <ul>
+                <li><strong>utils/constants.js</strong> - App-wide constants</li>
+                <li><strong>assets/</strong> - Images and logos</li>
+                <li><strong>.gitignore</strong> - Ignore node_modules and .env</li>
+            </ul>
+        </div>
+
+        <!-- CONCLUSION -->
+        <div class="section">
+            <h2>Conclusion</h2>
+            <p>
+                The Alumni Portal is a well-structured full-stack application with clear separation between frontend 
+                and backend. Each folder and file has a specific purpose contributing to the overall system:
+            </p>
+            <ul>
+                <li><strong>Frontend</strong> - Provides user interface and handles user interactions</li>
+                <li><strong>Backend</strong> - Manages data, enforces business rules, and secures the application</li>
+                <li><strong>Database</strong> - Stores all user data with proper relationships</li>
+                <li><strong>Authentication</strong> - Secures access with JWT tokens and password hashing</li>
+                <li><strong>Bulk Upload</strong> - New feature allowing efficient mass user registration</li>
+            </ul>
+            <p>
+                Understanding each file's role helps with maintenance, debugging, and adding new features.
+            </p>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>
+                Alumni Portal Documentation | Complete Architecture Guide
+            </p>
+            <p>
+                Generated: January 29, 2026
+            </p>
+            <p>
+                For questions or updates, refer to the respective source files.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
