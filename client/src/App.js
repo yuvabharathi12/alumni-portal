@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+
+import PublicDashboard from "./pages/PublicDashboard";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminBulkUpload from "./pages/AdminBulkUpload";
 import Login from "./pages/Login";
@@ -15,21 +17,24 @@ import PostJob from "./pages/PostJob";
 
 function ProtectedRoute({ children, requiredRole }) {
   const token = localStorage.getItem("token");
+
+  // Not logged in → go to login page
   if (!token) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
-  
+
   if (requiredRole) {
     try {
       const decoded = jwtDecode(token);
+
       if (decoded.role !== requiredRole) {
         return <Navigate to="/dashboard" />;
       }
     } catch (err) {
-      return <Navigate to="/" />;
+      return <Navigate to="/login" />;
     }
   }
-  
+
   return children;
 }
 
@@ -37,9 +42,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* ✅ Public landing page */}
+        <Route path="/" element={<PublicDashboard />} />
+
+        {/* ✅ Auth pages */}
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* ✅ Dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -49,6 +59,7 @@ function App() {
           }
         />
 
+        {/* ✅ Admin */}
         <Route
           path="/admin/approvals"
           element={
@@ -68,6 +79,25 @@ function App() {
         />
 
         <Route
+          path="/admin/carousel"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminCarousel />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/events/create"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminCreateEvent />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Alumni */}
+        <Route
           path="/alumni/profile"
           element={
             <ProtectedRoute>
@@ -85,15 +115,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/admin/carousel"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminCarousel />
-            </ProtectedRoute>
-          }
-        />
-
+        {/* ✅ Common */}
         <Route
           path="/events"
           element={
@@ -108,15 +130,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Jobs />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/events/create"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminCreateEvent />
             </ProtectedRoute>
           }
         />
