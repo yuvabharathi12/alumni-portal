@@ -30,6 +30,18 @@ function Events() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      await api.delete(`/events/${id}`);
+      alert("Event deleted successfully");
+      fetchEvents(); // Refresh the list
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete event");
+    }
+  };
+
   return (
     <div style={{ background: colors.background, minHeight: "100vh" }}>
       <Navbar />
@@ -83,6 +95,33 @@ function Events() {
                 📍 {event.venue || "TBA"} <br />
                 🗓 {new Date(event.date).toDateString()}
               </div>
+
+              {/* Delete Button (Admin Only) */}
+              {role === "admin" && (
+                <button
+                  onClick={() => handleDelete(event._id)}
+                  style={{
+                    marginTop: "12px",
+                    padding: "8px 16px",
+                    background: colors.danger,
+                    color: colors.white,
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    width: "100%",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "#c82333";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = colors.danger;
+                  }}
+                >
+                  Delete Event
+                </button>
+              )}
             </div>
           ))}
 

@@ -156,7 +156,40 @@ function Dashboard() {
                   Add multiple users at once via CSV
                 </p>
               </Link>
-
+              <Link
+                to="/admin/users"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.danger,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  👥
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Manage Users
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View and delete alumni/student accounts
+                </p>
+              </Link>
               <Link
                 to="/alumni/directory"
                 style={cardStyle}

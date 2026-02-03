@@ -24,6 +24,28 @@ router.put("/block/:id", auth, admin, async (req, res) => {
   res.json({ message: "User blocked" });
 });
 
+// DELETE user (admin only)
+router.delete("/users/:id", auth, admin, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Prevent admin from deleting themselves
+    if (user._id.toString() === req.user.id) {
+      return res.status(400).json({ message: "Cannot delete your own account" });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+});
+
 // Bulk Upload Users
 router.post("/bulk-upload", auth, admin, async (req, res) => {
   try {

@@ -14,6 +14,7 @@ import Events from "./pages/Events";
 import Jobs from "./pages/Jobs";
 import AdminCreateEvent from "./pages/AdminCreateEvent";
 import PostJob from "./pages/PostJob";
+import ManageUsers from "./pages/ManageUsers"; // ✅ NEW
 
 function ProtectedRoute({ children, requiredRole }) {
   const token = localStorage.getItem("token");
@@ -92,6 +93,16 @@ function App() {
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminCreateEvent />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ NEW - Manage Users */}
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <ManageUsers />
             </ProtectedRoute>
           }
         />
