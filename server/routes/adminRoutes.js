@@ -6,29 +6,53 @@ const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
 const admin = require("../middleware/adminMiddleware");
 
-// Get pending users
+/* ================================
+   GET ALL USERS (ADMIN)
+   ================================ */
+router.get("/users", auth, admin, async (req, res) => {
+  try {
+    const users = await User.find({ role: { $ne: "admin" } })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+});
+
+/* ================================
+   GET PENDING USERS
+   ================================ */
 router.get("/pending-users", auth, admin, async (req, res) => {
   const users = await User.find({ status: "pending" }).select("-password");
   res.json(users);
 });
 
-// Approve user
+/* ================================
+   APPROVE USER
+   ================================ */
 router.put("/approve/:id", auth, admin, async (req, res) => {
   await User.findByIdAndUpdate(req.params.id, { status: "approved" });
   res.json({ message: "User approved" });
 });
 
-// Block user
+/* ================================
+   BLOCK USER
+   ================================ */
 router.put("/block/:id", auth, admin, async (req, res) => {
   await User.findByIdAndUpdate(req.params.id, { status: "blocked" });
   res.json({ message: "User blocked" });
 });
 
-// DELETE user (admin only)
+/* ================================
+   DELETE USER (ADMIN ONLY)
+   ================================ */
 router.delete("/users/:id", auth, admin, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -46,7 +70,9 @@ router.delete("/users/:id", auth, admin, async (req, res) => {
   }
 });
 
-// Bulk Upload Users
+/* ================================
+   BULK UPLOAD USERS
+   ================================ */
 router.post("/bulk-upload", auth, admin, async (req, res) => {
   try {
     const { users } = req.body;
@@ -55,26 +81,21 @@ router.post("/bulk-upload", auth, admin, async (req, res) => {
       return res.status(400).json({ message: "No users provided" });
     }
 
-    const results = {
-      success: [],
-      failed: [],
-    };
+    const results = { success: [], failed: [] };
 
     for (const userData of users) {
       try {
         const { name, email, password, role = "alumni" } = userData;
 
-        // Validate required fields
         if (!name || !email || !password) {
           results.failed.push({
             email,
-            reason: "Missing required fields (name, email, password)",
+            reason: "Missing required fields",
           });
           continue;
         }
 
-        // Check if email already exists
-        let existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
           results.failed.push({
             email,
@@ -83,16 +104,14 @@ router.post("/bulk-upload", auth, admin, async (req, res) => {
           continue;
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user
         const user = new User({
           name,
           email,
           password: hashedPassword,
           role,
-          status: "approved", // Bulk uploaded users are auto-approved
+          status: "approved",
         });
 
         await user.save();
