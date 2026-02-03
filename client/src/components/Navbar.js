@@ -10,6 +10,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/");
   };
 
@@ -70,12 +71,19 @@ function Navbar() {
 
         {/* Right side links */}
         <div style={{ display: "flex", gap: "18px", alignItems: "center" }}>
-          {/* Home always visible */}
+          {/* Home */}
           <Link to="/" style={navLink}>
             Home
           </Link>
 
-          {/* Login / Logout toggle */}
+          {/* Dashboard (ONLY when logged in) */}
+          {isLoggedIn && (
+            <Link to="/dashboard" style={navLink}>
+              Dashboard
+            </Link>
+          )}
+
+          {/* Login / Logout */}
           {!isLoggedIn ? (
             <Link to="/login" style={buttonStyle}>
               Login
