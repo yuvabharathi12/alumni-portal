@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import Footer from "../components/Footer";
 import ImageCarousel from "../components/ImageCarousel";
 import { LoadingContainer } from "../components/LoadingSpinner";
+import imagee from '../assets/imagee.png';
 
 function PublicDashboard() {
   const [images, setImages] = useState([]);
@@ -270,7 +271,7 @@ function PublicDashboard() {
           }}
         >
           <img
-            src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=80"
+            src={imagee}
             alt="CAHCET campus and students"
             style={{ width: '100%', height: '320px', objectFit: 'cover' }}
           />
