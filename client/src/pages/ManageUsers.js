@@ -71,7 +71,14 @@ function ManageUsers() {
       <Navbar />
 
       <div style={{ maxWidth: "1100px", margin: "40px auto", padding: "0 20px" }}>
-        <h2 style={{ color: colors.primary }}>👥 Manage Users</h2>
+        <h2 style={{ color: colors.primary, display: "flex", alignItems: "center", gap: "8px" }}>
+          <img
+            src="https://img.icons8.com/fluency/32/conference-call.png"
+            alt="Manage users"
+            style={{ width: 28, height: 28 }}
+          />
+          Manage Users
+        </h2>
         <p style={{ color: colors.textLight, marginBottom: "20px" }}>
           Search, filter and manage user accounts
         </p>

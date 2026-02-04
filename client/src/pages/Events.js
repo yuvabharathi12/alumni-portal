@@ -46,10 +46,39 @@ function Events() {
     <div style={{ background: colors.background, minHeight: "100vh" }}>
       <Navbar />
 
-      <div style={{ maxWidth: "1100px", margin: "40px auto", padding: "0 20px" }}>
+      {/* Events Hero Section */}
+      <div
+        style={{
+          marginTop: "80px",
+          padding: "40px 20px 20px",
+          backgroundImage:
+            "linear-gradient(135deg, rgba(3,136,209,0.9), rgba(30,125,88,0.85)), url('https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1600&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: "#fff",
+        }}
+      >
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <h1 style={{ margin: "0 0 10px 0", fontSize: "32px" }}>
+            Reunions, Meetups & Campus Events
+          </h1>
+          <p style={{ margin: 0, maxWidth: "640px", opacity: 0.92 }}>
+            Stay connected with CAHCET through colourful events, workshops, and alumni gatherings.
+          </p>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: "1100px", margin: "20px auto 40px", padding: "0 20px" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ color: colors.primary }}>📅 College Events</h2>
+          <h2 style={{ color: colors.primary, display: "flex", alignItems: "center", gap: "8px" }}>
+            <img
+              src="https://img.icons8.com/fluency/32/calendar.png"
+              alt="College events"
+              style={{ width: 28, height: 28 }}
+            />
+            College Events
+          </h2>
 
           {role === "admin" && (
             <Link to="/admin/events/create" style={styles.buttonPrimary}>
@@ -74,7 +103,28 @@ function Events() {
           }}
         >
           {events.map(event => (
-            <div key={event._id} style={styles.card}>
+            <div
+              key={event._id}
+              style={{
+                ...styles.card,
+                padding: "18px 18px 16px",
+                overflow: "hidden",
+                background:
+                  "linear-gradient(145deg, #ffffff 0%, #f4f9ff 35%, #f0f9f4 100%)",
+              }}
+            >
+              <div
+                style={{
+                  height: 120,
+                  borderRadius: "12px",
+                  marginBottom: 14,
+                  backgroundImage:
+                    "url('https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+
               <h3 style={{ marginTop: 0, color: colors.primary }}>
                 {event.title}
               </h3>
@@ -85,15 +135,32 @@ function Events() {
 
               <div
                 style={{
-                  marginTop: "15px",
+                  marginTop: "12px",
                   paddingTop: "10px",
                   borderTop: `1px solid ${colors.border}`,
                   fontSize: "13px",
                   color: colors.textLight,
+                  lineHeight: "1.6",
+                  display: "grid",
+                  rowGap: 6,
                 }}
               >
-                📍 {event.venue || "TBA"} <br />
-                🗓 {new Date(event.date).toDateString()}
+                <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <img
+                    src="https://img.icons8.com/fluency/20/marker.png"
+                    alt="Venue"
+                    style={{ width: 18, height: 18 }}
+                  />
+                  {event.venue || "TBA"}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <img
+                    src="https://img.icons8.com/fluency/20/planner.png"
+                    alt="Date"
+                    style={{ width: 18, height: 18 }}
+                  />
+                  {new Date(event.date).toDateString()}
+                </span>
               </div>
 
               {/* Delete Button (Admin Only) */}

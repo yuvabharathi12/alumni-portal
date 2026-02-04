@@ -355,7 +355,11 @@ function AlumniDirectory() {
                       marginBottom: "8px",
                     }}
                   >
-                    <span style={{ fontSize: "16px" }}>🎓</span>
+                    <img
+                      src="https://img.icons8.com/fluency/24/graduation-cap.png"
+                      alt="Department"
+                      style={{ width: 18, height: 18 }}
+                    />
                     <span style={{ fontSize: "14px", color: colors.text }}>
                       {profile.department}
                     </span>
@@ -369,7 +373,11 @@ function AlumniDirectory() {
                       marginBottom: "8px",
                     }}
                   >
-                    <span style={{ fontSize: "16px" }}>📅</span>
+                    <img
+                      src="https://img.icons8.com/fluency/24/calendar.png"
+                      alt="Batch"
+                      style={{ width: 18, height: 18 }}
+                    />
                     <span style={{ fontSize: "14px", color: colors.text }}>
                       Batch of {profile.batchYear}
                     </span>
@@ -384,7 +392,11 @@ function AlumniDirectory() {
                         marginBottom: "8px",
                       }}
                     >
-                      <span style={{ fontSize: "16px" }}>💼</span>
+                      <img
+                        src="https://img.icons8.com/fluency/24/briefcase.png"
+                        alt="Company"
+                        style={{ width: 18, height: 18 }}
+                      />
                       <span style={{ fontSize: "14px", color: colors.text }}>
                         {profile.designation
                           ? `${profile.designation} at ${profile.currentCompany}`

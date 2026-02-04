@@ -147,7 +147,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  📤
+                  <img
+                    src="https://img.icons8.com/fluency/32/upload.png"
+                    alt="Bulk upload"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Bulk Upload Users
@@ -181,7 +185,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  👥
+                  <img
+                    src="https://img.icons8.com/fluency/32/conference-call.png"
+                    alt="Manage users"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Manage Users
@@ -216,7 +224,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  👥
+                  <img
+                    src="https://img.icons8.com/fluency/32/conference-call.png"
+                    alt="Alumni"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   View All Alumni
@@ -252,7 +264,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  🖼️
+                  <img
+                    src="https://img.icons8.com/fluency/32/picture.png"
+                    alt="Carousel"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Manage Carousel
@@ -288,7 +304,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  📅
+                  <img
+                    src="https://img.icons8.com/fluency/32/calendar.png"
+                    alt="Events"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   College Events
@@ -324,7 +344,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  💼
+                  <img
+                    src="https://img.icons8.com/fluency/32/briefcase.png"
+                    alt="Jobs"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Job Opportunities
@@ -376,7 +400,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  👤
+                  <img
+                    src="https://img.icons8.com/fluency/32/user-male-circle.png"
+                    alt="Profile"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   My Profile
@@ -412,7 +440,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  📚
+                  <img
+                    src="https://img.icons8.com/fluency/32/books.png"
+                    alt="Directory"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Alumni Directory
@@ -448,7 +480,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  📅
+                  <img
+                    src="https://img.icons8.com/fluency/32/calendar.png"
+                    alt="Events"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   College Events
@@ -484,7 +520,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  💼
+                  <img
+                    src="https://img.icons8.com/fluency/32/briefcase.png"
+                    alt="Jobs"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Job Opportunities
@@ -536,7 +576,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  👥
+                  <img
+                    src="https://img.icons8.com/fluency/32/conference-call.png"
+                    alt="Alumni directory"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Alumni Directory
@@ -566,7 +610,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  🎓
+                  <img
+                    src="https://img.icons8.com/fluency/32/graduation-cap.png"
+                    alt="Career guidance"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.textLight }}>
                   Career Guidance
@@ -602,7 +650,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  📅
+                  <img
+                    src="https://img.icons8.com/fluency/32/calendar.png"
+                    alt="Events"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   College Events
@@ -638,7 +690,11 @@ function Dashboard() {
                     fontSize: "24px",
                   }}
                 >
-                  💼
+                  <img
+                    src="https://img.icons8.com/fluency/32/briefcase.png"
+                    alt="Jobs"
+                    style={{ width: 24, height: 24 }}
+                  />
                 </div>
                 <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
                   Job Opportunities
@@ -659,8 +715,13 @@ function Dashboard() {
                 borderRadius: "8px",
               }}
             >
-              <h4 style={{ margin: "0 0 10px 0", color: colors.primary }}>
-                👋 Welcome, Current Student!
+              <h4 style={{ margin: "0 0 10px 0", color: colors.primary, display: "flex", alignItems: "center", gap: "8px" }}>
+                <img
+                  src="https://img.icons8.com/fluency/24/student-center.png"
+                  alt="Student"
+                  style={{ width: 20, height: 20 }}
+                />
+                Welcome, Current Student!
               </h4>
               <p style={{ margin: 0, fontSize: "14px", color: "#004085" }}>
                 You can browse our alumni directory to connect with successful graduates from CAHCET. 

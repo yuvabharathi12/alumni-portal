@@ -15,6 +15,7 @@ import Jobs from "./pages/Jobs";
 import AdminCreateEvent from "./pages/AdminCreateEvent";
 import PostJob from "./pages/PostJob";
 import ManageUsers from "./pages/ManageUsers"; // ✅ NEW
+import Navbar from "./components/Navbar";
 
 function ProtectedRoute({ children, requiredRole }) {
   const token = localStorage.getItem("token");
@@ -42,6 +43,7 @@ function ProtectedRoute({ children, requiredRole }) {
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* ✅ Public landing page */}
         <Route path="/" element={<PublicDashboard />} />
