@@ -5,7 +5,7 @@ const Card = ({
   children, 
   variant = 'base',
   interactive = false,
-  padding = '6',
+  padding = 6,
   image = null,
   imageHeight = '200px',
   className = '',
@@ -27,7 +27,7 @@ const Card = ({
       background: colors.background.paper,
       borderRadius: borderRadius.lg,
       padding: spacing[padding],
-      boxShadow: shadows.elevated,
+      boxShadow: shadows.lg,
       border: 'none',
       transition: transitions.base,
     },
@@ -35,7 +35,7 @@ const Card = ({
       background: 'transparent',
       borderRadius: borderRadius.lg,
       padding: spacing[padding],
-      border: `2px solid ${colors.border}`,
+      border: `2px solid ${colors.primary.main}`,
       transition: transitions.base,
     },
     gradient: {
@@ -45,6 +45,7 @@ const Card = ({
       boxShadow: shadows.md,
       border: 'none',
       transition: transitions.base,
+      backdropFilter: 'blur(10px)',
     },
   };
 
@@ -53,8 +54,9 @@ const Card = ({
   } : {};
 
   const hoverStyles = interactive && isHovered ? {
-    transform: 'translateY(-4px)',
+    transform: 'translateY(-10px)',
     boxShadow: shadows.xl,
+    borderColor: isHovered && variant === 'outlined' ? colors.primary[600] : colors.border,
   } : {};
 
   const cardStyles = {
@@ -76,12 +78,13 @@ const Card = ({
       {image && (
         <div
           style={{
-            width: 'calc(100% + ' + (spacing[padding] * 2) + ')',
-            marginLeft: `-${spacing[padding]}`,
-            marginTop: `-${spacing[padding]}`,
+            width: `calc(100% + ${spacing[padding] * 2}px)`,
+            marginLeft: `-${spacing[padding]}px`,
+            marginTop: `-${spacing[padding]}px`,
             marginBottom: spacing[4],
             height: imageHeight,
             overflow: 'hidden',
+            borderRadius: `${borderRadius.lg} ${borderRadius.lg} 0 0`,
           }}
         >
           <img
@@ -92,7 +95,7 @@ const Card = ({
               height: '100%',
               objectFit: 'cover',
               transition: transitions.slow,
-              transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+              transform: isHovered ? 'scale(1.08)' : 'scale(1)',
             }}
           />
         </div>

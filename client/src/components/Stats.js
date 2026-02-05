@@ -10,11 +10,11 @@ const Stats = ({ stats = [], columns = 4 }) => {
   };
 
   const statCardStyles = {
-    background: colors.background.paper,
+    background: `linear-gradient(135deg, ${colors.background.paper} 0%, ${colors.primary[50]} 100%)`,
     borderRadius: borderRadius.xl,
     padding: spacing[8],
     boxShadow: shadows.lg,
-    border: `1px solid ${colors.border}`,
+    border: `1px solid ${colors.primary[100]}`,
     textAlign: 'center',
     transition: 'all 0.3s ease',
     position: 'relative',
@@ -38,9 +38,9 @@ const Stats = ({ stats = [], columns = 4 }) => {
   const valueStyles = {
     fontSize: typography.fontSize['4xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
+    color: colors.primary.main,
     marginBottom: spacing[2],
-    fontFamily: typography.fontFamily.heading,
+    fontFamily: typography.fontFamily.display,
   };
 
   const labelStyles = {
@@ -66,7 +66,7 @@ const Stats = ({ stats = [], columns = 4 }) => {
           key={index}
           style={statCardStyles}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-8px)';
+            e.currentTarget.style.transform = 'translateY(-12px)';
             e.currentTarget.style.boxShadow = shadows.xl;
           }}
           onMouseLeave={(e) => {

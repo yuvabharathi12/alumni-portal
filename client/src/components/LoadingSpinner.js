@@ -42,10 +42,13 @@ export const LoadingContainer = ({ children, message = 'Loading...' }) => {
         justifyContent: 'center',
         minHeight: '400px',
         gap: spacing[4],
+        background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`,
+        borderRadius: borderRadius.lg,
+        padding: spacing[8],
       }}
     >
       <LoadingSpinner size="lg" />
-      <p style={{ color: colors.text.secondary, fontSize: '1rem' }}>{message}</p>
+      <p style={{ color: colors.text.secondary, fontSize: '1rem', fontWeight: 500 }}>{message}</p>
       {children}
     </div>
   );
@@ -65,7 +68,7 @@ export const Skeleton = ({
       borderRadius: borderRadius.base,
     },
     circular: {
-      width: height, // Make it square
+      width: height,
       height,
       borderRadius: borderRadius.full,
     },
@@ -104,57 +107,13 @@ export const SkeletonCard = () => {
         background: colors.background.paper,
         borderRadius: borderRadius.lg,
         padding: spacing[6],
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
       }}
     >
-      <Skeleton variant="circular" height="60px" style={{ marginBottom: spacing[4] }} />
-      <Skeleton height="24px" style={{ marginBottom: spacing[3] }} />
-      <Skeleton height="16px" width="80%" style={{ marginBottom: spacing[2] }} />
-      <Skeleton height="16px" width="60%" />
-    </div>
-  );
-};
-
-// Skeleton List
-export const SkeletonList = ({ count = 3 }) => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4] }}>
-      {Array.from({ length: count }).map((_, index) => (
-        <div
-          key={index}
-          style={{
-            background: colors.background.paper,
-            borderRadius: borderRadius.lg,
-            padding: spacing[6],
-            display: 'flex',
-            gap: spacing[4],
-            alignItems: 'center',
-          }}
-        >
-          <Skeleton variant="circular" height="48px" />
-          <div style={{ flex: 1 }}>
-            <Skeleton height="20px" width="40%" style={{ marginBottom: spacing[2] }} />
-            <Skeleton height="16px" width="60%" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// Skeleton Grid
-export const SkeletonGrid = ({ count = 6, columns = 3 }) => {
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(auto-fit, minmax(280px, 1fr))`,
-        gap: spacing[6],
-      }}
-    >
-      {Array.from({ length: count }).map((_, index) => (
-        <SkeletonCard key={index} />
-      ))}
+      <Skeleton height="200px" variant="rectangular" style={{ marginBottom: spacing[4] }} />
+      <Skeleton height="24px" style={{ marginBottom: spacing[2] }} />
+      <Skeleton height="16px" style={{ marginBottom: spacing[4] }} />
+      <Skeleton height="16px" width="80%" />
     </div>
   );
 };

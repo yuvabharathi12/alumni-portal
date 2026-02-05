@@ -3,8 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
 import Button from "../components/Button";
-import Badge from "../components/Badge";
-import logo from "../assets/logo.png";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -31,10 +29,10 @@ function Register() {
     setMessage("");
     try {
       await axios.post("http://localhost:5000/api/auth/register", formData);
-      setMessage("Registration successful! Redirecting to login...");
+      setMessage("✅ Registration successful! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Registration failed");
+      setMessage("❌ " + (error.response?.data?.message || "Registration failed"));
     } finally {
       setLoading(false);
     }
@@ -43,54 +41,34 @@ function Register() {
   const containerStyles = {
     minHeight: "100vh",
     display: "flex",
-    background: colors.background.default,
+    background: `linear-gradient(135deg, ${colors.secondary[50]} 0%, ${colors.primary[50]} 100%)`,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: spacing[4],
   };
 
-  const leftPanelStyles = {
-    flex: 1,
-    background: colors.gradients.secondary,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing[12],
-    color: colors.text.inverse,
-    position: 'relative',
-    overflow: 'hidden',
-  };
-
-  const rightPanelStyles = {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing[8],
-    overflowY: 'auto',
-  };
-
-  const formCardStyles = {
-    width: '100%',
-    maxWidth: '520px',
+  const cardStyles = {
+    width: "100%",
+    maxWidth: "520px",
     background: colors.background.paper,
     padding: spacing[10],
     borderRadius: borderRadius.xl,
     boxShadow: shadows.xl,
-    margin: `${spacing[8]} 0`,
+    border: `1px solid ${colors.border}`,
   };
 
   const inputStyles = {
-    width: '100%',
+    width: "100%",
     padding: `${spacing[3]} ${spacing[4]}`,
     border: `2px solid ${colors.border}`,
     borderRadius: borderRadius.md,
     fontSize: typography.fontSize.base,
-    fontFamily: typography.fontFamily.body,
-    transition: 'all 0.2s ease',
+    transition: "all 0.3s ease",
     marginBottom: spacing[4],
   };
 
   const labelStyles = {
-    display: 'block',
+    display: "block",
     marginBottom: spacing[2],
     color: colors.text.primary,
     fontSize: typography.fontSize.sm,
@@ -105,474 +83,238 @@ function Register() {
 
   return (
     <div style={containerStyles}>
-      {/* Left Panel */}
-      <div style={leftPanelStyles} className="hide-on-mobile">
-        <div
-          style={{
-            position: 'absolute',
-            top: '-100px',
-            right: '-100px',
-            width: '300px',
-            height: '300px',
-            borderRadius: borderRadius.full,
-            background: 'rgba(255, 255, 255, 0.1)',
-          }}
-        />
-
-        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: '500px' }}>
-          <div
-            style={{
-              width: '100px',
-              height: '100px',
-              margin: '0 auto',
-              marginBottom: spacing[6],
-              background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: borderRadius.xl,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
-            <img
-              src={logo}
-              alt="CAHCET Alumni"
-              style={{ width: 70, height: 70, borderRadius: borderRadius.full, objectFit: 'cover', boxShadow: shadows.sm }}
-            />
-          </div>
-
-          <h1
-            style={{
-              fontFamily: typography.fontFamily.display,
-              fontSize: typography.fontSize['4xl'],
-              fontWeight: typography.fontWeight.bold,
-              marginBottom: spacing[4],
-            }}
-          >
-            Join the CAHCET Alumni Network
-          </h1>
-          
-          <p style={{ fontSize: typography.fontSize.lg, opacity: 0.9, lineHeight: typography.lineHeight.relaxed }}>
-            Connect with fellow alumni, access exclusive job opportunities, and stay engaged with your alma mater
+      <div style={cardStyles}>
+        {/* Header */}
+        <div style={{ marginBottom: spacing[8], textAlign: "center" }}>
+          <h2 style={{ margin: 0, color: '#c2410c', marginBottom: spacing[2] }}>
+            Join CAHCET Alumni 🎓
+          </h2>
+          <p style={{ margin: 0, color: '#374151' }}>
+            Create your account and connect with alumni worldwide
           </p>
-
-          <div style={{ marginTop: spacing[12], textAlign: 'left' }}>
-            <div style={{ marginBottom: spacing[4], display: 'flex', alignItems: 'center', gap: spacing[3] }}>
-              <div style={{ fontSize: '2rem' }}>✓</div>
-              <div>
-                <div style={{ fontWeight: typography.fontWeight.semibold }}>Network with 5000+ Alumni</div>
-                <div style={{ fontSize: typography.fontSize.sm, opacity: 0.8 }}>Build valuable connections</div>
-              </div>
-            </div>
-            <div style={{ marginBottom: spacing[4], display: 'flex', alignItems: 'center', gap: spacing[3] }}>
-              <div style={{ fontSize: '2rem' }}>✓</div>
-              <div>
-                <div style={{ fontWeight: typography.fontWeight.semibold }}>Exclusive Job Opportunities</div>
-                <div style={{ fontSize: typography.fontSize.sm, opacity: 0.8 }}>Posted by alumni & partners</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3] }}>
-              <div style={{ fontSize: '2rem' }}>✓</div>
-              <div>
-                <div style={{ fontWeight: typography.fontWeight.semibold }}>Attend Alumni Events</div>
-                <div style={{ fontSize: typography.fontSize.sm, opacity: 0.8 }}>Networking & reunions</div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
 
-      {/* Right Panel - Registration Form */}
-      <div style={rightPanelStyles}>
-        <div style={formCardStyles}>
-          {/* Progress Indicator */}
-          <div style={{ marginBottom: spacing[8] }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: spacing[6] }}>
-              {progressSteps.map((s) => (
-                <div key={s.number} style={{ flex: 1, textAlign: 'center' }}>
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: borderRadius.full,
-                      background: step >= s.number ? colors.primary.main : colors.neutral[200],
-                      color: step >= s.number ? colors.text.inverse : colors.text.secondary,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: typography.fontWeight.bold,
-                      marginBottom: spacing[2],
-                      transition: 'all 0.3s ease',
-                    }}
-                  >
-                    {s.number}
-                  </div>
-                  <div style={{ fontSize: typography.fontSize.xs, color: colors.text.secondary }}>
-                    {s.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <h2
-              style={{
-                fontFamily: typography.fontFamily.heading,
-                fontSize: typography.fontSize['3xl'],
-                fontWeight: typography.fontWeight.bold,
-                color: colors.text.primary,
-                marginBottom: spacing[2],
-              }}
-            >
-              Create Your Account
-            </h2>
-            <p style={{ color: colors.text.secondary, fontSize: typography.fontSize.base }}>
-              {step === 1 && "Let's start with your basic information"}
-              {step === 2 && "Tell us more about your professional background"}
-              {step === 3 && "Review and complete your registration"}
-            </p>
-          </div>
-
-          {/* Step 1: Basic Info */}
-          {step === 1 && (
-            <div>
-              <div style={{ marginBottom: spacing[5] }}>
-                <label style={labelStyles}>Full Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={handleChange}
-                  style={inputStyles}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = colors.primary.main;
-                    e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = colors.border;
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  required
-                />
-              </div>
-
-              <div style={{ marginBottom: spacing[5] }}>
-                <label style={labelStyles}>Email Address *</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="your.email@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  style={inputStyles}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = colors.primary.main;
-                    e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = colors.border;
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  required
-                />
-              </div>
-
-              <div style={{ marginBottom: spacing[5] }}>
-                <label style={labelStyles}>Password *</label>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Create a strong password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  style={inputStyles}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = colors.primary.main;
-                    e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = colors.border;
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  required
-                />
-                <div style={{ fontSize: typography.fontSize.xs, color: colors.text.secondary }}>
-                  At least 8 characters with numbers and letters
-                </div>
-              </div>
-
-              <div style={{ marginBottom: spacing[6] }}>
-                <label style={labelStyles}>I am a *</label>
-                <div style={{ display: 'flex', gap: spacing[3] }}>
-                  <label
-                    style={{
-                      flex: 1,
-                      padding: spacing[4],
-                      border: `2px solid ${formData.role === 'alumni' ? colors.primary.main : colors.border}`,
-                      borderRadius: borderRadius.md,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      background: formData.role === 'alumni' ? colors.primary[50] : 'transparent',
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value="alumni"
-                      checked={formData.role === 'alumni'}
-                      onChange={handleChange}
-                      style={{ marginRight: spacing[2] }}
-                    />
-                    Alumni
-                  </label>
-                  <label
-                    style={{
-                      flex: 1,
-                      padding: spacing[4],
-                      border: `2px solid ${formData.role === 'student' ? colors.primary.main : colors.border}`,
-                      borderRadius: borderRadius.md,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      background: formData.role === 'student' ? colors.primary[50] : 'transparent',
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value="student"
-                      checked={formData.role === 'student'}
-                      onChange={handleChange}
-                      style={{ marginRight: spacing[2] }}
-                    />
-                    Student
-                  </label>
-                </div>
-              </div>
-
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
-                onClick={() => setStep(2)}
-              >
-                Continue →
-              </Button>
-            </div>
-          )}
-
-          {/* Step 2: Profile Info */}
-          {step === 2 && (
-            <div>
-              <div style={{ marginBottom: spacing[5] }}>
-                <label style={labelStyles}>Graduation Year *</label>
-                <input
-                  type="number"
-                  name="graduationYear"
-                  placeholder="2020"
-                  value={formData.graduationYear}
-                  onChange={handleChange}
-                  style={inputStyles}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = colors.primary.main;
-                    e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = colors.border;
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  required
-                />
-              </div>
-
-              <div style={{ marginBottom: spacing[5] }}>
-                <label style={labelStyles}>Department *</label>
-                <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  style={inputStyles}
-                  required
-                >
-                  <option value="">Select Department</option>
-                  <option value="CSE">Computer Science</option>
-                  <option value="ECE">Electronics</option>
-                  <option value="MECH">Mechanical</option>
-                  <option value="CIVIL">Civil</option>
-                  <option value="EEE">Electrical</option>
-                  <option value="IT">Information Technology</option>
-                </select>
-              </div>
-
-              {formData.role === 'alumni' && (
-                <>
-                  <div style={{ marginBottom: spacing[5] }}>
-                    <label style={labelStyles}>Current Company</label>
-                    <input
-                      type="text"
-                      name="currentCompany"
-                      placeholder="Google, Microsoft, etc."
-                      value={formData.currentCompany}
-                      onChange={handleChange}
-                      style={inputStyles}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = colors.primary.main;
-                        e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = colors.border;
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: spacing[6] }}>
-                    <label style={labelStyles}>LinkedIn Profile</label>
-                    <input
-                      type="url"
-                      name="linkedin"
-                      placeholder="https://linkedin.com/in/yourprofile"
-                      value={formData.linkedin}
-                      onChange={handleChange}
-                      style={inputStyles}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = colors.primary.main;
-                        e.target.style.boxShadow = `0 0 0 3px ${colors.primary[100]}`;
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = colors.border;
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    />
-                  </div>
-                </>
-              )}
-
-              <div style={{ display: 'flex', gap: spacing[3] }}>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => setStep(1)}
-                  style={{ flex: 1 }}
-                >
-                  ← Back
-                </Button>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => setStep(3)}
-                  style={{ flex: 1 }}
-                >
-                  Continue →
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Review & Submit */}
-          {step === 3 && (
-            <div>
-              <div
-                style={{
-                  background: colors.neutral[50],
-                  padding: spacing[6],
-                  borderRadius: borderRadius.lg,
-                  marginBottom: spacing[6],
-                }}
-              >
-                <h4 style={{ marginBottom: spacing[4], color: colors.text.primary }}>
-                  Review Your Information
-                </h4>
-                <div style={{ fontSize: typography.fontSize.sm, lineHeight: '2' }}>
-                  <div><strong>Name:</strong> {formData.name}</div>
-                  <div><strong>Email:</strong> {formData.email}</div>
-                  <div><strong>Role:</strong> <Badge variant="primary">{formData.role}</Badge></div>
-                  <div><strong>Graduation Year:</strong> {formData.graduationYear}</div>
-                  <div><strong>Department:</strong> {formData.department}</div>
-                  {formData.currentCompany && <div><strong>Company:</strong> {formData.currentCompany}</div>}
-                </div>
-              </div>
-
-              {message && (
+        {/* Progress Indicator */}
+        <div style={{ marginBottom: spacing[8] }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: spacing[4] }}>
+            {progressSteps.map((s) => (
+              <div key={s.number} style={{ flex: 1, textAlign: "center" }}>
                 <div
                   style={{
-                    marginBottom: spacing[6],
-                    padding: spacing[4],
-                    background: message.includes('successful') ? colors.success.bg : colors.error.bg,
-                    border: `1px solid ${message.includes('successful') ? colors.success.main : colors.error.main}`,
-                    borderRadius: borderRadius.md,
-                    color: message.includes('successful') ? colors.success.dark : colors.error.dark,
-                    fontSize: typography.fontSize.sm,
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: borderRadius.full,
+                    background: step >= s.number ? colors.secondary.main : colors.neutral[200],
+                    color: step >= s.number ? colors.text.inverse : '#9ca3af',
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: typography.fontWeight.bold,
+                    marginBottom: spacing[2],
                   }}
                 >
-                  {message}
+                  {step > s.number ? "✓" : s.number}
                 </div>
-              )}
-
-              <div style={{ display: 'flex', gap: spacing[3] }}>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => setStep(2)}
-                  style={{ flex: 1 }}
-                >
-                  ← Back
-                </Button>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  style={{ flex: 1 }}
-                >
-                  {loading ? "Registering..." : "Complete Registration"}
-                </Button>
+                <div style={{ fontSize: typography.fontSize.xs, fontWeight: typography.fontWeight.semibold }}>
+                  {s.label}
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* Login Link */}
-          <div style={{ textAlign: 'center', marginTop: spacing[8] }}>
-            <p style={{ color: colors.text.secondary, fontSize: typography.fontSize.base, margin: 0 }}>
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                style={{
-                  color: colors.primary.main,
-                  textDecoration: 'none',
-                  fontWeight: typography.fontWeight.semibold,
-                }}
-                onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
-                onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
-              >
-                Sign In
-              </Link>
-            </p>
+            ))}
           </div>
-
-          <div style={{ textAlign: 'center', marginTop: spacing[4] }}>
-            <Link
-              to="/"
+          <div
+            style={{
+              height: "4px",
+              background: colors.neutral[200],
+              borderRadius: borderRadius.full,
+              overflow: "hidden",
+            }}
+          >
+            <div
               style={{
-                color: colors.text.secondary,
-                fontSize: typography.fontSize.sm,
-                textDecoration: 'none',
+                height: "100%",
+                background: colors.gradients.secondary,
+                width: `${(step / 3) * 100}%`,
+                transition: "width 0.3s ease",
               }}
-              onMouseEnter={(e) => e.target.style.color = colors.primary.main}
-              onMouseLeave={(e) => e.target.style.color = colors.text.secondary}
-            >
-              ← Back to Home
-            </Link>
+            />
           </div>
         </div>
-      </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .hide-on-mobile {
-            display: none !important;
-          }
-        }
-      `}</style>
+        {/* Message */}
+        {message && (
+          <div
+            style={{
+              padding: spacing[3],
+              background: message.includes("✅") ? colors.success.bg : colors.error.bg,
+              color: message.includes("✅") ? colors.success.dark : colors.error.dark,
+              borderRadius: borderRadius.md,
+              marginBottom: spacing[4],
+              fontSize: typography.fontSize.sm,
+            }}
+          >
+            {message}
+          </div>
+        )}
+
+        {/* Form */}
+        {step === 1 && (
+          <div>
+            <label style={labelStyles}>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="John Doe"
+              value={formData.name}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <label style={labelStyles}>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <label style={labelStyles}>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <Button
+              fullWidth
+              size="lg"
+              variant="primary"
+              onClick={() => setStep(2)}
+            >
+              Continue to Profile
+            </Button>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div>
+            <label style={labelStyles}>Graduation Year</label>
+            <input
+              type="number"
+              name="graduationYear"
+              placeholder="2020"
+              value={formData.graduationYear}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <label style={labelStyles}>Department</label>
+            <select
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              style={inputStyles}
+            >
+              <option value="">Select Department</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Civil">Civil</option>
+            </select>
+
+            <label style={labelStyles}>Current Company (Optional)</label>
+            <input
+              type="text"
+              name="currentCompany"
+              placeholder="Company Name"
+              value={formData.currentCompany}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <div style={{ display: "flex", gap: spacing[4] }}>
+              <Button
+                fullWidth
+                size="lg"
+                variant="outline"
+                onClick={() => setStep(1)}
+              >
+                Back
+              </Button>
+              <Button
+                fullWidth
+                size="lg"
+                variant="primary"
+                onClick={() => setStep(3)}
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div>
+            <label style={labelStyles}>LinkedIn Profile (Optional)</label>
+            <input
+              type="url"
+              name="linkedin"
+              placeholder="https://linkedin.com/in/yourprofile"
+              value={formData.linkedin}
+              onChange={handleChange}
+              style={inputStyles}
+            />
+
+            <div
+              style={{
+                padding: spacing[4],
+                background: colors.primary[50],
+                borderRadius: borderRadius.md,
+                marginBottom: spacing[4],
+              }}
+            >
+              <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: '#374151' }}>
+                ✓ Name: <strong>{formData.name}</strong><br/>
+                ✓ Year: <strong>{formData.graduationYear}</strong><br/>
+                ✓ Dept: <strong>{formData.department}</strong>
+              </p>
+            </div>
+
+            <div style={{ display: "flex", gap: spacing[4] }}>
+              <Button
+                fullWidth
+                size="lg"
+                variant="outline"
+                onClick={() => setStep(2)}
+              >
+                Back
+              </Button>
+              <Button
+                fullWidth
+                size="lg"
+                variant="primary"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? "Creating Account..." : "Create Account"}
+              </Button>
+            </div>
+
+            <div style={{ textAlign: "center", paddingTop: spacing[4], borderTop: `1px solid ${colors.border}` }}>
+              <p style={{ color: '#374151', fontSize: typography.fontSize.sm, margin: spacing[2] }}>
+                Already have an account?{" "}
+                <Link to="/login" style={{ color: '#1e3a8a', fontWeight: typography.fontWeight.semibold }}>
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

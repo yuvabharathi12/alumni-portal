@@ -13,6 +13,8 @@ const Button = ({
   className = '',
   ...props 
 }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
   const baseStyles = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -51,7 +53,7 @@ const Button = ({
       boxShadow: shadows.md,
     },
     secondary: {
-      background: colors.secondary.main,
+      background: colors.gradients.secondary,
       color: colors.text.inverse,
       boxShadow: shadows.md,
     },
@@ -80,50 +82,51 @@ const Button = ({
 
   const hoverStyles = {
     primary: {
-      transform: 'translateY(-2px)',
-      boxShadow: shadows.lg,
+      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+      boxShadow: isHovered ? shadows.xl : shadows.md,
     },
     secondary: {
-      transform: 'translateY(-2px)',
-      boxShadow: shadows.lg,
+      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+      boxShadow: isHovered ? shadows.xl : shadows.md,
     },
     outline: {
-      background: colors.primary[50],
+      background: isHovered ? colors.primary[50] : 'transparent',
+      borderColor: isHovered ? colors.primary[700] : colors.primary.main,
+      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
     },
     ghost: {
-      background: colors.primary[50],
+      background: isHovered ? colors.primary[50] : 'transparent',
+      transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
     },
     danger: {
-      transform: 'translateY(-2px)',
-      boxShadow: shadows.lg,
+      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+      boxShadow: isHovered ? shadows.xl : shadows.md,
     },
     success: {
-      transform: 'translateY(-2px)',
-      boxShadow: shadows.lg,
+      transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
+      boxShadow: isHovered ? shadows.xl : shadows.md,
     },
   };
 
-  const [isHovered, setIsHovered] = React.useState(false);
-
-  const combinedStyles = {
+  const buttonStyles = {
     ...baseStyles,
     ...sizeStyles[size],
     ...variantStyles[variant],
-    ...(isHovered && !disabled ? hoverStyles[variant] : {}),
+    ...(isHovered && hoverStyles[variant]),
   };
 
   return (
     <button
       type={type}
+      className={className}
+      style={buttonStyles}
       onClick={onClick}
       disabled={disabled}
-      className={className}
-      style={combinedStyles}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       {...props}
     >
-      {icon && <span style={{ display: 'flex', alignItems: 'center' }}>{icon}</span>}
+      {icon && <span>{icon}</span>}
       {children}
     </button>
   );

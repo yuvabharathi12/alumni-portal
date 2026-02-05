@@ -1,272 +1,91 @@
 import { useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
+import Button from "../components/Button";
+import Footer from "../components/Footer";
 
 function AdminBulkUpload() {
-  const [users, setUsers] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadResult, setUploadResult] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
 
-  // Parse CSV file
-  const parseCSV = (csvText) => {
-    const lines = csvText.trim().split("\n");
-    const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
-    const data = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",").map((v) => v.trim());
-      const user = {};
-
-      headers.forEach((header, index) => {
-        user[header] = values[index];
-      });
-
-      // Only add if it has at least email
-      if (user.email) {
-        data.push(user);
-      }
-    }
-
-    return data;
-  };
-
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setUploadResult(null);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const csv = event.target.result;
-        const parsedUsers = parseCSV(csv);
-        setUsers(parsedUsers);
-      };
-      reader.readAsText(selectedFile);
-    }
+    setFile(e.target.files[0]);
   };
 
-  const handleBulkUpload = async () => {
-    if (users.length === 0) {
-      alert("Please select a CSV file with users");
+  const handleUpload = async () => {
+    if (!file) {
+      setMessage("❌ Please select a file");
       return;
     }
 
-    setUploading(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/admin/bulk-upload",
-        { users },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    const formDataToSend = new FormData();
+    formDataToSend.append("file", file);
 
-      setUploadResult(response.data.results);
-      setUsers([]);
-      alert(
-        `Upload completed: ${response.data.results.success.length} succeeded, ${response.data.results.failed.length} failed`
-      );
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/api/admin/bulk-upload", formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setMessage(`✅ ${res.data.message}`);
+      setFile(null);
     } catch (err) {
-      console.error(err);
-      alert("Bulk upload failed: " + (err.response?.data?.message || err.message));
+      setMessage("❌ Upload failed. Please check CSV format.");
     } finally {
-      setUploading(false);
+      setLoading(false);
     }
   };
 
-  const downloadTemplate = () => {
-    const csv = "name,email,password,role\nJohn Doe,john@example.com,password123,alumni\nJane Smith,jane@example.com,password456,alumni";
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "user-template.csv";
-    a.click();
-  };
+  const containerStyles = { maxWidth: "800px", margin: "0 auto", padding: `${spacing[8]} ${spacing[6]}`, marginTop: "80px" };
 
   return (
-    <div>
-      <Navbar />
-
-      <div style={{ padding: "20px", maxWidth: "900px", margin: "0 auto" }}>
-        <h2>Bulk User Upload</h2>
-
-        {/* Instructions */}
-        <div
-          style={{
-            backgroundColor: "#e8f4f8",
-            padding: "15px",
-            borderRadius: "5px",
-            marginBottom: "20px",
-          }}
-        >
-          <h3>Instructions:</h3>
-          <ol>
-            <li>Download the CSV template below</li>
-            <li>Fill in user details: name, email, password, role</li>
-            <li>Upload the CSV file</li>
-            <li>Review the preview and submit</li>
-          </ol>
-          <button
-            onClick={downloadTemplate}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Download CSV Template
-          </button>
+    <div style={{ background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`, minHeight: "100vh" }}>
+      <div style={containerStyles}>
+        <div style={{ background: colors.gradients.secondary, color: "white", padding: spacing[8], borderRadius: borderRadius.xl, marginBottom: spacing[8] }}>
+          <h1 style={{ margin: 0, fontSize: typography.fontSize['3xl'], fontWeight: 800 }}>Bulk Upload 📤</h1>
         </div>
 
-        {/* File Upload */}
-        <div style={{ marginBottom: "20px" }}>
-          <label style={{ display: "block", marginBottom: "10px" }}>
-            <strong>Select CSV File:</strong>
-          </label>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            style={{
-              padding: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "5px",
-              width: "100%",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        {/* Preview */}
-        {users.length > 0 && (
-          <div style={{ marginBottom: "20px" }}>
-            <button
-              onClick={() => setShowPreview(!showPreview)}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#6c757d",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              {showPreview ? "Hide" : "Show"} Preview ({users.length} users)
-            </button>
-
-            {showPreview && (
-              <div style={{ marginTop: "15px", overflowX: "auto" }}>
-                <table
-                  border="1"
-                  cellPadding="10"
-                  style={{ width: "100%", borderCollapse: "collapse" }}
-                >
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.slice(0, 20).map((user, idx) => (
-                      <tr key={idx}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>{user.role || "alumni"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {users.length > 20 && (
-                  <p style={{ marginTop: "10px", color: "#666" }}>
-                    ... and {users.length - 20} more users
-                  </p>
-                )}
-              </div>
-            )}
+        {message && (
+          <div style={{ padding: spacing[4], background: message.includes("✅") ? colors.success.bg : colors.error.bg, color: message.includes("✅") ? colors.success.dark : colors.error.dark, borderRadius: borderRadius.md, marginBottom: spacing[6] }}>
+            {message}
           </div>
         )}
 
-        {/* Upload Button */}
-        {users.length > 0 && (
-          <button
-            onClick={handleBulkUpload}
-            disabled={uploading}
-            style={{
-              padding: "12px 30px",
-              backgroundColor: uploading ? "#ccc" : "#28a745",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: uploading ? "not-allowed" : "pointer",
-              fontSize: "16px",
-              marginBottom: "20px",
-            }}
-          >
-            {uploading ? "Uploading..." : "Upload Users"}
-          </button>
-        )}
-
-        {/* Results */}
-        {uploadResult && (
-          <div
-            style={{
-              backgroundColor: "#f8f9fa",
-              padding: "20px",
-              borderRadius: "5px",
-              border: "1px solid #dee2e6",
-            }}
-          >
-            <h3>Upload Results</h3>
-
-            {uploadResult.success.length > 0 && (
-              <div style={{ marginBottom: "15px" }}>
-                <h4 style={{ color: "green" }}>
-                  ✓ Successfully Added ({uploadResult.success.length})
-                </h4>
-                <ul>
-                  {uploadResult.success.slice(0, 10).map((u, idx) => (
-                    <li key={idx}>
-                      {u.name} ({u.email})
-                    </li>
-                  ))}
-                </ul>
-                {uploadResult.success.length > 10 && (
-                  <p>... and {uploadResult.success.length - 10} more</p>
-                )}
-              </div>
-            )}
-
-            {uploadResult.failed.length > 0 && (
-              <div>
-                <h4 style={{ color: "red" }}>
-                  ✗ Failed ({uploadResult.failed.length})
-                </h4>
-                <ul>
-                  {uploadResult.failed.slice(0, 10).map((u, idx) => (
-                    <li key={idx}>
-                      {u.email}: {u.reason}
-                    </li>
-                  ))}
-                </ul>
-                {uploadResult.failed.length > 10 && (
-                  <p>... and {uploadResult.failed.length - 10} more</p>
-                )}
-              </div>
-            )}
+        <div style={{ background: colors.background.paper, borderRadius: borderRadius.xl, padding: spacing[8], boxShadow: shadows.lg }}>
+          <div style={{ marginBottom: spacing[6], padding: spacing[8], background: colors.primary[50], borderRadius: borderRadius.lg, border: `2px dashed #1e3a8a`, textAlign: "center" }}>
+            <div style={{ fontSize: "48px", marginBottom: spacing[4] }}>📁</div>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              style={{ width: "100%", padding: spacing[4], cursor: "pointer" }}
+            />
+            <p style={{ color: '#374151', margin: `${spacing[2]} 0 0 0` }}>
+              {file ? `Selected: ${file.name}` : "Drag and drop CSV file or click to select"}
+            </p>
           </div>
-        )}
+
+          <div style={{ background: colors.secondary[50], padding: spacing[6], borderRadius: borderRadius.lg, marginBottom: spacing[6] }}>
+            <h3 style={{ margin: `0 0 ${spacing[4]} 0`, color: '#c2410c', fontSize: typography.fontSize.lg, fontWeight: 700 }}>CSV Format Requirements:</h3>
+            <ul style={{ margin: 0, paddingLeft: spacing[6], color: '#374151', lineHeight: 1.8 }}>
+              <li>Column 1: Name</li>
+              <li>Column 2: Email</li>
+              <li>Column 3: Department</li>
+              <li>Column 4: Batch Year</li>
+              <li>Column 5: Company (Optional)</li>
+            </ul>
+          </div>
+
+          <Button variant="primary" fullWidth size="lg" onClick={handleUpload} disabled={loading || !file}>
+            {loading ? "Uploading..." : "Upload CSV"}
+          </Button>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

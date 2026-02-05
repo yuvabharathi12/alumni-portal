@@ -41,7 +41,6 @@ const Navbar = () => {
 
   const isHome = location.pathname === '/';
   const navbarBgTransparent = isHome && !isScrolled;
-  const navbarTextLight = navbarBgTransparent;
 
   const navbarStyles = {
     position: 'fixed',
@@ -49,14 +48,17 @@ const Navbar = () => {
     left: 0,
     right: 0,
     zIndex: zIndex.fixed,
-    background: navbarBgTransparent ? 'transparent' : colors.gradients.primary,
-    boxShadow: isScrolled ? shadows.md : 'none',
-    transition: 'background 0.3s ease, box-shadow 0.3s ease',
-    borderBottom: navbarBgTransparent ? 'none' : `1px solid ${colors.border}`,
+    background: navbarBgTransparent 
+      ? 'rgba(255, 255, 255, 0.05)' 
+      : colors.gradients.primary,
+    boxShadow: isScrolled ? shadows.xl : 'none',
+    transition: 'all 0.3s ease',
+    borderBottom: navbarBgTransparent ? 'none' : `1px solid ${colors.primary[100]}`,
+    backdropFilter: 'blur(10px)',
   };
 
   const containerStyles = {
-    maxWidth: '1280px',
+    maxWidth: '1400px',
     margin: '0 auto',
     padding: `0 ${spacing[6]}`,
     display: 'flex',
@@ -69,12 +71,17 @@ const Navbar = () => {
     fontFamily: typography.fontFamily.display,
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: navbarTextLight ? colors.text.inverse : colors.text.inverse,
+    background: 'linear-gradient(135deg, #15803d 0%, #059669 100%)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: navbarBgTransparent ? '#15803d' : 'white',
+    background: navbarBgTransparent ? 'none' : colors.gradients.primary,
+    color: navbarBgTransparent ? '#15803d' : 'white',
     textDecoration: 'none',
     display: 'flex',
     alignItems: 'center',
     gap: spacing[2],
-    transition: 'color 0.3s ease',
+    transition: 'all 0.3s ease',
   };
 
   const navLinksStyles = {
@@ -87,18 +94,14 @@ const Navbar = () => {
   };
 
   const linkStyles = {
-    color: navbarTextLight ? colors.text.inverse : colors.text.inverse,
+    color: navbarBgTransparent ? '#1f2937' : colors.text.inverse,
     textDecoration: 'none',
     fontWeight: typography.fontWeight.medium,
     fontSize: typography.fontSize.base,
-    transition: 'color 0.2s ease',
+    transition: 'all 0.2s ease',
     padding: `${spacing[2]} ${spacing[3]}`,
     borderRadius: borderRadius.md,
     position: 'relative',
-  };
-
-  const activeLinkStyles = {
-    color: colors.secondary.light,
   };
 
   const userMenuStyles = {
@@ -106,10 +109,10 @@ const Navbar = () => {
   };
 
   const avatarStyles = {
-    width: '40px',
-    height: '40px',
+    width: '44px',
+    height: '44px',
     borderRadius: borderRadius.full,
-    background: colors.gradients.primary,
+    background: colors.gradients.secondary,
     color: colors.text.inverse,
     display: 'flex',
     alignItems: 'center',
@@ -117,6 +120,8 @@ const Navbar = () => {
     fontWeight: typography.fontWeight.bold,
     cursor: 'pointer',
     fontSize: typography.fontSize.sm,
+    boxShadow: shadows.md,
+    transition: 'all 0.3s ease',
   };
 
   const dropdownStyles = {
@@ -126,252 +131,83 @@ const Navbar = () => {
     background: colors.background.paper,
     borderRadius: borderRadius.lg,
     boxShadow: shadows.xl,
-    minWidth: '200px',
+    minWidth: '220px',
     padding: spacing[2],
     zIndex: zIndex.dropdown,
     opacity: userMenuOpen ? 1 : 0,
     visibility: userMenuOpen ? 'visible' : 'hidden',
     transform: userMenuOpen ? 'translateY(0)' : 'translateY(-10px)',
     transition: 'all 0.2s ease',
+    border: `1px solid ${colors.border}`,
   };
 
   const dropdownItemStyles = {
     padding: `${spacing[2]} ${spacing[4]}`,
     borderRadius: borderRadius.md,
     cursor: 'pointer',
-    transition: 'background 0.2s ease',
+    transition: 'all 0.2s ease',
     fontSize: typography.fontSize.sm,
     color: colors.text.primary,
     textDecoration: 'none',
     display: 'block',
   };
 
-  const mobileMenuStyles = {
-    position: 'fixed',
-    top: '80px',
-    left: 0,
-    right: 0,
-    background: colors.background.paper,
-    boxShadow: shadows.xl,
-    padding: spacing[6],
-    transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
-    opacity: isMobileMenuOpen ? 1 : 0,
-    visibility: isMobileMenuOpen ? 'visible' : 'hidden',
-    transition: 'all 0.3s ease',
-    zIndex: zIndex.dropdown,
-  };
-
-  const mobileMenuItemStyles = {
-    padding: `${spacing[3]} 0`,
-    borderBottom: `1px solid ${colors.border}`,
-  };
-
-  const hamburgerStyles = {
-    display: 'none',
-    flexDirection: 'column',
-    gap: '6px',
-    cursor: 'pointer',
-    padding: spacing[2],
-  };
-
-  const hamburgerLineStyles = {
-    width: '24px',
-    height: '2px',
-    background: colors.text.inverse,
-    borderRadius: '2px',
-    transition: 'all 0.3s ease',
-  };
-
-  const navLinks = role === 'admin'
-    ? [
-        { path: '/dashboard', label: 'Dashboard' },
-        { path: '/admin/approvals', label: 'Approvals' },
-        { path: '/alumni/directory', label: 'Directory' },
-        { path: '/events', label: 'Events' },
-        { path: '/jobs', label: 'Jobs' },
-      ]
-    : role === 'student'
-    ? [
-        { path: '/dashboard', label: 'Dashboard' },
-        { path: '/alumni/directory', label: 'Directory' },
-        { path: '/events', label: 'Events' },
-        { path: '/jobs', label: 'Jobs' },
-      ]
-    : [
-        { path: '/', label: 'Home' },
-        { path: '/events', label: 'Events' },
-        { path: '/jobs', label: 'Jobs' },
-      ];
-
   return (
     <nav style={navbarStyles}>
       <div style={containerStyles}>
         {/* Logo */}
         <Link to="/" style={logoStyles}>
-          <img
-            src={logo}
-            alt="CAHCET Alumni Logo"
-            style={{
-              height: '40px',
-              width: '40px',
-              borderRadius: borderRadius.full,
-              objectFit: 'cover',
-              boxShadow: shadows.sm,
-            }}
-          />
-          <span>CAHCET Alumni</span>
+          {logo && <img src={logo} alt="CAHCET" style={{ width: 32, height: 32, borderRadius: borderRadius.full }} />}
+          <span>CAHCET</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <ul style={{ ...navLinksStyles, '@media (max-width: 768px)': { display: 'none' } }}>
-          {navLinks.map((link) => (
-            <li key={link.path}>
-              <Link
-                to={link.path}
-                style={{
-                  ...linkStyles,
-                  ...(location.pathname === link.path ? activeLinkStyles : {}),
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(30, 125, 88, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'transparent';
-                }}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {/* User Menu / Auth Actions */}
-        {token ? (
-          <div style={userMenuStyles}>
-            <div
-              style={avatarStyles}
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
-            >
-              {userName.charAt(0).toUpperCase()}
-            </div>
-
-            {/* Dropdown */}
-            <div style={dropdownStyles}>
-              <Link
-                to="/alumni/profile"
-                style={dropdownItemStyles}
-                onMouseEnter={(e) => (e.target.style.background = colors.neutral[100])}
-                onMouseLeave={(e) => (e.target.style.background = 'transparent')}
-              >
-                👤 My Profile
-              </Link>
-              {role === 'admin' && (
-                <>
-                  <Link
-                    to="/admin/bulk-upload"
-                    style={dropdownItemStyles}
-                    onMouseEnter={(e) => (e.target.style.background = colors.neutral[100])}
-                    onMouseLeave={(e) => (e.target.style.background = 'transparent')}
-                  >
-                    📤 Bulk Upload
-                  </Link>
-                  <Link
-                    to="/admin/carousel"
-                    style={dropdownItemStyles}
-                    onMouseEnter={(e) => (e.target.style.background = colors.neutral[100])}
-                    onMouseLeave={(e) => (e.target.style.background = 'transparent')}
-                  >
-                    🖼️ Manage Carousel
-                  </Link>
-                  <Link
-                    to="/admin/users"
-                    style={dropdownItemStyles}
-                    onMouseEnter={(e) => (e.target.style.background = colors.neutral[100])}
-                    onMouseLeave={(e) => (e.target.style.background = 'transparent')}
-                  >
-                    👥 Manage Users
-                  </Link>
-                </>
-              )}
-              <div
-                style={{
-                  height: '1px',
-                  background: colors.border,
-                  margin: `${spacing[2]} 0`,
-                }}
-              />
-              <div
-                onClick={handleLogout}
-                style={{
-                  ...dropdownItemStyles,
-                  color: colors.error.main,
-                }}
-                onMouseEnter={(e) => (e.target.style.background = colors.error.bg)}
-                onMouseLeave={(e) => (e.target.style.background = 'transparent')}
-              >
-                🚪 Logout
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: spacing[3] }}>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/login')}
-            >
-              Login
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => navigate('/register')}
-            >
-              Register
-            </Button>
-          </div>
+        {/* Nav Links */}
+        {!isMobileMenuOpen && (
+          <ul style={navLinksStyles}>
+            <li><Link to="/" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Home</Link></li>
+            {token && (
+              <>
+                <li><Link to="/dashboard" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Dashboard</Link></li>
+                <li><Link to="/alumni-directory" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Alumni</Link></li>
+                <li><Link to="/events" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Events</Link></li>
+                <li><Link to="/jobs" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Jobs</Link></li>
+              </>
+            )}
+          </ul>
         )}
 
-        {/* Mobile Menu Toggle */}
-        <div
-          style={hamburgerStyles}
-          className="mobile-menu-toggle"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          <div style={hamburgerLineStyles} />
-          <div style={hamburgerLineStyles} />
-          <div style={hamburgerLineStyles} />
+        {/* Auth Section */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[4] }}>
+          {!token ? (
+            <>
+              <Link to="/login" style={{ ...linkStyles, color: navbarBgTransparent ? '#1f2937' : 'white' }}>Login</Link>
+              <Button variant="secondary" size="sm" onClick={() => navigate('/register')}>Sign Up</Button>
+            </>
+          ) : (
+            <div style={userMenuStyles}>
+              <div
+                style={avatarStyles}
+                onMouseEnter={() => setUserMenuOpen(true)}
+                onMouseLeave={() => setUserMenuOpen(false)}
+              >
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <div
+                style={dropdownStyles}
+                onMouseEnter={() => setUserMenuOpen(true)}
+                onMouseLeave={() => setUserMenuOpen(false)}
+              >
+                <div style={{ padding: spacing[2], borderBottom: `1px solid ${colors.border}`, marginBottom: spacing[2] }}>
+                  <p style={{ margin: 0, fontWeight: 600, color: colors.text.primary }}>{userName}</p>
+                  <p style={{ margin: 0, fontSize: typography.fontSize.xs, color: colors.text.secondary }}>{role}</p>
+                </div>
+                <Link to="/profile" style={{ ...dropdownItemStyles, display: 'block' }} onMouseEnter={(e) => e.target.style.background = colors.primary[50]} onMouseLeave={(e) => e.target.style.background = 'transparent'}>👤 Profile</Link>
+                <div style={{ ...dropdownItemStyles, display: 'block', borderTop: `1px solid ${colors.border}`, marginTop: spacing[2], paddingTop: spacing[2] }} onClick={handleLogout} onMouseEnter={(e) => e.target.style.background = colors.error.bg} onMouseLeave={(e) => e.target.style.background = 'transparent'}>🚪 Logout</div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <div style={mobileMenuStyles}>
-        {navLinks.map((link) => (
-          <div key={link.path} style={mobileMenuItemStyles}>
-            <Link
-              to={link.path}
-              style={{
-                ...linkStyles,
-                color: colors.text.primary,
-                display: 'block',
-              }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile Menu Styles */}
-      <style>{`
-        @media (max-width: 768px) {
-          .mobile-menu-toggle {
-            display: flex !important;
-          }
-          nav ul {
-            display: none !important;
-          }
-        }
-      `}</style>
     </nav>
   );
 };

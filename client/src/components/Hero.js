@@ -23,6 +23,7 @@ const Hero = ({
     justifyContent: centered ? 'center' : 'flex-start',
     overflow: 'hidden',
     marginBottom: spacing[12],
+    marginTop: '80px',
   };
 
   const backgroundStyles = {
@@ -35,6 +36,7 @@ const Hero = ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
   };
 
   const overlayStyles = {
@@ -62,7 +64,8 @@ const Hero = ({
     fontWeight: typography.fontWeight.bold,
     marginBottom: spacing[4],
     lineHeight: typography.lineHeight.tight,
-    textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+    textShadow: '0 4px 16px rgba(0,0,0,0.3)',
+    color: 'white',
   };
 
   const subtitleStyles = {
@@ -74,6 +77,7 @@ const Hero = ({
     margin: centered ? '0 auto' : '0',
     marginBottom: spacing[8],
     lineHeight: typography.lineHeight.relaxed,
+    color: 'rgba(255, 255, 255, 0.95)',
   };
 
   const buttonGroupStyles = {
@@ -99,29 +103,21 @@ const Hero = ({
         {(primaryButton || secondaryButton) && (
           <div style={buttonGroupStyles}>
             {primaryButton && (
-              <Button
-                variant="secondary"
+              <Button 
+                variant="secondary" 
                 size="lg"
                 onClick={primaryButton.onClick}
-                icon={primaryButton.icon}
               >
-                {primaryButton.text}
+                {primaryButton.label}
               </Button>
             )}
             {secondaryButton && (
-              <Button
-                variant="outline"
+              <Button 
+                variant="outline" 
                 size="lg"
                 onClick={secondaryButton.onClick}
-                icon={secondaryButton.icon}
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  borderColor: colors.text.inverse,
-                  color: colors.text.inverse,
-                  backdropFilter: 'blur(10px)',
-                }}
               >
-                {secondaryButton.text}
+                {secondaryButton.label}
               </Button>
             )}
           </div>
@@ -129,19 +125,6 @@ const Hero = ({
         
         {children}
       </div>
-
-      {/* Decorative Elements */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '100px',
-          background: 'linear-gradient(180deg, transparent 0%, rgba(250, 250, 250, 0.3) 50%, rgba(250, 250, 250, 1) 100%)',
-          pointerEvents: 'none',
-        }}
-      />
     </div>
   );
 };
