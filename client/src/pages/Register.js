@@ -1,319 +1,219 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
+import "../styles/global.css";
+import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
+import logo from "../assets/logo.png";
 
 function Register() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "alumni",
-    graduationYear: "",
-    department: "",
-    currentCompany: "",
-    linkedin: "",
-  });
+  const [currentStep, setCurrentStep] = useState(1);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("alumni");
+  const [phone, setPhone] = useState("");
+  const [graduationYear, setGraduationYear] = useState("");
+  const [department, setDepartment] = useState("");
+  const [city, setCity] = useState("");
+  const [bio, setBio] = useState("");
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
-  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleNextStep = () => {
+    if (currentStep === 1) {
+      if (!name.trim()) {
+        setMessage("Please enter your full name");
+        return;
+      }
+      if (!email.trim()) {
+        setMessage("Please enter your email");
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setMessage("Please enter a valid email");
+        return;
+      }
+    }
+    if (currentStep === 2) {
+      if (!phone.trim()) {
+        setMessage("Please enter your phone number");
+        return;
+      }
+      if (!graduationYear) {
+        setMessage("Please select your graduation year");
+        return;
+      }
+      if (!department.trim()) {
+        setMessage("Please select your department");
+        return;
+      }
+    }
+    setMessage("");
+    setCurrentStep(currentStep + 1);
   };
 
-  const handleSubmit = async () => {
+  const handlePrevStep = () => {
+    setMessage("");
+    setCurrentStep(currentStep - 1);
+  };
+
+  const handleRegister = async () => {
+    if (!password.trim()) {
+      setMessage("Please enter your password");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("Password must be at least 6 characters");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
     setMessage("");
     try {
-      await axios.post("http://localhost:5000/api/auth/register", formData);
-      setMessage("✅ Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000);
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
+        name,
+        email,
+        password,
+        role,
+        phone,
+        graduationYear,
+        department,
+        city,
+        bio,
+      });
+      setMessage(res.data.message);
+      setSuccess(true);
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
     } catch (error) {
-      setMessage("❌ " + (error.response?.data?.message || "Registration failed"));
+      setMessage(error.response?.data?.message || "Registration failed");
+      setSuccess(false);
     } finally {
       setLoading(false);
     }
   };
 
-  const containerStyles = {
-    minHeight: "100vh",
-    display: "flex",
-    background: `linear-gradient(135deg, ${colors.secondary[50]} 0%, ${colors.primary[50]} 100%)`,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: spacing[4],
-  };
-
-  const cardStyles = {
-    width: "100%",
-    maxWidth: "520px",
-    background: colors.background.paper,
-    padding: spacing[10],
-    borderRadius: borderRadius.xl,
-    boxShadow: shadows.xl,
-    border: `1px solid ${colors.border}`,
-  };
-
-  const inputStyles = {
-    width: "100%",
-    padding: `${spacing[3]} ${spacing[4]}`,
-    border: `2px solid ${colors.border}`,
-    borderRadius: borderRadius.md,
-    fontSize: typography.fontSize.base,
-    transition: "all 0.3s ease",
-    marginBottom: spacing[4],
-  };
-
-  const labelStyles = {
-    display: "block",
-    marginBottom: spacing[2],
-    color: colors.text.primary,
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.semibold,
-  };
-
-  const progressSteps = [
-    { number: 1, label: "Account" },
-    { number: 2, label: "Profile" },
-    { number: 3, label: "Complete" },
-  ];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
+  const departments = ["Computer Science", "Electronics and communication", "AI/DS", "Information Technology", "Mechanical", "AI/ML", "Civil", "EEE"];
 
   return (
-    <div style={containerStyles}>
-      <div style={cardStyles}>
-        {/* Header */}
-        <div style={{ marginBottom: spacing[8], textAlign: "center" }}>
-          <h2 style={{ margin: 0, color: '#c2410c', marginBottom: spacing[2] }}>
-            Join CAHCET Alumni 🎓
-          </h2>
-          <p style={{ margin: 0, color: '#374151' }}>
-            Create your account and connect with alumni worldwide
-          </p>
+    <div style={{ minHeight: '100vh', background: "transparent", display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div style={{ width: '100%', maxWidth: 1200, display: 'flex', gap: 0, alignItems: 'stretch', borderRadius: 16, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+        {/* Left image section */}
+        <div style={{ flex: 1, backgroundImage: 'url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=700&fit=crop)', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 40, position: 'relative' }} className="auth-visual">
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(135deg, rgba(45,157,106,0.85) 0%, rgba(52,211,153,0.75) 100%)', zIndex: 1 }}></div>
+          <div style={{ position: 'relative', zIndex: 2, color: colors.white }}>
+            <h2 style={{ fontSize: 28, fontWeight: 700, margin: '0 0 16px 0' }}>Join Our Community</h2>
+            <p style={{ marginTop: 0, color: 'rgba(255,255,255,0.95)', fontSize: 15, lineHeight: 1.6 }}>Create your profile, connect with alumni, discover opportunities, and build lasting relationships.</p>
+          </div>
         </div>
 
-        {/* Progress Indicator */}
-        <div style={{ marginBottom: spacing[8] }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: spacing[4] }}>
-            {progressSteps.map((s) => (
-              <div key={s.number} style={{ flex: 1, textAlign: "center" }}>
-                <div
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: borderRadius.full,
-                    background: step >= s.number ? colors.secondary.main : colors.neutral[200],
-                    color: step >= s.number ? colors.text.inverse : '#9ca3af',
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: typography.fontWeight.bold,
-                    marginBottom: spacing[2],
-                  }}
-                >
-                  {step > s.number ? "✓" : s.number}
-                </div>
-                <div style={{ fontSize: typography.fontSize.xs, fontWeight: typography.fontWeight.semibold }}>
-                  {s.label}
-                </div>
+        {/* Right form card */}
+        <div style={{ flex: '0 0 480px', background: colors.white, padding: 32, overflowY: 'auto', maxHeight: '100vh' }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{ width: 70, height: 70, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+              <img src={logo} alt="CAHCET Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+            <h2 style={{ margin: '12px 0 4px 0', color: colors.heading, fontSize: 26, fontWeight: 700 }}>CAHCET</h2>
+            <p style={{ margin: '8px 0 0 0', color: colors.primary, fontSize: 16, fontWeight: 600 }}>Alumni Portal</p>
+          </div>
+
+          {/* Progress Indicator */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 28, gap: 8 }}>
+            {[1, 2, 3].map((step) => (
+              <div key={step} style={{ flex: 1 }}>
+                <div style={{ height: 6, background: currentStep >= step ? colors.primary : colors.border, borderRadius: 3, transition: 'background 0.3s ease' }} />
+                <p style={{ textAlign: 'center', marginTop: 6, fontSize: 11, color: currentStep >= step ? colors.primary : colors.textSecondary, fontWeight: currentStep === step ? 600 : 400 }}>Step {step}</p>
               </div>
             ))}
           </div>
-          <div
-            style={{
-              height: "4px",
-              background: colors.neutral[200],
-              borderRadius: borderRadius.full,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                background: colors.gradients.secondary,
-                width: `${(step / 3) * 100}%`,
-                transition: "width 0.3s ease",
-              }}
-            />
+
+          <div>
+            {/* Step 1: Basic Info */}
+            {currentStep === 1 && (
+              <>
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>I am a</label>
+                <select value={role} onChange={(e) => setRole(e.target.value)} style={{ ...styles.input, outline: 'none', cursor: 'pointer', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)}>
+                  <option value="alumni">Alumni</option>
+                  <option value="student">Current Student</option>
+                </select>
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Full name</label>
+                <input type="text" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Email</label>
+                <input type="email" placeholder="your.email@example.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 18 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+              </>
+            )}
+
+            {/* Step 2: Profile Details */}
+            {currentStep === 2 && (
+              <>
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Phone number</label>
+                <input type="tel" placeholder="+1 (555) 000-0000" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Graduation year</label>
+                <select value={graduationYear} onChange={(e) => setGraduationYear(e.target.value)} style={{ ...styles.input, outline: 'none', cursor: 'pointer', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)}>
+                  <option value="">Select year</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Department</label>
+                <select value={department} onChange={(e) => setDepartment(e.target.value)} style={{ ...styles.input, outline: 'none', cursor: 'pointer', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)}>
+                  <option value="">Select department</option>
+                  {departments.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>City (optional)</label>
+                <input type="text" placeholder="New York" value={city} onChange={(e) => setCity(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 18 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+              </>
+            )}
+
+            {/* Step 3: Account Security */}
+            {currentStep === 3 && (
+              <>
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Bio</label>
+                <textarea placeholder="Tell us about yourself (max 100 characters)" value={bio} onChange={(e) => setBio(e.target.value.slice(0, 100))} style={{ ...styles.input, outline: 'none', marginBottom: 6, resize: 'none', height: 80 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+                <p style={{ fontSize: 12, color: colors.textSecondary, margin: '0 0 12px 0', textAlign: 'right' }}>{bio.length}/100</p>
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Password</label>
+                <input type="password" placeholder="Create a password (min 6 chars)" value={password} onChange={(e) => setPassword(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 12 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+
+                <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Confirm password</label>
+                <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} style={{ ...styles.input, outline: 'none', marginBottom: 18 }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
+              </>
+            )}
+
+            {message && (<div style={{ marginTop: 14, padding: 12, background: success ? '#d4edda' : '#fff3cd', border: `1px solid ${success ? '#28a745' : '#ffc107'}`, borderRadius: 8, color: success ? '#155724' : '#856404', fontSize: 14, marginBottom: 14 }}>{message}</div>)}
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', gap: 12 }}>
+              {currentStep > 1 && (
+                <Button onClick={handlePrevStep} fullWidth variant="outline">Back</Button>
+              )}
+              {currentStep < 3 ? (
+                <Button onClick={handleNextStep} fullWidth>Next</Button>
+              ) : (
+                <Button onClick={handleRegister} disabled={loading} fullWidth>{loading ? 'Creating...' : 'Create Account'}</Button>
+              )}
+            </div>
+
+            <div style={{ marginTop: 18, textAlign: 'center', fontSize: 14, color: colors.textLight }}>Already have an account? <Link to="/login" style={{ color: colors.primary, textDecoration: 'none', fontWeight: 600 }}>Login</Link></div>
           </div>
         </div>
-
-        {/* Message */}
-        {message && (
-          <div
-            style={{
-              padding: spacing[3],
-              background: message.includes("✅") ? colors.success.bg : colors.error.bg,
-              color: message.includes("✅") ? colors.success.dark : colors.error.dark,
-              borderRadius: borderRadius.md,
-              marginBottom: spacing[4],
-              fontSize: typography.fontSize.sm,
-            }}
-          >
-            {message}
-          </div>
-        )}
-
-        {/* Form */}
-        {step === 1 && (
-          <div>
-            <label style={labelStyles}>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="John Doe"
-              value={formData.name}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <label style={labelStyles}>Email Address</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <label style={labelStyles}>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <Button
-              fullWidth
-              size="lg"
-              variant="primary"
-              onClick={() => setStep(2)}
-            >
-              Continue to Profile
-            </Button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div>
-            <label style={labelStyles}>Graduation Year</label>
-            <input
-              type="number"
-              name="graduationYear"
-              placeholder="2020"
-              value={formData.graduationYear}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <label style={labelStyles}>Department</label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              style={inputStyles}
-            >
-              <option value="">Select Department</option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Mechanical">Mechanical</option>
-              <option value="Civil">Civil</option>
-            </select>
-
-            <label style={labelStyles}>Current Company (Optional)</label>
-            <input
-              type="text"
-              name="currentCompany"
-              placeholder="Company Name"
-              value={formData.currentCompany}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <div style={{ display: "flex", gap: spacing[4] }}>
-              <Button
-                fullWidth
-                size="lg"
-                variant="outline"
-                onClick={() => setStep(1)}
-              >
-                Back
-              </Button>
-              <Button
-                fullWidth
-                size="lg"
-                variant="primary"
-                onClick={() => setStep(3)}
-              >
-                Continue
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div>
-            <label style={labelStyles}>LinkedIn Profile (Optional)</label>
-            <input
-              type="url"
-              name="linkedin"
-              placeholder="https://linkedin.com/in/yourprofile"
-              value={formData.linkedin}
-              onChange={handleChange}
-              style={inputStyles}
-            />
-
-            <div
-              style={{
-                padding: spacing[4],
-                background: colors.primary[50],
-                borderRadius: borderRadius.md,
-                marginBottom: spacing[4],
-              }}
-            >
-              <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: '#374151' }}>
-                ✓ Name: <strong>{formData.name}</strong><br/>
-                ✓ Year: <strong>{formData.graduationYear}</strong><br/>
-                ✓ Dept: <strong>{formData.department}</strong>
-              </p>
-            </div>
-
-            <div style={{ display: "flex", gap: spacing[4] }}>
-              <Button
-                fullWidth
-                size="lg"
-                variant="outline"
-                onClick={() => setStep(2)}
-              >
-                Back
-              </Button>
-              <Button
-                fullWidth
-                size="lg"
-                variant="primary"
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {loading ? "Creating Account..." : "Create Account"}
-              </Button>
-            </div>
-
-            <div style={{ textAlign: "center", paddingTop: spacing[4], borderTop: `1px solid ${colors.border}` }}>
-              <p style={{ color: '#374151', fontSize: typography.fontSize.sm, margin: spacing[2] }}>
-                Already have an account?{" "}
-                <Link to="/login" style={{ color: '#1e3a8a', fontWeight: typography.fontWeight.semibold }}>
-                  Sign in
-                </Link>
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

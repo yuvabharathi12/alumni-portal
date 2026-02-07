@@ -5,7 +5,7 @@ const { createEvent, getEvents } = require("../controllers/eventController");
 const Event = require("../models/Event");
 
 router.post("/", auth, createEvent);   // admin
-router.get("/", auth, getEvents);      // all users
+router.get("/", getEvents);           // public access
 
 // DELETE event (admin only)
 router.delete("/:id", auth, admin, async (req, res) => {

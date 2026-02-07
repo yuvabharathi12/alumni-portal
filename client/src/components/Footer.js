@@ -1,139 +1,59 @@
-import React from 'react';
-import { colors, spacing, typography, borderRadius, shadows } from '../styles/theme';
+import React from 'react';  
+import "../styles/global.css";
 
 const Footer = () => {
   const footerStyles = {
-    background: `linear-gradient(135deg, ${colors.neutral[900]} 0%, ${colors.primary[900]} 100%)`,
-    color: colors.text.inverse,
-    padding: `${spacing[16]} 0 ${spacing[8]} 0`,
-    marginTop: 'auto',
+    background: 'linear-gradient(180deg, rgba(15,59,38,0.95) 0%, rgba(14,40,57,0.98) 100%)',
+    color: '#d1fae5',
+    padding: '48px 24px',
+    marginTop: '48px',
+    animation: 'fadeUp 0.8s ease both',
   };
 
-  const containerStyles = {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: `0 ${spacing[6]}`,
-  };
-
-  const gridStyles = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: spacing[8],
-    marginBottom: spacing[12],
-  };
-
-  const columnStyles = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing[3],
-  };
-
-  const headingStyles = {
-    fontFamily: typography.fontFamily.display,
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    marginBottom: spacing[2],
-    color: colors.text.inverse,
-  };
-
-  const linkStyles = {
-    color: 'rgba(255, 255, 255, 0.8)',
-    textDecoration: 'none',
-    fontSize: typography.fontSize.sm,
-    transition: 'all 0.2s ease',
-    display: 'inline-block',
-  };
-
-  const bottomBarStyles = {
-    borderTop: `1px solid rgba(255, 255, 255, 0.1)`,
-    paddingTop: spacing[6],
-    marginTop: spacing[8],
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing[4],
-  };
-
-  const socialIconStyles = {
-    display: 'flex',
-    gap: spacing[3],
-  };
-
-  const iconButtonStyles = {
-    width: '40px',
-    height: '40px',
-    borderRadius: borderRadius.full,
-    background: 'rgba(255, 255, 255, 0.1)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: colors.text.inverse,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    textDecoration: 'none',
-    backdropFilter: 'blur(10px)',
-  };
+  const col = { flex: 1, minWidth: 200 };
 
   return (
     <footer style={footerStyles}>
-      <div style={containerStyles}>
-        {/* Main Footer Grid */}
-        <div style={gridStyles}>
-          {/* About Section */}
-          <div style={columnStyles}>
-            <h3 style={headingStyles}>🎓 CAHCET Alumni</h3>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.7)', 
-              fontSize: typography.fontSize.sm,
-              lineHeight: typography.lineHeight.relaxed 
-            }}>
-              Connecting alumni, fostering relationships, and building futures. Join our vibrant community of 5000+ graduates.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div style={columnStyles}>
-            <h4 style={headingStyles}>Quick Links</h4>
-            <a href="#about" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>About Us</a>
-            <a href="#programs" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Programs</a>
-            <a href="#events" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Events</a>
-            <a href="#contact" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Contact</a>
-          </div>
-
-          {/* Resources */}
-          <div style={columnStyles}>
-            <h4 style={headingStyles}>Resources</h4>
-            <a href="#careers" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Careers</a>
-            <a href="#network" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Networking</a>
-            <a href="#mentoring" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Mentoring</a>
-            <a href="#directory" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.light} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}>Alumni Directory</a>
-          </div>
-
-          {/* Contact */}
-          <div style={columnStyles}>
-            <h4 style={headingStyles}>Contact</h4>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: typography.fontSize.sm, margin: 0 }}>
-              📍 CAHCET, Puducherry<br/>
-              💬 alumni@cahcet.edu<br/>
-              📞 +91 (413) XXX-XXXX
-            </p>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div style={bottomBarStyles}>
-          <p style={{ margin: 0, fontSize: typography.fontSize.sm, color: 'rgba(255, 255, 255, 0.6)' }}>
-            © 2024 CAHCET Alumni Portal. All rights reserved.
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', gap: 40, flexWrap: 'wrap' }}>
+        <div style={col}>
+          <h3 style={{ margin: 0, color: '#bbf7d0' }}>CAHCET Alumni</h3>
+          <p style={{ marginTop: 12, color: '#9ae6b4', lineHeight: 1.6 }}>
+            Connecting alumni, fostering relationships, and building futures. Join our vibrant community of 5000+ graduates.
           </p>
-          
-          <div style={socialIconStyles}>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={iconButtonStyles} onMouseEnter={(e) => e.target.style.background = colors.accent.blue} onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}>f</a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={iconButtonStyles} onMouseEnter={(e) => e.target.style.background = colors.accent.cyan} onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}>𝕏</a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={iconButtonStyles} onMouseEnter={(e) => e.target.style.background = colors.accent.blue} onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}>in</a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={iconButtonStyles} onMouseEnter={(e) => e.target.style.background = colors.secondary.main} onMouseLeave={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}>📷</a>
+        </div>
+
+        <div style={col}>
+          <h4 style={{ marginTop: 0, color: '#bbf7d0' }}>Quick Links</h4>
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: 12, color: '#9ae6b4' }}>
+            <li>About</li>
+            <li>Directory</li>
+            <li>Events</li>
+            <li>Jobs</li>
+          </ul>
+        </div>
+
+        <div style={col}>
+          <h4 style={{ marginTop: 0, color: '#bbf7d0' }}>Resources</h4>
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: 12, color: '#9ae6b4' }}>
+            <li>Careers</li>
+            <li>Mentoring</li>
+            <li>Gallery</li>
+          </ul>
+        </div>
+
+        <div style={col}>
+          <h4 style={{ marginTop: 0, color: '#bbf7d0' }}>Contact</h4>
+          <p style={{ marginTop: 12, color: '#9ae6b4' }}>alumni@cahcet.edu</p>
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <button type="button" style={{ width: 36, height: 36, borderRadius: 36, background: 'rgba(255,255,255,0.06)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d1fae5', textDecoration: 'none', border: 'none', cursor: 'pointer' }}>f</button>
+            <button type="button" style={{ width: 36, height: 36, borderRadius: 36, background: 'rgba(255,255,255,0.06)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d1fae5', textDecoration: 'none', border: 'none', cursor: 'pointer' }}>in</button>
+            <button type="button" style={{ width: 36, height: 36, borderRadius: 36, background: 'rgba(255,255,255,0.06)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d1fae5', textDecoration: 'none', border: 'none', cursor: 'pointer' }}>🐦</button>
           </div>
         </div>
+      </div>
+
+      <div style={{ maxWidth: 1200, margin: '28px auto 0', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 20, color: '#9ae6b4', fontSize: 13 }}>
+        © {new Date().getFullYear()} CAHCET Alumni Portal. All rights reserved.
       </div>
     </footer>
   );

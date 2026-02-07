@@ -5,7 +5,7 @@ const { createJob, getJobs } = require("../controllers/jobController");
 const Job = require("../models/Job");
 
 router.post("/", auth, createJob);   // Alumni
-router.get("/", auth, getJobs);      // All users
+router.get("/", getJobs);            // public access
 
 // DELETE job (admin only)
 router.delete("/:id", auth, admin, async (req, res) => {

@@ -1,290 +1,134 @@
 import { useEffect, useState } from "react";
+import "../styles/global.css";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import {
-  colors,
-  spacing,
-  typography,
-  borderRadius,
-  shadows,
-} from "../styles/theme";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import PageBanner from "../components/PageBanner";
+import api from "../services/api";
+import { colors, styles } from "../styles/theme";
+import Button from "../components/Button";
 
 function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
   const token = localStorage.getItem("token");
-  const decoded = token ? jwtDecode(token) : {};
-  const role = decoded.role || "user";
+  const role = token ? jwtDecode(token).role : null;
+  const [modalEvent, setModalEvent] = useState(null);
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  /* ---------------- FETCH ---------------- */
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/events", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      setError(null);
+      const res = await api.get("/events");
       setEvents(res.data || []);
-    } catch {
+    } catch (err) {
+      console.error("Error fetching events:", err);
       setError("Failed to load events");
+      setEvents([]);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ---------------- DELETE ---------------- */
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/events/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setSelectedEvent(null);
-      fetchEvents();
+      await api.delete(`/events/${id}`);
       alert("Event deleted successfully");
+      fetchEvents(); // Refresh the list
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete event");
     }
   };
 
-  const containerStyles = {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: `${spacing[8]} ${spacing[6]}`,
-    marginTop: "80px",
-  };
-
   return (
-    <div
-      style={{
-        background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`,
-        minHeight: "100vh",
-      }}
-    >
-      <div style={containerStyles}>
-        {/* HEADER */}
-        <div
-          style={{
-            background: "linear-gradient(135deg, #ffffff 0%, #059669 100%)",
-            color: "white",
-            padding: spacing[8],
-            borderRadius: borderRadius.xl,
-            marginBottom: spacing[12],
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              marginBottom: spacing[2],
-              fontSize: typography.fontSize["4xl"],
-            }}
-          >
-            🎉 Events & Reunions
-          </h1>
-          <p style={{ margin: 0, opacity: 0.95 }}>
-            Reunions, meetups & campus events. Stay connected with CAHCET
-          </p>
-        </div>
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <PageBanner title="College Events" subtitle="Discover upcoming events and networking opportunities" />
 
-        {/* TOP BAR */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: spacing[6],
-          }}
-        >
-          <h2
-            style={{
-              color: "#1e3a8a",
-              margin: 0,
-              fontSize: typography.fontSize["2xl"],
-              fontWeight: 700,
-            }}
-          >
-            Upcoming Events
-          </h2>
-
-          {(role === "admin" || role === "alumni") && (
-            <Link
-              to="/admin/events/create"
-              style={{
-                padding: `${spacing[2]} ${spacing[6]}`,
-                background: colors.gradients.secondary,
-                color: "white",
-                textDecoration: "none",
-                borderRadius: borderRadius.md,
-                fontWeight: 600,
-              }}
-            >
-              + Create Event
+      <div style={{ maxWidth: "1100px", margin: "40px auto", padding: "0 20px" }}>
+        {/* Create Event Button */}
+        {role === "admin" && (
+          <div style={{ marginBottom: "20px" }}>
+            <Link to="/admin/events/create" style={{ textDecoration: 'none' }}>
+              <Button variant="primary">+ Create Event</Button>
             </Link>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* CONTENT */}
-        {loading ? (
-          <p>Loading events...</p>
-        ) : error ? (
-          <p style={{ color: colors.error.main }}>{error}</p>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-              gap: spacing[6],
-            }}
-          >
-            {events.map((event) => (
+        {/* Loading State */}
+        {loading && <p style={{ marginTop: "20px" }}>Loading events...</p>}
+
+        {/* Error State */}
+        {error && <p style={{ marginTop: "20px", color: "#d32f2f" }}>{error}</p>}
+
+        {/* Events Grid: uniform card sizes and expandable */}
+        <div style={{ marginTop: "30px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+          {events.map(event => {
+            return (
               <div
                 key={event._id}
-                onClick={() => setSelectedEvent(event)}
                 style={{
-                  background: colors.background.paper,
-                  borderRadius: borderRadius.lg,
-                  boxShadow: shadows.md,
-                  borderTop: `4px solid #1e3a8a`,
-                  padding: spacing[6],
-
-                  /* FIXED CARD SIZE */
-                  height: "240px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-
-                  cursor: "pointer",
-                  transition: "all 0.25s ease",
+                  ...styles.card,
+                  minHeight: 220,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  transition: 'all 0.25s ease',
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.boxShadow = shadows.lg;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = shadows.md;
-                }}
+                onClick={() => setModalEvent(event)}
               >
                 <div>
-                  <h3
-                    style={{
-                      color: "#1e3a8a",
-                      marginBottom: spacing[2],
-                      fontWeight: 700,
-                    }}
-                  >
-                    {event.title}
-                  </h3>
-
-                  <p
-                    style={{
-                      color: "#374151",
-                      overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                    }}
-                  >
-                    {event.description}
-                  </p>
+                  <h3 style={{ marginTop: 0, color: colors.heading }}>{event.title}</h3>
+                  <p style={{ fontSize: "14px", color: colors.textSecondary, maxHeight: '72px', overflow: 'hidden' }}>{event.description}</p>
                 </div>
 
-                <div style={{ fontSize: typography.fontSize.sm }}>
-                  📅 {new Date(event.date).toDateString()}
-                  <br />
-                  📍 {event.location}
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ marginTop: "12px", paddingTop: "10px", borderTop: `1px solid ${colors.border}`, fontSize: "13px", color: colors.textSecondary }}>
+                    📍 {event.venue || "TBA"} <br />
+                    🗓 {new Date(event.date).toDateString()}
+                  </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
+
+          {!loading && events.length === 0 && (<p style={{ opacity: 0.7 }}>No events available.</p>)}
+        </div>
+
+        {/* Modal for event details */}
+        {modalEvent && (
+          <div className="modal-overlay" onClick={() => setModalEvent(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setModalEvent(null)}>✕</button>
+              <h2 style={{ marginTop: 0 }}>{modalEvent.title}</h2>
+              <p style={{ color: colors.textSecondary }}>{modalEvent.description}</p>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${colors.border}`, color: colors.textSecondary }}>
+                <div>📍 {modalEvent.venue || 'TBA'}</div>
+                <div>🗓 {new Date(modalEvent.date).toLocaleString()}</div>
+              </div>
+
+              <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
+                {role === 'admin' && (
+                  <Button variant="danger" onClick={async () => { await handleDelete(modalEvent._id); setModalEvent(null); }}>
+                    Delete Event
+                  </Button>
+                )}
+
+                <Button onClick={() => setModalEvent(null)}>Close</Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      {/* ================= FULL MODAL ================= */}
-      {selectedEvent && (
-        <div
-          onClick={() => setSelectedEvent(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: spacing[6],
-            zIndex: 1000,
-          }}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: "white",
-              borderRadius: borderRadius.xl,
-              width: "700px",
-              maxWidth: "95%",
-              padding: spacing[8],
-              boxShadow: shadows.xl,
-            }}
-          >
-            <h2 style={{ color: "#1e3a8a" }}>{selectedEvent.title}</h2>
-
-            <p style={{ marginTop: spacing[4], lineHeight: 1.7 }}>
-              {selectedEvent.description}
-            </p>
-
-            <p>📅 {new Date(selectedEvent.date).toDateString()}</p>
-            <p>📍 {selectedEvent.location}</p>
-
-            {/* DELETE ONLY HERE */}
-            {role === "admin" && (
-              <button
-                onClick={() => handleDelete(selectedEvent._id)}
-                style={{
-                  marginTop: spacing[6],
-                  width: "100%",
-                  background: colors.error.main,
-                  color: "white",
-                  border: "none",
-                  borderRadius: borderRadius.md,
-                  padding: spacing[3],
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                Delete Event
-              </button>
-            )}
-
-            <button
-              onClick={() => setSelectedEvent(null)}
-              style={{
-                marginTop: spacing[3],
-                width: "100%",
-                background: colors.primary.main,
-                color: "white",
-                border: "none",
-                borderRadius: borderRadius.md,
-                padding: spacing[3],
-                cursor: "pointer",
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      <Footer />
     </div>
   );
 }

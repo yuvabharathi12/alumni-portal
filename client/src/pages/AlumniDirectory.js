@@ -1,150 +1,441 @@
 import { useState, useEffect } from "react";
+import "../styles/global.css";
 import axios from "axios";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import PageBanner from "../components/PageBanner";
+import Button from "../components/Button";
+import { colors, styles } from "../styles/theme";
+
+// Helper: choose image URL from known fields
+const getProfileImage = (profile) => {
+  return (
+    profile.photoUrl || profile.image || profile.avatar || profile.userId?.avatar || profile.userId?.photo || null
+  );
+};
 
 function AlumniDirectory() {
   const [profiles, setProfiles] = useState([]);
-  const [filters, setFilters] = useState({ department: "", batchYear: "", company: "" });
+  const [filters, setFilters] = useState({
+    department: "",
+    batchYear: "",
+    company: "",
+  });
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchProfiles();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
-  const fetchProfiles = async (filterParams = filters) => {
+  const fetchProfiles = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filterParams.department) params.append("department", filterParams.department);
-      if (filterParams.batchYear) params.append("batchYear", filterParams.batchYear);
-      if (filterParams.company) params.append("company", filterParams.company);
+      if (filters.department) params.append("department", filters.department);
+      if (filters.batchYear) params.append("batchYear", filters.batchYear);
+      if (filters.company) params.append("company", filters.company);
 
-      const res = await axios.get(`http://localhost:5000/api/alumni/profiles?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:5000/api/alumni/profiles?${params.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setProfiles(res.data);
     } catch (err) {
       console.error("Error fetching profiles:", err);
+      alert("Failed to fetch alumni");
     } finally {
       setLoading(false);
     }
   };
 
-  const containerStyles = { maxWidth: "1400px", margin: "0 auto", padding: `${spacing[8]} ${spacing[6]}`, marginTop: "80px" };
+  const handleFilterChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSearch = () => {
+    fetchProfiles();
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      department: "",
+      batchYear: "",
+      company: "",
+    });
+    setTimeout(() => fetchProfiles(), 100);
+  };
 
   return (
-    <div style={{ background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`, minHeight: "100vh" }}>
-      <div style={containerStyles}>
-        <h1 style={{ color: '#1e3a8a', marginBottom: spacing[2], fontSize: "3rem", fontWeight: 800 }}>Alumni Directory 👥</h1>
-        <p style={{ color: '#374151', marginBottom: spacing[8], fontSize: typography.fontSize.lg }}>
-          Connect with CAHCET alumni from across batches and departments
-        </p>
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <PageBanner title="Alumni Directory" subtitle="Connect with fellow graduates" />
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "40px 20px",
+        }}
+      >
 
-        {/* Filters */}
-        <div style={{ background: colors.background.paper, padding: spacing[6], borderRadius: borderRadius.lg, marginBottom: spacing[8], boxShadow: shadows.md }}>
-          <h3 style={{ margin: `0 0 ${spacing[4]} 0`, color: '#1e3a8a' }}>Search & Filter</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: spacing[4] }}>
+
+        {/* Filters Card */}
+        <div
+          style={{
+            ...styles.card,
+            marginBottom: "30px",
+          }}
+        >
+          <h3
+            style={{
+              margin: "0 0 20px 0",
+              color: colors.primary,
+              fontSize: "18px",
+            }}
+          >
+            Search & Filter
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "12px",
+              marginBottom: "16px",
+            }}
+          >
             <div>
-              <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Department</label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Department
+              </label>
               <select
+                name="department"
                 value={filters.department}
-                onChange={(e) => setFilters({ ...filters, department: e.target.value })}
-                style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}
+                onChange={handleFilterChange}
+                style={{
+                  ...styles.input,
+                  marginBottom: 0,
+                  cursor: "pointer",
+                }}
               >
                 <option value="">All Departments</option>
-                <option value="CSE">Computer Science</option>
-                <option value="ECE">Electronics</option>
-                <option value="ME">Mechanical</option>
-                <option value="CE">Civil</option>
+                <option value="Computer Science and Engineering">
+                  Computer Science and Engineering
+                </option>
+                <option value="Electronics and Communication Engineering">
+                  Electronics and Communication Engineering
+                </option>
+                <option value="Electrical and Electronics Engineering">
+                  Electrical and Electronics Engineering
+                </option>
+                <option value="Mechanical Engineering">
+                  Mechanical Engineering
+                </option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Information Technology">
+                  Information Technology
+                </option>
               </select>
             </div>
+
             <div>
-              <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Batch Year</label>
-              <input
-                type="number"
-                placeholder="e.g., 2020"
-                value={filters.batchYear}
-                onChange={(e) => setFilters({ ...filters, batchYear: e.target.value })}
-                style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Company</label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Batch Year
+              </label>
               <input
                 type="text"
+                name="batchYear"
+                placeholder="e.g., 2020"
+                value={filters.batchYear}
+                onChange={handleFilterChange}
+                style={{ ...styles.input, marginBottom: 0 }}
+              />
+            </div>
+
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Company
+              </label>
+              <input
+                type="text"
+                name="company"
                 placeholder="Company name"
                 value={filters.company}
-                onChange={(e) => setFilters({ ...filters, company: e.target.value })}
-                style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}
+                onChange={handleFilterChange}
+                style={{ ...styles.input, marginBottom: 0 }}
               />
             </div>
           </div>
-          <div style={{ display: "flex", gap: spacing[4], marginTop: spacing[4] }}>
-            <button
-              onClick={() => fetchProfiles(filters)}
-              style={{ padding: `${spacing[2]} ${spacing[6]}`, background: colors.gradients.primary, color: "white", border: "none", borderRadius: borderRadius.md, cursor: "pointer", fontWeight: 600 }}
-            >
-              Search
-            </button>
-            <button
-              onClick={() => { 
-                const emptyFilters = { department: "", batchYear: "", company: "" };
-                setFilters(emptyFilters);
-                fetchProfiles(emptyFilters);
-              }}
-              style={{ padding: `${spacing[2]} ${spacing[6]}`, background: "transparent", color: '#1e3a8a', border: `1px solid #1e3a8a`, borderRadius: borderRadius.md, cursor: "pointer", fontWeight: 600 }}
-            >
-              Clear
-            </button>
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Button onClick={handleSearch} disabled={loading}>
+              {loading ? "Searching..." : "Search"}
+            </Button>
+
+            <Button variant="outline" onClick={clearFilters}>
+              Clear Filters
+            </Button>
           </div>
         </div>
 
-        {/* Results */}
+        {/* Results Count */}
+        <div
+          style={{
+            marginBottom: "20px",
+            padding: "12px 16px",
+            background: colors.white,
+            borderRadius: "6px",
+            border: `1px solid ${colors.border}`,
+          }}
+        >
+          <strong style={{ color: colors.heading }}>{profiles.length}</strong>{" "}
+          <span style={{ color: colors.textSecondary }}>
+            {profiles.length === 1 ? "alumnus" : "alumni"} found
+          </span>
+        </div>
+
+        {/* Alumni Cards Grid */}
         {loading ? (
-          <p>Loading profiles...</p>
-        ) : profiles.length === 0 ? (
-          <div style={{ padding: spacing[8], background: colors.background.paper, borderRadius: borderRadius.lg, textAlign: 'center' }}>
-            <p style={{ color: '#374151', margin: 0 }}>No alumni profiles found. Try adjusting your filters or click Clear to see all alumni.</p>
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
+            <div
+              style={{
+                display: "inline-block",
+                width: "40px",
+                height: "40px",
+                border: `4px solid ${colors.border}`,
+                borderTop: `4px solid ${colors.primary}`,
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+            <p style={{ marginTop: "16px", color: colors.textLight }}>
+              Loading alumni...
+            </p>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: spacing[6] }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gap: "24px",
+            }}
+          >
             {profiles.map((profile) => (
               <div
                 key={profile._id}
                 style={{
-                  background: colors.background.paper,
-                  borderRadius: borderRadius.lg,
-                  padding: spacing[6],
-                  boxShadow: shadows.md,
-                  transition: "all 0.3s ease",
-                  border: `1px solid ${colors.border}`,
-                  overflow: 'hidden',
+                  ...styles.card,
+                  cursor: "pointer",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow = shadows.lg;
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 20px rgba(0,0,0,0.12)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = shadows.md;
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
                 }}
               >
-                <div style={{ width: '100%', height: '160px', background: `linear-gradient(135deg, #1e3a8a 0%, #c2410c 100%)`, borderRadius: '8px 8px 0 0', marginBottom: spacing[4], display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '56px', fontWeight: 'bold' }}>
-                  {((profile.userId?.name) || 'A').charAt(0).toUpperCase()}
+                {/* Profile Header */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "16px",
+                    paddingBottom: "16px",
+                    borderBottom: `1px solid ${colors.border}`,
+                  }}
+                >
+                  <div style={{ width: "56px", height: "56px", borderRadius: "50%", overflow: 'hidden', flexShrink: 0 }}>
+                    {getProfileImage(profile) ? (
+                      <img src={getProfileImage(profile)} alt={profile.userId?.name || 'Profile'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        background: `linear-gradient(135deg, ${colors.primary}, ${colors.primaryLight})`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: colors.white,
+                        fontSize: '20px',
+                        fontWeight: 700,
+                      }}>{(profile.userId?.name || '?').charAt(0).toUpperCase()}</div>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{ margin: '0 0 4px 0', color: colors.heading, fontSize: '18px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.userId?.name || 'N/A'}</h3>
+                    <p style={{ margin: 0, fontSize: '12px', color: colors.textSecondary }}>{profile.registerNumber}</p>
+                  </div>
                 </div>
-                <h3 style={{ margin: `0 0 ${spacing[2]} 0`, color: '#1e3a8a', fontSize: typography.fontSize.lg, fontWeight: 700 }}>{profile.userId?.name || 'N/A'}</h3>
-                <p style={{ margin: `0 0 ${spacing[1]} 0`, color: '#374151', fontSize: typography.fontSize.sm }}>{profile.department || 'N/A'}</p>
-                <p style={{ margin: `0 0 ${spacing[3]} 0`, color: '#374151', fontSize: typography.fontSize.sm }}>Batch: {profile.batchYear || 'N/A'}</p>
-                {profile.currentCompany && <p style={{ margin: 0, color: '#166534', fontWeight: 600, fontSize: typography.fontSize.sm }}>💼 {profile.currentCompany}</p>}
+
+                {/* Profile Details */}
+                <div style={{ marginBottom: "16px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ fontSize: "16px" }}>🎓</span>
+                    <span style={{ fontSize: "14px", color: colors.text }}>
+                      {profile.department}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <span style={{ fontSize: "16px" }}>📅</span>
+                    <span style={{ fontSize: "14px", color: colors.text }}>
+                      Batch of {profile.batchYear}
+                    </span>
+                  </div>
+
+                  {profile.currentCompany && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      <span style={{ fontSize: "16px" }}>💼</span>
+                      <span style={{ fontSize: "14px", color: colors.text }}>
+                        {profile.designation
+                          ? `${profile.designation} at ${profile.currentCompany}`
+                          : profile.currentCompany}
+                      </span>
+                    </div>
+                  )}
+
+                  {profile.location && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <span style={{ fontSize: "16px" }}>📍</span>
+                      <span style={{ fontSize: "14px", color: colors.text }}>
+                        {profile.location}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* LinkedIn Link */}
+                {profile.linkedinUrl && (
+                  <a
+                    href={profile.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-block",
+                      padding: "8px 16px",
+                      background: "#0077b5",
+                      color: colors.white,
+                      textDecoration: "none",
+                      borderRadius: "6px",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = "#005885";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = "#0077b5";
+                    }}
+                  >
+                    View LinkedIn Profile →
+                  </a>
+                )}
               </div>
             ))}
           </div>
         )}
+
+        {/* Empty State */}
+        {!loading && profiles.length === 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "80px 20px",
+              background: colors.white,
+              borderRadius: "12px",
+              border: `1px solid ${colors.border}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: "64px",
+                marginBottom: "16px",
+                opacity: 0.5,
+              }}
+            >
+              🔍
+            </div>
+            <h3 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+              No Alumni Found
+            </h3>
+            <p style={{ margin: 0, color: colors.textLight }}>
+              Try adjusting your search filters or check back later
+            </p>
+          </div>
+        )}
       </div>
-      <Footer />
+
+      {/* CSS for spinner animation */}
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

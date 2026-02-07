@@ -1,282 +1,134 @@
 import { useEffect, useState } from "react";
+import "../styles/global.css";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import {
-  colors,
-  spacing,
-  typography,
-  borderRadius,
-  shadows,
-} from "../styles/theme";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import PageBanner from "../components/PageBanner";
+import api from "../services/api";
+import { colors, styles } from "../styles/theme";
+import Button from "../components/Button";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [selectedJob, setSelectedJob] = useState(null); // ⭐ modal
-
   const token = localStorage.getItem("token");
-  const decoded = token ? jwtDecode(token) : {};
-  const role = decoded.role || "user";
+  const role = token ? jwtDecode(token).role : null;
+  const [modalJob, setModalJob] = useState(null);
 
   useEffect(() => {
     fetchJobs();
   }, []);
 
-  /* ================= FETCH ================= */
   const fetchJobs = async () => {
     try {
       setLoading(true);
-
-      const res = await axios.get("http://localhost:5000/api/jobs", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      setError(null);
+      const res = await api.get("/jobs");
       setJobs(res.data || []);
-    } catch {
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
       setError("Failed to load jobs");
+      setJobs([]);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= DELETE (admin only) ================= */
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this job post?")) return;
+    if (!window.confirm("Are you sure you want to delete this job posting?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/jobs/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setSelectedJob(null);
-      fetchJobs();
+      await api.delete(`/jobs/${id}`);
+      alert("Job deleted successfully");
+      fetchJobs(); // Refresh the list
     } catch (err) {
-      alert(err.response?.data?.message || "Delete failed");
+      alert(err.response?.data?.message || "Failed to delete job");
     }
   };
 
-  /* ================= STYLES ================= */
-  const containerStyles = {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: `${spacing[8]} ${spacing[6]}`,
-    marginTop: "80px",
-  };
-
-  const cardStyles = {
-    background: colors.background.paper,
-    borderRadius: borderRadius.lg,
-    padding: spacing[6],
-    boxShadow: shadows.md,
-    transition: "all 0.3s ease",
-    borderLeft: `4px solid #c2410c`,
-    height: "220px", // ⭐ FIXED SIZE
-    overflow: "hidden",
-    cursor: "pointer",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  };
-
-  /* ================= UI ================= */
   return (
-    <div
-      style={{
-        background: `linear-gradient(135deg, ${colors.secondary[50]} 0%, ${colors.primary[50]} 100%)`,
-        minHeight: "100vh",
-      }}
-    >
-      <div style={containerStyles}>
-        {/* HEADER */}
-        <div
-          style={{
-            background: "linear-gradient(135deg, #ffffff 0%, #059669 100%)",
-            color: "white",
-            padding: spacing[8],
-            borderRadius: borderRadius.xl,
-            marginBottom: spacing[12],
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              marginBottom: spacing[2],
-              fontSize: typography.fontSize["4xl"],
-            }}
-          >
-            💼 Job Openings
-          </h1>
-          <p style={{ margin: 0, opacity: 0.95 }}>
-            Exclusive opportunities from CAHCET alumni and partner companies
-          </p>
-        </div>
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <PageBanner title="Job Opportunities" subtitle="Browse open positions and career paths" />
 
-        {/* TOP BAR */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: spacing[6],
-          }}
-        >
-          <h2
-            style={{
-              color: "#c2410c",
-              margin: 0,
-              fontSize: typography.fontSize["2xl"],
-              fontWeight: 700,
-            }}
-          >
-            Available Positions
-          </h2>
-
-          {(role === "alumni" || role === "admin") && (
-            <Link
-              to="/jobs/post"
-              style={{
-                padding: `${spacing[2]} ${spacing[6]}`,
-                background: colors.gradients.secondary,
-                color: "white",
-                textDecoration: "none",
-                borderRadius: borderRadius.md,
-                fontWeight: 600,
-              }}
-            >
-              + Post Job
+      <div style={{ maxWidth: "1100px", margin: "40px auto", padding: "0 20px" }}>
+        {/* Post Job Button */}
+        {(role === "alumni" || role === "admin") && (
+          <div style={{ marginBottom: "20px" }}>
+            <Link to="/jobs/post" style={{ textDecoration: 'none' }}>
+              <Button variant="primary">+ Post Job</Button>
             </Link>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* STATES */}
-        {loading ? (
-          <p>Loading jobs...</p>
-        ) : error ? (
-          <p style={{ color: colors.error.main }}>{error}</p>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-              gap: spacing[6],
-            }}
-          >
-            {jobs.map((job) => (
+        {/* Loading State */}
+        {loading && <p style={{ marginTop: "20px" }}>Loading jobs...</p>}
+
+        {/* Error State */}
+        {error && <p style={{ marginTop: "20px", color: "#d32f2f" }}>{error}</p>}
+
+        {/* Job Cards: uniform size and expandable */}
+        <div style={{ marginTop: "30px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "20px" }}>
+          {jobs.map(job => {
+            return (
               <div
                 key={job._id}
-                style={cardStyles}
-                onClick={() => setSelectedJob(job)} // ⭐ open modal
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow = shadows.lg;
+                style={{
+                  ...styles.card,
+                  minHeight: 220,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  transition: 'all 0.25s ease',
                 }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = shadows.md;
-                }}
+                onClick={() => setModalJob(job)}
               >
                 <div>
-                  <h3
-                    style={{
-                      color: "#c2410c",
-                      marginBottom: spacing[2],
-                      fontSize: typography.fontSize.lg,
-                      fontWeight: 700,
-                    }}
-                  >
-                    {job.title}
-                  </h3>
-
-                  <p style={{ fontWeight: 600, marginBottom: spacing[2] }}>
-                    💼 {job.company}
-                  </p>
-
-                  <p
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      fontSize: 14,
-                    }}
-                  >
-                    {job.description}
-                  </p>
+                  <h3 style={{ marginTop: 0, color: colors.heading }}>{job.title}</h3>
+                  <p style={{ fontWeight: "500", marginBottom: "6px" }}>🏢 {job.company}</p>
+                  <p style={{ fontSize: "14px", color: colors.textSecondary, maxHeight: '72px', overflow: 'hidden' }}>{job.description}</p>
                 </div>
 
-                <p style={{ fontSize: typography.fontSize.sm }}>
-                  📅 {new Date(job.createdAt).toDateString()}
-                </p>
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ marginTop: "12px", fontSize: "12px", color: colors.textSecondary }}>
+                    Posted on {new Date(job.createdAt).toDateString()}
+                  </div>
+                </div>
               </div>
-            ))}
+            );
+          })}
+
+          {!loading && jobs.length === 0 && (<p style={{ opacity: 0.7 }}>No job postings yet.</p>)}
+        </div>
+
+        {/* Modal for job details */}
+        {modalJob && (
+          <div className="modal-overlay" onClick={() => setModalJob(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setModalJob(null)}>✕</button>
+              <h2 style={{ marginTop: 0 }}>{modalJob.title}</h2>
+              <p style={{ color: colors.textSecondary }}>{modalJob.description}</p>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${colors.border}`, color: colors.textSecondary }}>
+                <div>🏢 {modalJob.company}</div>
+                <div>📅 Posted on {new Date(modalJob.createdAt).toLocaleString()}</div>
+              </div>
+
+              <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
+                {role === 'admin' && (
+                  <Button variant="danger" onClick={async () => { await handleDelete(modalJob._id); setModalJob(null); }}>
+                    Delete Job
+                  </Button>
+                )}
+
+                <Button onClick={() => setModalJob(null)}>Close</Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      {/* ================= MODAL ================= */}
-      {selectedJob && (
-        <div
-          onClick={() => setSelectedJob(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: spacing[6],
-            zIndex: 1000,
-          }}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: "#fff",
-              width: "600px",
-              maxWidth: "95%",
-              borderRadius: borderRadius.xl,
-              padding: spacing[8],
-              boxShadow: shadows.lg,
-            }}
-          >
-            <h2 style={{ color: "#c2410c" }}>{selectedJob.title}</h2>
-
-            <h4 style={{ marginTop: spacing[2] }}>
-              💼 {selectedJob.company}
-            </h4>
-
-            <p style={{ marginTop: spacing[4] }}>
-              {selectedJob.description}
-            </p>
-
-            <p>
-              📅 {new Date(selectedJob.createdAt).toDateString()}
-            </p>
-
-            {role === "admin" && (
-              <button
-                onClick={() => handleDelete(selectedJob._id)}
-                style={{
-                  marginTop: spacing[4],
-                  background: colors.error.main,
-                  color: "#fff",
-                  padding: spacing[2],
-                  border: "none",
-                  borderRadius: borderRadius.md,
-                }}
-              >
-                Delete Job
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <Footer />
     </div>
   );
 }

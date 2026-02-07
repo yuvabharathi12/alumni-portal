@@ -1,20 +1,38 @@
 import { useState, useEffect } from "react";
+import "../styles/global.css";
+import Navbar from "../components/Navbar";
+import ImageCarousel from "../components/ImageCarousel";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
-import ImageCarousel from "../components/ImageCarousel";
-import Footer from "../components/Footer";
+import { colors, styles } from "../styles/theme";
+import Button from "../components/Button";
 import axios from "axios";
 
 function Dashboard() {
   const [carouselImages, setCarouselImages] = useState([]);
-  const [token] = useState(localStorage.getItem("token"));
-  const decoded = token ? jwtDecode(token) : {};
-  const role = decoded.role || "user";
-  const userName = decoded.name || "User";
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  const role = decoded.role;
 
   useEffect(() => {
     fetchCarouselImages();
+  }, []);
+
+  // fetch small stats for dashboard
+  const [stats, setStats] = useState({ events: 0, jobs: 0 });
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [evRes, jobRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/events"),
+          axios.get("http://localhost:5000/api/jobs"),
+        ]);
+        setStats({ events: (evRes.data || []).length, jobs: (jobRes.data || []).length });
+      } catch (err) {
+        // ignore
+      }
+    };
+    fetchStats();
   }, []);
 
   const fetchCarouselImages = async () => {
@@ -26,135 +44,636 @@ function Dashboard() {
     }
   };
 
-  const containerStyles = {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: `0 ${spacing[6]}`,
-    marginTop: "80px",
-  };
-
   const cardStyle = {
-    background: colors.background.paper,
-    borderRadius: borderRadius.lg,
-    padding: spacing[6],
-    boxShadow: shadows.md,
-    border: `1px solid ${colors.border}`,
-    textDecoration: "none",
-    color: colors.text.primary,
-    display: "block",
-    transition: "all 0.3s ease",
+    ...styles.card,
     cursor: "pointer",
+    textDecoration: "none",
+    color: colors.textPrimary,
+    display: "block",
+    marginBottom: "15px",
   };
-
-  const adminMenuItems = [
-    { title: "📋 View Approvals", link: "/admin/approvals", icon: "✓" },
-    { title: "📤 Bulk Upload", link: "/admin/bulk-upload", icon: "⬆️" },
-    { title: "🖼️ Carousel", link: "/admin/carousel", icon: "🎨" },
-    { title: "📅 Create Event", link: "/admin/events/create", icon: "➕" },
-    { title: "👥 Manage Users", link: "/admin/users", icon: "⚙️" },
-  ];
-
-  const userMenuItems = [
-    { title: "📋 My Profile", link: "/alumni/profile", icon: "👤" },
-    { title: "👥 Alumni Directory", link: "/alumni-directory", icon: "🔍" },
-    { title: "🎉 Events", link: "/events", icon: "📅" },
-    { title: "💼 Job Board", link: "/jobs", icon: "💻" },
-  ];
 
   return (
-    <div style={{ background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`, minHeight: "100vh" }}>
-      <div style={{ ...containerStyles, padding: `${spacing[8]} ${spacing[6]}` }}>
-        {/* Hero Section */}
-        <div
-          style={{
-            background: "linear-gradient(135deg, #ffffff 0%, #059669 100%)",
-            color: colors.text.inverse,
-            padding: spacing[8],
-            borderRadius: borderRadius.xl,
-            marginBottom: spacing[12],
-            boxShadow: shadows.lg,
-          }}
-        >
-          <h1 style={{ margin: 0, marginBottom: spacing[2], fontSize: typography.fontSize['4xl'] }}>
-            Welcome, {userName}! 👋
-          </h1>
-          <p style={{ margin: 0, opacity: 0.95, fontSize: typography.fontSize.lg }}>
-            {role === "admin"
-              ? "Manage the CAHCET Alumni Portal and keep our community thriving"
-              : "Discover opportunities, connect with alumni, and advance your career"}
-          </p>
-        </div>
-
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "40px 20px",
+        }}
+      >
         {/* Carousel */}
         {carouselImages.length > 0 && (
-          <div style={{ marginBottom: spacing[12] }}>
-            <h2 style={{ marginBottom: spacing[4], color: '#1e3a8a' }}>Featured Events</h2>
+          <div style={{ marginBottom: "30px" }}>
             <ImageCarousel images={carouselImages} />
           </div>
         )}
 
+        {/* Welcome Section */}
+        <div
+          style={{
+            background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryLight} 100%)`,
+            color: colors.white,
+            padding: "30px",
+            borderRadius: "12px",
+            marginBottom: "30px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          }}
+        >
+          <h2 style={{ margin: "0 0 8px 0", fontSize: "28px" }}>
+            Welcome to CAHCET Alumni Portal
+          </h2>
+          <p style={{ margin: 0, opacity: 0.95, fontSize: "15px" }}>
+            {role === "student"
+              ? "Connect with alumni, explore career opportunities"
+              : "Connecting alumni, fostering relationships, building futures"}
+          </p>
+        </div>
+
+        {/* Quick stats */}
+        <div style={{ display: 'flex', gap: 12, marginTop: 18, marginBottom: 28 }}>
+          <div className="stat-card" style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, color: colors.textLight }}>Events</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: colors.heading }}>{stats.events}</div>
+            <div style={{ marginTop: 8, color: colors.textSecondary, fontSize: 13 }}>Upcoming & past</div>
+          </div>
+          <div className="stat-card" style={{ flex: 1 }}>
+            <div style={{ fontSize: 12, color: colors.textLight }}>Jobs</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: colors.heading }}>{stats.jobs}</div>
+            <div style={{ marginTop: 8, color: colors.textSecondary, fontSize: 13 }}>Open positions</div>
+          </div>
+          <div className="stat-card" style={{ flex: 2 }}>
+            <div style={{ fontSize: 12, color: colors.textLight }}>Quick Actions</div>
+            <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
+              <Link to="/events" style={{ textDecoration: 'none', flex: 1 }}><Button fullWidth size="sm">Events</Button></Link>
+              <Link to="/jobs" style={{ textDecoration: 'none', flex: 1 }}><Button fullWidth size="sm">Jobs</Button></Link>
+            </div>
+          </div>
+        </div>
+
         {/* Admin Panel */}
         {role === "admin" && (
           <div>
-            <h2 style={{ marginBottom: spacing[6], color: '#1e3a8a', fontSize: typography.fontSize['2xl'] }}>
-              Administration
-            </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: spacing[6], marginBottom: spacing[12] }}>
-              {adminMenuItems.map((item) => (
-                <Link
-                  key={item.link}
-                  to={item.link}
-                  style={{...cardStyle, padding: spacing[8]}}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-10px)";
-                    e.currentTarget.style.boxShadow = shadows.lg;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = shadows.md;
+            <h3 style={{ marginBottom: "20px", color: colors.heading }}>
+              Admin Dashboard
+            </h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              <Link
+                to="/admin/bulk-upload"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.success,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
                   }}
                 >
-                  <div style={{ width: '60px', height: '60px', background: `linear-gradient(135deg, ${colors.primary.main} 0%, ${colors.primary.light} 100%)`, borderRadius: borderRadius.lg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: "32px", marginBottom: spacing[3], boxShadow: `0 4px 12px ${colors.primary.main}20` }}>{item.icon}</div>
-                  <h3 style={{ margin: 0, color: '#1e3a8a', marginBottom: spacing[2], fontSize: typography.fontSize.lg, fontWeight: 700 }}>
-                    {item.title}
-                  </h3>
-                </Link>
-              ))}
+                  📤
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Bulk Upload Users
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Add multiple users at once via CSV
+                </p>
+              </Link>
+              <Link
+                to="/admin/users"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.danger,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  👥
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Manage Users
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View and delete alumni/student accounts
+                </p>
+              </Link>
+              <Link
+                to="/alumni/directory"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.info,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  👥
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  View All Alumni
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Browse complete alumni directory
+                </p>
+              </Link>
+
+              <Link
+                to="/admin/carousel"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.warning,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  🖼️
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Manage Carousel
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Add or remove carousel images
+                </p>
+              </Link>
+
+              <Link
+                to="/events"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.info,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  📅
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  College Events
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Browse and manage college events
+                </p>
+              </Link>
+
+              <Link
+                to="/jobs"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.secondary,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  💼
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Job Opportunities
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View job postings from alumni
+                </p>
+              </Link>
             </div>
           </div>
         )}
 
-        {/* User Menu */}
-        <div>
-          <h2 style={{ marginBottom: spacing[6], color: '#1e3a8a', fontSize: typography.fontSize['2xl'], fontWeight: 700 }}>
-            Quick Access
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: spacing[6] }}>
-            {userMenuItems.map((item) => (
+        {/* Alumni Panel */}
+        {role === "alumni" && (
+          <div>
+            <h3 style={{ marginBottom: "20px", color: colors.primary }}>
+              Alumni Dashboard
+            </h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                gap: "20px",
+              }}
+            >
               <Link
-                key={item.link}
-                to={item.link}
-                style={{...cardStyle, padding: spacing[8]}}
+                to="/alumni/profile"
+                style={cardStyle}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-10px)";
-                  e.currentTarget.style.boxShadow = shadows.lg;
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = shadows.md;
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
                 }}
               >
-                <div style={{ width: '60px', height: '60px', background: `linear-gradient(135deg, ${colors.secondary.main} 0%, ${colors.secondary.light} 100%)`, borderRadius: borderRadius.lg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: "32px", marginBottom: spacing[3], boxShadow: `0 4px 12px ${colors.secondary.main}20` }}>{item.icon}</div>
-                <h3 style={{ margin: 0, color: '#1e3a8a', marginBottom: spacing[2], fontSize: typography.fontSize.lg, fontWeight: 700 }}>
-                  {item.title}
-                </h3>
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.secondary,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  👤
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  My Profile
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View and edit your alumni profile
+                </p>
               </Link>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      <Footer />
+              <Link
+                to="/alumni/directory"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.info,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  📚
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Alumni Directory
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Connect with fellow CAHCET alumni
+                </p>
+              </Link>
+
+              <Link
+                to="/events"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.warning,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  📅
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  College Events
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View upcoming college events
+                </p>
+              </Link>
+
+              <Link
+                to="/jobs"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.secondary,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  💼
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Job Opportunities
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Post and browse job openings
+                </p>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Student Panel */}
+        {role === "student" && (
+          <div>
+            <h3 style={{ marginBottom: "20px", color: colors.primary }}>
+              Student Dashboard
+            </h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              <Link
+                to="/alumni/directory"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.info,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  👥
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Alumni Directory
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Connect with CAHCET alumni for guidance
+                </p>
+              </Link>
+
+              <div
+                style={{
+                  ...cardStyle,
+                  opacity: 0.6,
+                  cursor: "not-allowed",
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.textLight,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  🎓
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.textLight }}>
+                  Career Guidance
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Coming soon - Connect with alumni for career advice
+                </p>
+              </div>
+
+              <Link
+                to="/events"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.warning,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  📅
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  College Events
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  View upcoming college events
+                </p>
+              </Link>
+
+              <Link
+                to="/jobs"
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 6px 16px rgba(0,0,0,0.12)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = styles.card.boxShadow;
+                }}
+              >
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    background: colors.secondary,
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "12px",
+                    fontSize: "24px",
+                  }}
+                >
+                  💼
+                </div>
+                <h4 style={{ margin: "0 0 8px 0", color: colors.primary }}>
+                  Job Opportunities
+                </h4>
+                <p style={{ margin: 0, fontSize: "14px", color: colors.textLight }}>
+                  Browse jobs posted by alumni
+                </p>
+              </Link>
+            </div>
+
+            {/* Info Banner for Students */}
+            <div
+              style={{
+                marginTop: "30px",
+                padding: "20px",
+                background: "#e7f3ff",
+                border: "1px solid #b3d9ff",
+                borderRadius: "8px",
+              }}
+            >
+              <h4 style={{ margin: "0 0 10px 0", color: colors.primary }}>
+                👋 Welcome, Current Student!
+              </h4>
+              <p style={{ margin: 0, fontSize: "14px", color: "#004085" }}>
+                You can browse our alumni directory to connect with successful graduates from CAHCET. 
+                Once you graduate, you'll be able to create your own alumni profile and contribute back to the community!
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

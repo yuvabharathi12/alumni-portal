@@ -1,215 +1,269 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import { colors, spacing, typography, shadows, borderRadius, zIndex } from '../styles/theme';
-import Button from './Button';
-import logo from '../assets/logo.png';
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../styles/global.css";
+import { colors } from "../styles/theme";
+import logo from "../assets/logo.png";
+import Button from "./Button";
 
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  const token = localStorage.getItem('token');
-  let role = null;
-  let userName = 'User';
-
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      role = decoded.role;
-      userName = decoded.name || 'User';
-    } catch (err) {
-      console.error('Token decode error:', err);
-    }
-  }
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+    setMobileMenuOpen(false);
   };
 
-  const isHome = location.pathname === '/';
-  const navbarBgTransparent = isHome && !isScrolled;
+  // Handle window resize to show/hide hamburger menu
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
 
-  const navbarStyles = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: zIndex.fixed,
-    background: navbarBgTransparent 
-      ? 'rgba(255, 255, 255, 0.05)' 
-      : colors.gradients.primary,
-    boxShadow: isScrolled ? shadows.xl : 'none',
-    transition: 'all 0.3s ease',
-    borderBottom: navbarBgTransparent ? 'none' : `1px solid ${colors.primary[100]}`,
-    backdropFilter: 'blur(10px)',
-  };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const containerStyles = {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: `0 ${spacing[6]}`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: '80px',
-  };
-
-  const logoStyles = {
-    fontFamily: typography.fontFamily.display,
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    background: 'linear-gradient(135deg, #15803d 0%, #059669 100%)',
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: navbarBgTransparent ? '#15803d' : 'white',
-    background: navbarBgTransparent ? 'none' : colors.gradients.primary,
-    color: navbarBgTransparent ? '#15803d' : 'white',
-    textDecoration: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing[2],
-    transition: 'all 0.3s ease',
-  };
-
-  const navLinksStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: spacing[8],
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-  };
-
-  const linkStyles = {
-    color: navbarBgTransparent ? '#1f2937' : colors.text.inverse,
-    textDecoration: 'none',
-    fontWeight: typography.fontWeight.medium,
-    fontSize: typography.fontSize.base,
-    transition: 'all 0.2s ease',
-    padding: `${spacing[2]} ${spacing[3]}`,
-    borderRadius: borderRadius.md,
-    position: 'relative',
-  };
-
-  const userMenuStyles = {
-    position: 'relative',
-  };
-
-  const avatarStyles = {
-    width: '44px',
-    height: '44px',
-    borderRadius: borderRadius.full,
-    background: colors.gradients.secondary,
-    color: colors.text.inverse,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: typography.fontWeight.bold,
-    cursor: 'pointer',
-    fontSize: typography.fontSize.sm,
-    boxShadow: shadows.md,
-    transition: 'all 0.3s ease',
-  };
-
-  const dropdownStyles = {
-    position: 'absolute',
-    top: 'calc(100% + 12px)',
-    right: 0,
-    background: colors.background.paper,
-    borderRadius: borderRadius.lg,
-    boxShadow: shadows.xl,
-    minWidth: '220px',
-    padding: spacing[2],
-    zIndex: zIndex.dropdown,
-    opacity: userMenuOpen ? 1 : 0,
-    visibility: userMenuOpen ? 'visible' : 'hidden',
-    transform: userMenuOpen ? 'translateY(0)' : 'translateY(-10px)',
-    transition: 'all 0.2s ease',
-    border: `1px solid ${colors.border}`,
-  };
-
-  const dropdownItemStyles = {
-    padding: `${spacing[2]} ${spacing[4]}`,
-    borderRadius: borderRadius.md,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    fontSize: typography.fontSize.sm,
-    color: colors.text.primary,
-    textDecoration: 'none',
-    display: 'block',
+  const navStyles = {
+    container: {
+      background: colors.primary || "#166534",
+      color: colors.white,
+      position: "sticky",
+      top: 0,
+      zIndex: 1000,
+      boxShadow: "0 4px 16px rgba(22, 101, 52, 0.15)",
+      borderBottom: "none",
+    },
+    wrapper: {
+      maxWidth: "1400px",
+      margin: "0 auto",
+      padding: "0 24px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      height: "70px",
+    },
+    logoSection: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+      textDecoration: "none",
+      cursor: "pointer",
+      minWidth: "fit-content",
+    },
+    logo: {
+      width: "48px",
+      height: "48px",
+      background: colors.primary,
+      borderRadius: "8px",
+      padding: "4px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    logoText: {
+      margin: 0,
+      fontSize: "18px",
+      fontWeight: "700",
+      color: colors.white,
+      letterSpacing: "-0.5px",
+    },
+    navLinks: {
+      desktop: {
+        display: "flex",
+        gap: "32px",
+        alignItems: "center",
+        flex: 1,
+        justifyContent: "center",
+      },
+      mobile: {
+        display: "none",
+      },
+    },
+    navLink: {
+      color: colors.white,
+      textDecoration: "none",
+      fontWeight: "500",
+      fontSize: "15px",
+      padding: "8px 0",
+      borderBottom: "2px solid transparent",
+      transition: "all 0.3s ease",
+      cursor: "pointer",
+    },
+    navLinkHover: {
+      color: colors.primaryLight,
+      borderBottomColor: colors.primaryLight,
+    },
+    ctaSection: {
+      desktop: {
+        display: "flex",
+        gap: "12px",
+        alignItems: "center",
+      },
+      mobile: {
+        display: "none",
+      },
+    },
+    hamburger: {
+      display: "none",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+      padding: "8px",
+      fontSize: "24px",
+      color: colors.white,
+      transition: "color 0.3s ease",
+    },
+    mobileMenu: {
+      position: "absolute",
+      top: "70px",
+      left: 0,
+      right: 0,
+      background: colors.white,
+      borderBottom: `1px solid ${colors.border}`,
+      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+      display: mobileMenuOpen ? "flex" : "none",
+      flexDirection: "column",
+      padding: "20px",
+      gap: "12px",
+    },
   };
 
   return (
-    <nav style={navbarStyles}>
-      <div style={containerStyles}>
-        {/* Logo */}
-        <Link to="/" style={logoStyles}>
-          {logo && <img src={logo} alt="CAHCET" style={{ width: 32, height: 32, borderRadius: borderRadius.full }} />}
-          <span>CAHCET</span>
-        </Link>
-
-        {/* Nav Links */}
-        {!isMobileMenuOpen && (
-          <ul style={navLinksStyles}>
-            <li><Link to="/" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Home</Link></li>
-            {token && (
-              <>
-                <li><Link to="/dashboard" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Dashboard</Link></li>
-                <li><Link to="/alumni-directory" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Alumni</Link></li>
-                <li><Link to="/events" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Events</Link></li>
-                <li><Link to="/jobs" style={linkStyles} onMouseEnter={(e) => e.target.style.color = colors.secondary.main} onMouseLeave={(e) => e.target.style.color = navbarBgTransparent ? '#1f2937' : 'white'}>Jobs</Link></li>
-              </>
-            )}
-          </ul>
-        )}
-
-        {/* Auth Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[4] }}>
-          {!token ? (
-            <>
-              <Link to="/login" style={{ ...linkStyles, color: navbarBgTransparent ? '#1f2937' : 'white' }}>Login</Link>
-              <Button variant="secondary" size="sm" onClick={() => navigate('/register')}>Sign Up</Button>
-            </>
-          ) : (
-            <div style={userMenuStyles}>
-              <div
-                style={avatarStyles}
-                onMouseEnter={() => setUserMenuOpen(true)}
-                onMouseLeave={() => setUserMenuOpen(false)}
-              >
-                {userName.charAt(0).toUpperCase()}
-              </div>
-              <div
-                style={dropdownStyles}
-                onMouseEnter={() => setUserMenuOpen(true)}
-                onMouseLeave={() => setUserMenuOpen(false)}
-              >
-                <div style={{ padding: spacing[2], borderBottom: `1px solid ${colors.border}`, marginBottom: spacing[2] }}>
-                  <p style={{ margin: 0, fontWeight: 600, color: colors.text.primary }}>{userName}</p>
-                  <p style={{ margin: 0, fontSize: typography.fontSize.xs, color: colors.text.secondary }}>{role}</p>
-                </div>
-                <Link to="/profile" style={{ ...dropdownItemStyles, display: 'block' }} onMouseEnter={(e) => e.target.style.background = colors.primary[50]} onMouseLeave={(e) => e.target.style.background = 'transparent'}>👤 Profile</Link>
-                <div style={{ ...dropdownItemStyles, display: 'block', borderTop: `1px solid ${colors.border}`, marginTop: spacing[2], paddingTop: spacing[2] }} onClick={handleLogout} onMouseEnter={(e) => e.target.style.background = colors.error.bg} onMouseLeave={(e) => e.target.style.background = 'transparent'}>🚪 Logout</div>
-              </div>
+    <>
+      <nav style={navStyles.container}>
+        <div style={navStyles.wrapper}>
+          {/* Logo */}
+          <Link to="/" style={navStyles.logoSection} title="Home">
+            <div style={navStyles.logo}>
+              <img src={logo} alt="CAHCET Logo" style={{ width: "100%", height: "100%" }} />
             </div>
-          )}
+            <h1 style={navStyles.logoText}>CAHCET</h1>
+          </Link>
+
+          {/* Desktop Navigation Links */}
+          <div style={navStyles.navLinks.desktop}>
+            <NavLink to="/" label="Home" />
+            <NavLink to="/events" label="Events" />
+            <NavLink to="/jobs" label="Jobs" />
+            <NavLink to="/alumni/directory" label="Alumni" />
+            {isLoggedIn && <NavLink to="/dashboard" label="Dashboard" />}
+          </div>
+
+          {/* Desktop CTA Section */}
+          <div style={navStyles.ctaSection.desktop}>
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login" style={{ textDecoration: "none" }}>
+                  <Button variant="secondary" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  <Button variant="secondary" size="sm">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <Button onClick={handleLogout} variant="secondary" size="sm">
+                Logout
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile Hamburger Menu */}
+          <button
+            style={{
+              ...navStyles.hamburger,
+              display: isMobile ? "block" : "none",
+            }}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            ☰
+          </button>
         </div>
-      </div>
-    </nav>
+
+        {/* Mobile Menu */}
+        <div style={navStyles.mobileMenu}>
+          <NavLink to="/" label="Home" mobile />
+          <NavLink to="/events" label="Events" mobile />
+          <NavLink to="/jobs" label="Jobs" mobile />
+          <NavLink to="/alumni/directory" label="Alumni" mobile />
+          {isLoggedIn && <NavLink to="/dashboard" label="Dashboard" mobile />}
+          
+          <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: "12px", marginTop: "12px" }}>
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login" style={{ textDecoration: "none", display: "block", marginBottom: "8px" }}>
+                  <Button variant="secondary" size="sm" style={{ width: "100%" }}>
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/register" style={{ textDecoration: "none" }}>
+                  <Button variant="secondary" size="sm" style={{ width: "100%" }}>
+                    Register
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <Button onClick={handleLogout} variant="secondary" size="sm" style={{ width: "100%" }}>
+                Logout
+              </Button>
+            )}
+          </div>
+        </div>
+      </nav>
+    </>
   );
-};
+}
+
+/* ================= NAV LINK COMPONENT ================= */
+
+function NavLink({ to, label, mobile }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
+  const linkStyle = {
+    color: isActive ? colors.primaryLight : colors.white,
+    textDecoration: "none",
+    fontWeight: isActive ? "700" : "500",
+    fontSize: mobile ? "16px" : "15px",
+    padding: mobile ? "12px 0" : "8px 0",
+    borderBottom: isActive ? `2px solid ${colors.primaryLight}` : "2px solid transparent",
+    transition: "all 0.3s ease",
+    display: "block",
+    cursor: "pointer",
+  };
+
+  return (
+    <Link
+      to={to}
+      style={{
+        ...linkStyle,
+        ...(isHovered && !isActive && {
+          color: colors.primaryLight,
+          borderBottomColor: colors.primaryLight,
+        }),
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {label}
+    </Link>
+  );
+}
 
 export default Navbar;
+

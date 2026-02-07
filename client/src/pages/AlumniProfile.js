@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import "../styles/global.css";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import PageBanner from "../components/PageBanner";
+import Button from "../components/Button";
 
 function AlumniProfile() {
   const [profile, setProfile] = useState({
@@ -22,7 +25,8 @@ function AlumniProfile() {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const fetchProfile = async () => {
     try {
@@ -80,8 +84,8 @@ function AlumniProfile() {
   return (
     <div>
       <Navbar />
+      <PageBanner title="My Profile" subtitle="Manage your profile information" />
       <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-        <h2>CAHCET Alumni Profile</h2>
 
         <label>Register Number *</label>
         <input
@@ -195,19 +199,13 @@ function AlumniProfile() {
           placeholder="Tell us about yourself..."
         />
 
-        <button
+        <Button
           onClick={handleSubmit}
-          style={{
-            width: "100%",
-            padding: "10px",
-            background: "#0b3c5d",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
+          fullWidth
+          style={{ marginTop: "10px" }}
         >
           {isEdit ? "Update Profile" : "Create Profile"}
-        </button>
+        </Button>
 
         {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
       </div>

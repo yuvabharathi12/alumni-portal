@@ -14,12 +14,13 @@ import Events from "./pages/Events";
 import Jobs from "./pages/Jobs";
 import AdminCreateEvent from "./pages/AdminCreateEvent";
 import PostJob from "./pages/PostJob";
-import ManageUsers from "./pages/ManageUsers";
-import Navbar from "./components/Navbar";
+import ManageUsers from "./pages/ManageUsers"; // ✅ NEW
+import Footer from "./components/Footer";
 
 function ProtectedRoute({ children, requiredRole }) {
   const token = localStorage.getItem("token");
 
+  // Not logged in → go to login page
   if (!token) {
     return <Navigate to="/login" />;
   }
@@ -42,12 +43,15 @@ function ProtectedRoute({ children, requiredRole }) {
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
       <Routes>
+        {/* ✅ Public landing page */}
         <Route path="/" element={<PublicDashboard />} />
+
+        {/* ✅ Auth pages */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* ✅ Dashboard */}
         <Route
           path="/dashboard"
           element={
@@ -57,6 +61,7 @@ function App() {
           }
         />
 
+        {/* ✅ Admin */}
         <Route
           path="/admin/approvals"
           element={
@@ -93,6 +98,7 @@ function App() {
           }
         />
 
+        {/* ✅ NEW - Manage Users */}
         <Route
           path="/admin/users"
           element={
@@ -102,6 +108,7 @@ function App() {
           }
         />
 
+        {/* ✅ Alumni */}
         <Route
           path="/alumni/profile"
           element={
@@ -112,7 +119,7 @@ function App() {
         />
 
         <Route
-          path="/alumni-directory"
+          path="/alumni/directory"
           element={
             <ProtectedRoute>
               <AlumniDirectory />
@@ -120,6 +127,7 @@ function App() {
           }
         />
 
+        {/* ✅ Common */}
         <Route
           path="/events"
           element={
@@ -147,8 +155,11 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
 
 export default App;
+
+// UI: improved

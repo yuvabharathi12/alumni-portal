@@ -1,116 +1,159 @@
 import { useState } from "react";
-import axios from "axios";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
+import Navbar from "../components/Navbar";
+import PageBanner from "../components/PageBanner";
+import api from "../services/api";
+import "../styles/global.css";
+import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
-import Footer from "../components/Footer";
 
 function PostJob() {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     title: "",
     company: "",
     description: "",
-    requirements: "",
-    salary: "",
-    location: "",
-    jobType: "Full-time",
   });
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("token");
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    // Limit description and requirements to word count
-    if (name === "description" || name === "requirements") {
-      const words = value.split(/\s+/).filter(w => w);
-      if (words.length <= 100) {
-        setFormData({ ...formData, [name]: value });
+    if (e.target.name === "description") {
+      const words = e.target.value.split(/\s+/).filter(Boolean);
+      if (words.length > 100) {
+        const trimmed = words.slice(0, 100).join(" ");
+        setForm({ ...form, description: trimmed });
+        return;
       }
-    } else {
-      setFormData({ ...formData, [name]: value });
     }
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/jobs", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMessage("✅ Job posted successfully!");
-      setFormData({ title: "", company: "", description: "", requirements: "", salary: "", location: "", jobType: "Full-time" });
+      await api.post("/jobs", form);
+      setSuccess(true);
+      setForm({ title: "", company: "", description: "" });
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setMessage("❌ Failed to post job");
+      alert("Failed to post job");
     } finally {
       setLoading(false);
     }
   };
 
-  const containerStyles = { maxWidth: "800px", margin: "0 auto", padding: `${spacing[8]} ${spacing[6]}`, marginTop: "80px" };
+  const wordCount = form.description.split(/\s+/).filter(Boolean).length;
 
   return (
-    <div style={{ background: `linear-gradient(135deg, ${colors.secondary[50]} 0%, ${colors.primary[50]} 100%)`, minHeight: "100vh" }}>
-      <div style={containerStyles}>
-        <div style={{ background: colors.gradients.secondary, color: "white", padding: spacing[8], borderRadius: borderRadius.xl, marginBottom: spacing[8] }}>
-          <h1 style={{ margin: 0, fontSize: typography.fontSize['3xl'], fontWeight: 800 }}>Post a Job Opening 💼</h1>
-        </div>
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <PageBanner title="Post a Job" subtitle="Share career opportunities with our alumni network" />
+      
+      <div style={{ maxWidth: "800px", margin: "40px auto", padding: "0 20px" }}>
+        <div style={{ ...styles.card, padding: "40px" }}>
+          <form onSubmit={handleSubmit}>
+            {success && (
+              <div style={{
+                padding: "12px 16px",
+                background: "#d4edda",
+                border: "1px solid #28a745",
+                borderRadius: "8px",
+                color: "#155724",
+                marginBottom: "20px",
+                fontSize: "14px"
+              }}>
+                ✓ Job posted successfully!
+              </div>
+            )}
 
-        {message && (
-          <div style={{ padding: spacing[4], background: message.includes("✅") ? colors.success.bg : colors.error.bg, color: message.includes("✅") ? colors.success.dark : colors.error.dark,borderRadius: borderRadius.md, marginBottom: spacing[6] }}>
-            {message}
-          </div>
-        )}
-
-        <div style={{ background: colors.background.paper, borderRadius: borderRadius.xl, padding: spacing[8], boxShadow: shadows.lg }}>
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Job Title</label>
-            <input type="text" name="title" placeholder="e.g., Senior Software Engineer" value={formData.title} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }} />
-          </div>
-
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Company Name</label>
-            <input type="text" name="company" placeholder="Company name" value={formData.company} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }} />
-          </div>
-
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Description (Max 100 words)</label>
-            <textarea name="description" placeholder="Job description" value={formData.description} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}`, minHeight: "100px", fontFamily: 'inherit', resize: 'vertical' }} />
-            <small style={{ color: '#374151', fontSize: typography.fontSize.xs, marginTop: spacing[1], display: 'block' }}>{formData.description.split(/\s+/).filter(w => w).length}/100 words</small>
-          </div>
-
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Requirements (Max 100 words)</label>
-            <textarea name="requirements" placeholder="Required skills" value={formData.requirements} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}`, minHeight: "80px", fontFamily: 'inherit', resize: 'vertical' }} />
-            <small style={{ color: '#374151', fontSize: typography.fontSize.xs, marginTop: spacing[1], display: 'block' }}>{formData.requirements.split(/\s+/).filter(w => w).length}/100 words</small>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: spacing[4], marginBottom: spacing[4] }}>
-            <div>
-              <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Salary (Optional)</label>
-              <input type="text" name="salary" placeholder="e.g., 10-15 LPA" value={formData.salary} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }} />
+            {/* Job Title */}
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: colors.heading, fontSize: "14px" }}>
+                Job Title *
+              </label>
+              <input
+                name="title"
+                placeholder="e.g., Senior Software Engineer"
+                value={form.title}
+                onChange={handleChange}
+                required
+                style={{
+                  ...styles.input,
+                  padding: "12px 14px",
+                  fontSize: "15px",
+                  transition: "border-color 0.2s"
+                }}
+                onFocus={(e) => (e.target.style.borderColor = colors.primary)}
+                onBlur={(e) => (e.target.style.borderColor = colors.border)}
+              />
             </div>
-            <div>
-              <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Location</label>
-              <input type="text" name="location" placeholder="City / Remote" value={formData.location} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }} />
+
+            {/* Company Name */}
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: colors.heading, fontSize: "14px" }}>
+                Company Name *
+              </label>
+              <input
+                name="company"
+                placeholder="e.g., Tech Corp Inc."
+                value={form.company}
+                onChange={handleChange}
+                required
+                style={{
+                  ...styles.input,
+                  padding: "12px 14px",
+                  fontSize: "15px",
+                  transition: "border-color 0.2s"
+                }}
+                onFocus={(e) => (e.target.style.borderColor = colors.primary)}
+                onBlur={(e) => (e.target.style.borderColor = colors.border)}
+              />
             </div>
-          </div>
 
-          <div style={{ marginBottom: spacing[6] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Job Type</label>
-            <select name="jobType" value={formData.jobType} onChange={handleChange} style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}>
-              <option>Full-time</option>
-              <option>Part-time</option>
-              <option>Contract</option>
-              <option>Internship</option>
-            </select>
-          </div>
+            {/* Description */}
+            <div style={{ marginBottom: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                <label style={{ fontWeight: "600", color: colors.heading, fontSize: "14px" }}>
+                  Job Description *
+                </label>
+                <span style={{ fontSize: "12px", color: wordCount >= 95 ? colors.secondary : colors.textSecondary }}>
+                  {wordCount}/100 words
+                </span>
+              </div>
+              <textarea
+                name="description"
+                placeholder="Describe the job role, responsibilities, and requirements..."
+                value={form.description}
+                onChange={handleChange}
+                style={{
+                  ...styles.textarea,
+                  width: "100%",
+                  padding: "12px 14px",
+                  fontSize: "15px",
+                  minHeight: "180px",
+                  maxHeight: "400px",
+                  resize: "vertical",
+                  transition: "border-color 0.2s",
+                  boxSizing: "border-box"
+                }}
+                onFocus={(e) => (e.target.style.borderColor = colors.primary)}
+                onBlur={(e) => (e.target.style.borderColor = colors.border)}
+              />
+            </div>
 
-          <Button variant="primary" fullWidth size="lg" onClick={handleSubmit} disabled={loading}>
-            {loading ? "Posting..." : "Post Job"}
-          </Button>
+            {/* Submit Button */}
+            <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+              <Button 
+                type="submit" 
+                disabled={loading}
+                style={{ minWidth: "140px" }}
+              >
+                {loading ? "Posting..." : "Post Job"}
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

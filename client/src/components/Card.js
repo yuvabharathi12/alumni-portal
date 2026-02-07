@@ -1,105 +1,57 @@
 import React from 'react';
-import { colors, spacing, borderRadius, shadows, transitions } from '../styles/theme';
+import { colors } from '../styles/theme';
 
-const Card = ({ 
-  children, 
-  variant = 'base',
-  interactive = false,
-  padding = 6,
-  image = null,
-  imageHeight = '200px',
+const Card = ({
+  children,
+  variant = 'neutral',
   className = '',
-  onClick,
-  ...props 
+  style = {},
+  hoverable = true,
+  ...props
 }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-
   const variantStyles = {
-    base: {
-      background: colors.background.paper,
-      borderRadius: borderRadius.lg,
-      padding: spacing[padding],
-      boxShadow: shadows.base,
-      border: `1px solid ${colors.border}`,
-      transition: transitions.base,
+    primary: {
+      background: '#f0fdf4',
+      border: `1px solid #dcfce7`,
+      boxShadow: '0 2px 8px rgba(22, 101, 52, 0.06)',
     },
-    elevated: {
-      background: colors.background.paper,
-      borderRadius: borderRadius.lg,
-      padding: spacing[padding],
-      boxShadow: shadows.lg,
-      border: 'none',
-      transition: transitions.base,
+    secondary: {
+      background: '#fff7ed',
+      border: `1px solid #fed7aa`,
+      boxShadow: '0 2px 8px rgba(249, 115, 22, 0.06)',
     },
-    outlined: {
-      background: 'transparent',
-      borderRadius: borderRadius.lg,
-      padding: spacing[padding],
-      border: `2px solid ${colors.primary.main}`,
-      transition: transitions.base,
+    accent: {
+      background: '#fafbff',
+      border: `1px solid #e0e7ff`,
+      boxShadow: '0 2px 8px rgba(30, 58, 138, 0.06)',
     },
-    gradient: {
-      background: colors.gradients.card,
-      borderRadius: borderRadius.lg,
-      padding: spacing[padding],
-      boxShadow: shadows.md,
-      border: 'none',
-      transition: transitions.base,
-      backdropFilter: 'blur(10px)',
+    neutral: {
+      background: '#ffffff',
+      border: `1px solid #e5e7eb`,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    },
+    subtle: {
+      background: '#f9fafb',
+      border: `1px solid #e5e7eb`,
+      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
     },
   };
 
-  const interactiveStyles = interactive ? {
-    cursor: 'pointer',
-  } : {};
-
-  const hoverStyles = interactive && isHovered ? {
-    transform: 'translateY(-10px)',
-    boxShadow: shadows.xl,
-    borderColor: isHovered && variant === 'outlined' ? colors.primary[600] : colors.border,
-  } : {};
-
-  const cardStyles = {
-    ...variantStyles[variant],
-    ...interactiveStyles,
-    ...hoverStyles,
-    overflow: 'hidden',
+  const baseStyle = {
+    borderRadius: '8px',
+    padding: '20px',
+    transition: 'all 0.3s ease',
+    cursor: hoverable ? 'default' : 'default',
+    ...variantStyles[variant] || variantStyles.neutral,
+    ...style,
   };
 
   return (
     <div
-      className={className}
-      style={cardStyles}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={interactive ? onClick : undefined}
+      className={`${hoverable ? 'hover:shadow-md' : ''} ${className}`}
+      style={baseStyle}
       {...props}
     >
-      {image && (
-        <div
-          style={{
-            width: `calc(100% + ${spacing[padding] * 2}px)`,
-            marginLeft: `-${spacing[padding]}px`,
-            marginTop: `-${spacing[padding]}px`,
-            marginBottom: spacing[4],
-            height: imageHeight,
-            overflow: 'hidden',
-            borderRadius: `${borderRadius.lg} ${borderRadius.lg} 0 0`,
-          }}
-        >
-          <img
-            src={image}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: transitions.slow,
-              transform: isHovered ? 'scale(1.08)' : 'scale(1)',
-            }}
-          />
-        </div>
-      )}
       {children}
     </div>
   );

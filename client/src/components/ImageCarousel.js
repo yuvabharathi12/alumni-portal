@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { colors, spacing, borderRadius, shadows } from "../styles/theme";
+import "../styles/global.css";
+import { colors } from "../styles/theme";
 
 function ImageCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -40,10 +41,9 @@ function ImageCarousel({ images }) {
         position: "relative",
         width: "100%",
         height: "450px",
-        borderRadius: borderRadius.xl,
+        borderRadius: "12px",
         overflow: "hidden",
-        boxShadow: shadows.xl,
-        background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
       }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -52,7 +52,7 @@ function ImageCarousel({ images }) {
       <div
         style={{
           display: "flex",
-          transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition: "transform 0.5s ease-in-out",
           transform: `translateX(-${currentIndex * 100}%)`,
           height: "100%",
         }}
@@ -75,23 +75,23 @@ function ImageCarousel({ images }) {
                 objectFit: "cover",
               }}
             />
-            {/* Overlay with gradient */}
+            {/* Overlay with title */}
             <div
               style={{
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
-                padding: spacing[8],
-                color: colors.text.inverse,
+                background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
+                padding: "30px 20px 20px",
+                color: colors.white,
               }}
             >
-              <h3 style={{ margin: "0 0 12px 0", fontSize: "28px", fontWeight: "bold" }}>
+              <h3 style={{ margin: "0 0 8px 0", fontSize: "24px" }}>
                 {image.title}
               </h3>
               {image.description && (
-                <p style={{ margin: 0, fontSize: "16px", opacity: 0.9 }}>
+                <p style={{ margin: 0, fontSize: "14px", opacity: 0.9 }}>
                   {image.description}
                 </p>
               )}
@@ -105,30 +105,27 @@ function ImageCarousel({ images }) {
         onClick={goToPrevious}
         style={{
           position: "absolute",
-          left: spacing[6],
+          left: "20px",
           top: "50%",
           transform: "translateY(-50%)",
-          background: "rgba(0,0,0,0.4)",
-          color: colors.text.inverse,
+          background: "rgba(0,0,0,0.5)",
+          color: colors.white,
           border: "none",
           width: "50px",
           height: "50px",
-          borderRadius: borderRadius.full,
+          borderRadius: "50%",
           cursor: "pointer",
           fontSize: "24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transition: "all 0.3s ease",
-          backdropFilter: "blur(4px)",
+          transition: "all 0.2s ease",
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = "rgba(0,0,0,0.7)";
-          e.target.style.transform = "translateY(-50%) scale(1.1)";
+          e.target.style.background = "rgba(0,0,0,0.8)";
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = "rgba(0,0,0,0.4)";
-          e.target.style.transform = "translateY(-50%) scale(1)";
+          e.target.style.background = "rgba(0,0,0,0.5)";
         }}
       >
         ‹
@@ -139,45 +136,41 @@ function ImageCarousel({ images }) {
         onClick={goToNext}
         style={{
           position: "absolute",
-          right: spacing[6],
+          right: "20px",
           top: "50%",
           transform: "translateY(-50%)",
-          background: "rgba(0,0,0,0.4)",
-          color: colors.text.inverse,
+          background: "rgba(0,0,0,0.5)",
+          color: colors.white,
           border: "none",
           width: "50px",
           height: "50px",
-          borderRadius: borderRadius.full,
+          borderRadius: "50%",
           cursor: "pointer",
           fontSize: "24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transition: "all 0.3s ease",
-          backdropFilter: "blur(4px)",
+          transition: "all 0.2s ease",
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = "rgba(0,0,0,0.7)";
-          e.target.style.transform = "translateY(-50%) scale(1.1)";
+          e.target.style.background = "rgba(0,0,0,0.8)";
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = "rgba(0,0,0,0.4)";
-          e.target.style.transform = "translateY(-50%) scale(1)";
+          e.target.style.background = "rgba(0,0,0,0.5)";
         }}
       >
         ›
       </button>
 
-      {/* Slide Indicators */}
+      {/* Dots Indicator */}
       <div
         style={{
           position: "absolute",
-          bottom: spacing[4],
+          bottom: "20px",
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
-          gap: spacing[2],
-          zIndex: 10,
+          gap: "8px",
         }}
       >
         {images.map((_, index) => (
@@ -185,24 +178,16 @@ function ImageCarousel({ images }) {
             key={index}
             onClick={() => goToSlide(index)}
             style={{
-              width: currentIndex === index ? "32px" : "8px",
-              height: "8px",
-              borderRadius: borderRadius.full,
+              width: currentIndex === index ? "24px" : "12px",
+              height: "12px",
+              borderRadius: "6px",
+              border: "none",
               background:
                 currentIndex === index
-                  ? colors.secondary.main
-                  : "rgba(255, 255, 255, 0.5)",
-              border: "none",
+                  ? colors.white
+                  : "rgba(255,255,255,0.5)",
               cursor: "pointer",
               transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = colors.secondary.main;
-            }}
-            onMouseLeave={(e) => {
-              if (currentIndex !== index) {
-                e.target.style.background = "rgba(255, 255, 255, 0.5)";
-              }
             }}
           />
         ))}

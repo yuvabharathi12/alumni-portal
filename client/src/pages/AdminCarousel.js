@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import "../styles/global.css";
 import axios from "axios";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
-import Button from "../components/Button";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import { colors, styles } from "../styles/theme";
 
 function AdminCarousel() {
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [newImage, setNewImage] = useState({ title: "", description: "", imageUrl: "" });
+  const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [description, setDescription] = useState("");
+  const [message, setMessage] = useState("");
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -20,102 +23,284 @@ function AdminCarousel() {
       setImages(res.data);
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const addImage = async () => {
+  const handleAddImage = async () => {
+    if (!title || !imageUrl) {
+      setMessage("Title and Image URL are required");
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:5000/api/carousel/images", newImage, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        "http://localhost:5000/api/carousel/images",
+        {
+          title,
+          imageUrl,
+          description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMessage("Image added successfully");
+      setTitle("");
+      setImageUrl("");
+      setDescription("");
       fetchImages();
-      setNewImage({ title: "", description: "", imageUrl: "" });
-      alert("Image added successfully!");
     } catch (err) {
-      alert("Failed to add image");
+      setMessage("Failed to add image");
     }
   };
 
-  const deleteImage = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+  const handleDeleteImage = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this image?")) {
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:5000/api/carousel/images/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      setMessage("Image deleted successfully");
       fetchImages();
     } catch (err) {
-      alert("Failed to delete image");
+      setMessage("Failed to delete image");
     }
   };
 
-  const containerStyles = { maxWidth: "1200px", margin: "0 auto", padding: `${spacing[8]} ${spacing[6]}`, marginTop: "80px" };
-
   return (
-    <div style={{ background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`, minHeight: "100vh" }}>
-      <div style={containerStyles}>
-        <h1 style={{ color: '#1e3a8a', marginBottom: spacing[2], fontSize: "3rem", fontWeight: 800 }}>Carousel Management 🖼️</h1>
-        <p style={{ color: '#374151', marginBottom: spacing[8], fontSize: typography.fontSize.lg }}>Manage homepage carousel images</p>
+    <div style={{ background: "transparent", minHeight: "100vh" }}>
+      <Navbar />
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "40px 20px",
+        }}
+      >
+        <h2 style={{ margin: "0 0 30px 0", color: colors.primary }}>
+          Manage Carousel Images
+        </h2>
 
         {/* Add Image Form */}
-        <div style={{ background: colors.background.paper, borderRadius: borderRadius.xl, padding: spacing[8], marginBottom: spacing[8], boxShadow: shadows.lg }}>
-          <h2 style={{ color: '#1e3a8a', marginBottom: spacing[4], fontSize: typography.fontSize['2xl'], fontWeight: 700 }}>Add New Image</h2>
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Title</label>
-            <input
-              type="text"
-              placeholder="Image title"
-              value={newImage.title}
-              onChange={(e) => setNewImage({ ...newImage, title: e.target.value })}
-              style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}
-            />
-          </div>
-          <div style={{ marginBottom: spacing[4] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Description</label>
-            <textarea
-              placeholder="Description"
-              value={newImage.description}
-              onChange={(e) => setNewImage({ ...newImage, description: e.target.value })}
-              style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}`, minHeight: "80px" }}
-            />
-          </div>
-          <div style={{ marginBottom: spacing[6] }}>
-            <label style={{ display: "block", marginBottom: spacing[2], fontWeight: 600 }}>Image URL</label>
-            <input
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              value={newImage.imageUrl}
-              onChange={(e) => setNewImage({ ...newImage, imageUrl: e.target.value })}
-              style={{ width: "100%", padding: spacing[2], borderRadius: borderRadius.md, border: `1px solid ${colors.border}` }}
-            />
-          </div>
-          <Button variant="primary" onClick={addImage}>
+        <div style={{ ...styles.card, marginBottom: "30px" }}>
+          <h3 style={{ margin: "0 0 20px 0", color: colors.primary }}>
+            Add New Image
+          </h3>
+
+          <label
+            style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "14px",
+              fontWeight: "500",
+            }}
+          >
+            Title *
+          </label>
+          <input
+            type="text"
+            placeholder="e.g., Annual Day 2024"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={styles.input}
+          />
+
+          <label
+            style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "14px",
+              fontWeight: "500",
+            }}
+          >
+            Image URL *
+          </label>
+          <input
+            type="text"
+            placeholder="https://example.com/image.jpg"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            style={styles.input}
+          />
+
+          <label
+            style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "14px",
+              fontWeight: "500",
+            }}
+          >
+            Description (Optional)
+          </label>
+          <textarea
+            placeholder="Brief description of the image"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows="3"
+            style={{ ...styles.input, resize: "vertical" }}
+          />
+
+          <button
+            onClick={handleAddImage}
+            style={{
+              ...styles.button,
+              background: colors.primary,
+              color: colors.white,
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = colors.primaryDark;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = colors.primary;
+            }}
+          >
             Add Image
-          </Button>
+          </button>
+
+          {message && (
+            <p
+              style={{
+                marginTop: "16px",
+                padding: "12px",
+                background: message.includes("success")
+                  ? "#d4edda"
+                  : "#fff3cd",
+                border: `1px solid ${
+                  message.includes("success") ? "#28a745" : "#ffc107"
+                }`,
+                borderRadius: "6px",
+                color: message.includes("success") ? "#155724" : "#856404",
+              }}
+            >
+              {message}
+            </p>
+          )}
         </div>
 
-        {/* Images List */}
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: spacing[6] }}>
-            {images.map((img) => (
-              <div key={img._id} style={{ background: colors.background.paper, borderRadius: borderRadius.lg, overflow: "hidden", boxShadow: shadows.md }}>
-                <img src={img.imageUrl} alt={img.title} style={{ width: "100%", height: "200px", objectFit: "cover" }} />
-                <div style={{ padding: spacing[4] }}>
-                  <h3 style={{ color: '#1e3a8a', marginBottom: spacing[2] }}>{img.title}</h3>
-                  <p style={{ color: '#374151', fontSize: typography.fontSize.sm, marginBottom: spacing[4] }}>{img.description}</p>
-                  <Button variant="danger" size="sm" fullWidth onClick={() => deleteImage(img._id)}>
-                    Delete
-                  </Button>
+        {/* Current Images */}
+        <div style={styles.card}>
+          <h3 style={{ margin: "0 0 20px 0", color: colors.primary }}>
+            Current Images ({images.length})
+          </h3>
+
+          {images.length === 0 ? (
+            <p style={{ color: colors.textLight, textAlign: "center", padding: "40px 0" }}>
+              No images added yet. Add your first image above.
+            </p>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              {images.map((image) => (
+                <div
+                  key={image._id}
+                  style={{
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={image.imageUrl}
+                    alt={image.title}
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <div style={{ padding: "12px" }}>
+                    <h4
+                      style={{
+                        margin: "0 0 8px 0",
+                        fontSize: "16px",
+                        color: colors.primary,
+                      }}
+                    >
+                      {image.title}
+                    </h4>
+                    {image.description && (
+                      <p
+                        style={{
+                          margin: "0 0 12px 0",
+                          fontSize: "13px",
+                          color: colors.textLight,
+                        }}
+                      >
+                        {image.description}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => handleDeleteImage(image._id)}
+                      style={{
+                        ...styles.button,
+                        background: colors.danger,
+                        color: colors.white,
+                        width: "100%",
+                        padding: "8px",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = "#c82333";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = colors.danger;
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Help Text */}
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "16px",
+            background: "#e7f3ff",
+            border: "1px solid #b3d9ff",
+            borderRadius: "6px",
+            fontSize: "14px",
+            color: "#004085",
+          }}
+        >
+          <strong>💡 Tip:</strong> For best results, use images with a 16:9 aspect ratio
+          (1920x1080px recommended). You can use free image hosting services like{" "}
+          <a
+            href="https://imgur.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: colors.primary }}
+          >
+            Imgur
+          </a>{" "}
+          or{" "}
+          <a
+            href="https://imgbb.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: colors.primary }}
+          >
+            ImgBB
+          </a>
+          .
+        </div>
       </div>
-      <Footer />
     </div>
   );
 }

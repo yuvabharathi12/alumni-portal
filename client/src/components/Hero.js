@@ -1,18 +1,17 @@
 import React from 'react';
-import { colors, spacing, typography, borderRadius, shadows } from '../styles/theme';
+import "../styles/global.css";
+import { colors, spacing, typography, borderRadius } from '../styles/theme';
 import Button from './Button';
 
-const Hero = ({ 
-  title, 
-  subtitle, 
+const Hero = ({
+  title,
+  subtitle,
   backgroundImage,
   overlay = true,
-  height = '600px',
+  height = '520px',
   primaryButton,
   secondaryButton,
   centered = true,
-  children,
-  gradient = colors.gradients.hero,
 }) => {
   const heroStyles = {
     position: 'relative',
@@ -36,7 +35,7 @@ const Hero = ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed',
+    filter: backgroundImage ? 'saturate(0.9) brightness(0.7)' : 'none',
   };
 
   const overlayStyles = {
@@ -45,7 +44,7 @@ const Hero = ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: overlay ? gradient : 'transparent',
+    background: overlay ? 'linear-gradient(135deg, rgba(22,101,52,0.75), rgba(28,46,116,0.65))' : 'transparent',
   };
 
   const contentStyles = {
@@ -54,78 +53,24 @@ const Hero = ({
     maxWidth: '1200px',
     padding: `0 ${spacing[6]}`,
     textAlign: centered ? 'center' : 'left',
-    color: colors.text.inverse,
-    animation: 'slideUp 0.8s ease-out',
-  };
-
-  const titleStyles = {
-    fontFamily: typography.fontFamily.display,
-    fontSize: typography.fontSize['6xl'],
-    fontWeight: typography.fontWeight.bold,
-    marginBottom: spacing[4],
-    lineHeight: typography.lineHeight.tight,
-    textShadow: '0 4px 16px rgba(0,0,0,0.3)',
     color: 'white',
   };
 
-  const subtitleStyles = {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.regular,
-    marginBottom: spacing[8],
-    opacity: 0.95,
-    maxWidth: '700px',
-    margin: centered ? '0 auto' : '0',
-    marginBottom: spacing[8],
-    lineHeight: typography.lineHeight.relaxed,
-    color: 'rgba(255, 255, 255, 0.95)',
-  };
-
-  const buttonGroupStyles = {
-    display: 'flex',
-    gap: spacing[4],
-    justifyContent: centered ? 'center' : 'flex-start',
-    flexWrap: 'wrap',
-  };
-
   return (
-    <div style={heroStyles}>
-      {/* Background Image */}
+    <section style={heroStyles}>
       <div style={backgroundStyles} />
-      
-      {/* Overlay */}
       <div style={overlayStyles} />
-
-      {/* Content */}
       <div style={contentStyles}>
-        {title && <h1 style={titleStyles}>{title}</h1>}
-        {subtitle && <p style={subtitleStyles}>{subtitle}</p>}
-        
+        {title && <h1 style={{ margin: 0, fontSize: typography.fontSize['3xl'], fontWeight: 800 }}>{title}</h1>}
+        {subtitle && <p style={{ marginTop: spacing[4], fontSize: typography.fontSize.lg }}>{subtitle}</p>}
         {(primaryButton || secondaryButton) && (
-          <div style={buttonGroupStyles}>
-            {primaryButton && (
-              <Button 
-                variant="secondary" 
-                size="lg"
-                onClick={primaryButton.onClick}
-              >
-                {primaryButton.label}
-              </Button>
-            )}
-            {secondaryButton && (
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={secondaryButton.onClick}
-              >
-                {secondaryButton.label}
-              </Button>
-            )}
+          <div style={{ marginTop: spacing[6], display: 'flex', gap: spacing[4], justifyContent: centered ? 'center' : 'flex-start' }}>
+            {primaryButton && <Button onClick={primaryButton.onClick} variant={primaryButton.variant || 'primary'}>{primaryButton.label}</Button>}
+            {secondaryButton && <Button onClick={secondaryButton.onClick} variant={secondaryButton.variant || 'outline'}>{secondaryButton.label}</Button>}
           </div>
         )}
-        
-        {children}
       </div>
-    </div>
+    </section>
   );
 };
 

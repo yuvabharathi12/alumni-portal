@@ -1,8 +1,10 @@
 import { useState } from "react";
+import "../styles/global.css";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { colors, spacing, typography, borderRadius, shadows } from "../styles/theme";
-
+import { colors, styles } from "../styles/theme";
+import Button from "../components/Button";
+import logo from "../assets/logo.png";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -28,151 +30,47 @@ function Login() {
     }
   };
 
-  const containerStyles = {
-    minHeight: "100vh",
-    display: "flex",
-    background: `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.secondary[50]} 100%)`,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: spacing[4],
-  };
-
-  const cardStyles = {
-    width: "100%",
-    maxWidth: "480px",
-    background: colors.background.paper,
-    padding: spacing[10],
-    borderRadius: borderRadius.xl,
-    boxShadow: shadows.xl,
-    border: `1px solid ${colors.border}`,
-  };
-
-  const inputStyles = {
-    width: "100%",
-    padding: `${spacing[3]} ${spacing[4]}`,
-    border: `2px solid ${colors.border}`,
-    borderRadius: borderRadius.md,
-    fontSize: typography.fontSize.base,
-    fontFamily: typography.fontFamily.body,
-    transition: "all 0.3s ease",
-    marginBottom: spacing[4],
-  };
-
-  const labelStyles = {
-    display: "block",
-    marginBottom: spacing[2],
-    color: colors.text.primary,
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.semibold,
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
   };
 
   return (
-    <div style={containerStyles}>
-      <div style={cardStyles}>
-        {/* Header */}
-        <div style={{ marginBottom: spacing[8], textAlign: "center" }}>
-          <h2 style={{ margin: 0, color: '#1e3a8a', marginBottom: spacing[2] }}>
-            Welcome Back! 👋
-          </h2>
-          <p style={{ margin: 0, color: '#374151' }}>
-            Sign in to your CAHCET Alumni account
-          </p>
+    <div style={{ minHeight: '100vh', background: "transparent", display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div style={{ width: '100%', maxWidth: 1200, display: 'flex', gap: 0, alignItems: 'stretch', borderRadius: 16, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+        {/* Left image section */}
+        <div style={{ flex: 1, backgroundImage: 'url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=700&fit=crop)', backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 40, position: 'relative' }} className="auth-visual">
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(135deg, rgba(45,157,106,0.85) 0%, rgba(52,211,153,0.75) 100%)', zIndex: 1 }}></div>
+          <div style={{ position: 'relative', zIndex: 2, color: colors.white }}>
+            <h2 style={{ fontSize: 28, fontWeight: 700, margin: '0 0 16px 0' }}>Welcome Back</h2>
+            <p style={{ marginTop: 0, color: 'rgba(255,255,255,0.95)', fontSize: 15, lineHeight: 1.6 }}>Access the alumni network, explore career opportunities, and stay connected with your community.</p>
+          </div>
         </div>
 
-        {/* Message */}
-        {message && (
-          <div
-            style={{
-              padding: spacing[3],
-              background: message.includes("success")
-                ? colors.success.bg
-                : colors.error.bg,
-              color: message.includes("success")
-                ? colors.success.dark
-                : colors.error.dark,
-              borderRadius: borderRadius.md,
-              marginBottom: spacing[4],
-              fontSize: typography.fontSize.sm,
-            }}
-          >
-            {message}
+        {/* Right form card */}
+        <div style={{ flex: '0 0 480px', background: colors.white, padding: 32 }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{ width: 70, height: 70, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+              <img src={logo} alt="CAHCET Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+            <h2 style={{ margin: '12px 0 4px 0', color: colors.heading, fontSize: 26, fontWeight: 700 }}>CAHCET</h2>
+            <p style={{ margin: '8px 0 0 0', color: colors.primary, fontSize: 16, fontWeight: 600 }}>Alumni Portal</p>
+            <p style={{ margin: '8px 0 0 0', color: colors.textSecondary, fontSize: 14 }}>Sign in to your account</p>
           </div>
-        )}
 
-        {/* Form */}
-        <div>
-          <label style={labelStyles}>Email Address</label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
-            style={inputStyles}
-            onFocus={(e) => {
-              e.target.style.borderColor = '#1e3a8a';
-              e.target.style.boxShadow = `0 0 0 3px #e0e7ff`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = colors.border;
-              e.target.style.boxShadow = "none";
-            }}
-          />
+          <div>
+            <label style={{ display: 'block', marginBottom: 6, color: colors.text, fontSize: 14, fontWeight: 500 }}>Email</label>
+            <input type="email" placeholder="your.email@example.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyPress={handleKeyPress} style={{ ...styles.input, outline: 'none' }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
 
-          <label style={labelStyles}>Password</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleLogin()}
-            style={inputStyles}
-            onFocus={(e) => {
-              e.target.style.borderColor = '#1e3a8a';
-              e.target.style.boxShadow = `0 0 0 3px #e0e7ff`;
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = colors.border;
-              e.target.style.boxShadow = "none";
-            }}
-          />
+            <label style={{ display: 'block', marginBottom: 6, marginTop: 12, color: colors.text, fontSize: 14, fontWeight: 500 }}>Password</label>
+            <input type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyPress={handleKeyPress} style={{ ...styles.input, outline: 'none' }} onFocus={(e) => (e.target.style.borderColor = colors.primary)} onBlur={(e) => (e.target.style.borderColor = colors.border)} />
 
-<button
-  onClick={handleLogin}
-  disabled={loading}
-  style={{
-    width: "100%",
-    padding: `${spacing[3]} ${spacing[4]}`,
-    background: "#1e3a8a",
-    color: "#fff",
-    border: "none",
-    borderRadius: borderRadius.md,
-    fontSize: typography.fontSize.base,
-    fontWeight: 600,
-    cursor: loading ? "not-allowed" : "pointer",
-    marginBottom: spacing[4],
-  }}
->
-  {loading ? "Signing in..." : "Login"}
-</button>
+            <Button onClick={handleLogin} disabled={loading} fullWidth size="lg" style={{ marginTop: 12 }}>{loading ? 'Signing in...' : 'Sign In'}</Button>
 
+            {message && (<div style={{ marginTop: 14, padding: 12, background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 8, color: '#856404', fontSize: 14 }}>{message}</div>)}
 
-          <div style={{ textAlign: "center", paddingTop: spacing[4], borderTop: `1px solid ${colors.border}` }}>
-            <p style={{ color: '#374151', fontSize: typography.fontSize.sm, margin: `${spacing[2]} 0` }}>
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                style={{
-                  color: '#1e3a8a',
-                  fontWeight: typography.fontWeight.semibold,
-                  textDecoration: "none",
-                }}
-                onMouseEnter={(e) => (e.target.style.textDecoration = "underline")}
-                onMouseLeave={(e) => (e.target.style.textDecoration = "none")}
-              >
-                Create one
-              </Link>
-            </p>
+            <div style={{ marginTop: 18, textAlign: 'center', fontSize: 14, color: colors.textLight }}>Don't have an account? <Link to="/register" style={{ color: colors.primary, textDecoration: 'none', fontWeight: 600 }}>Register</Link></div>
           </div>
         </div>
       </div>
