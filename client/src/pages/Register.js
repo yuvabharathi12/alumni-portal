@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/global.css";
@@ -21,6 +21,15 @@ function Register() {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleNextStep = () => {
     if (currentStep === 1) {
@@ -93,48 +102,165 @@ function Register() {
     "EEE",
   ];
 
+  const containerStyle = {
+    minHeight: "100vh",
+    background: "transparent",
+    display: "flex",
+    alignItems: isMobile ? 'flex-start' : 'center',
+    justifyContent: "center",
+    padding: isMobile ? 0 : 20,
+  };
+
+  const authContainerStyle = {
+    width: '100%',
+    maxWidth: isMobile ? '100%' : 1200,
+    display: 'flex',
+    flexDirection: isMobile ? 'column' : 'row',
+    gap: 0,
+    alignItems: 'stretch',
+    borderRadius: isMobile ? 0 : 16,
+    overflow: 'hidden',
+    boxShadow: isMobile ? 'none' : '0 20px 60px rgba(0,0,0,0.15)',
+    minHeight: isMobile ? '100vh' : 'auto'
+  };
+
+  const visualStyle = {
+    flex: isMobile ? '0 0 auto' : 1,
+    backgroundImage: "url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=700&fit=crop)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: isMobile ? 'center' : 'flex-end',
+    padding: isMobile ? '24px 20px' : 40,
+    position: "relative",
+    minHeight: isMobile ? '180px' : '200px'
+  };
+
+  const overlayStyle = {
+    position: "absolute",
+    inset: 0,
+    background: "linear-gradient(135deg, rgba(45,157,106,0.85) 0%, rgba(52,211,153,0.75) 100%)",
+    zIndex: 1,
+  };
+
+  const visualContentStyle = {
+    position: "relative",
+    zIndex: 2,
+    color: colors.white
+  };
+
+  const visualHeadingStyle = {
+    fontSize: isMobile ? 22 : 28,
+    fontWeight: 700,
+    marginBottom: isMobile ? 12 : 16
+  };
+
+  const visualTextStyle = {
+    fontSize: isMobile ? 14 : 15,
+    lineHeight: 1.6
+  };
+
+  const formContainerStyle = {
+    flex: isMobile ? 1 : '0 0 480px',
+    background: colors.white,
+    padding: isMobile ? '24px 20px' : 32
+  };
+
+  const headerStyle = {
+    textAlign: "center",
+    marginBottom: 24
+  };
+
+  const logoContainerStyle = {
+    width: isMobile ? 60 : 70,
+    height: isMobile ? 60 : 70,
+    margin: "0 auto 12px",
+  };
+
+  const logoStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain"
+  };
+
+  const titleStyle = {
+    margin: "12px 0 4px",
+    color: colors.heading,
+    fontSize: isMobile ? 22 : 26,
+    fontWeight: 700,
+  };
+
+  const subtitleStyle = {
+    margin: "8px 0 0",
+    color: colors.primary,
+    fontSize: isMobile ? 14 : 16,
+    fontWeight: 600,
+  };
+
+  const progressContainerStyle = {
+    display: "flex",
+    gap: 8,
+    marginBottom: 28
+  };
+
+  const progressStepStyle = {
+    flex: 1
+  };
+
+  const labelStyle = {
+    display: 'block',
+    marginBottom: 6,
+    marginTop: 12,
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: 500
+  };
+
+  const inputStyleWithResponsive = {
+    ...styles.input,
+    fontSize: isMobile ? 16 : 14,
+    padding: isMobile ? '12px' : styles.input.padding
+  };
+
+  const messageStyle = {
+    marginTop: 14,
+    padding: 12,
+    background: success ? "#d4edda" : "#fff3cd",
+    borderRadius: 8,
+    marginBottom: 14,
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    gap: 12,
+    marginTop: 16
+  };
+
+  const footerStyle = {
+    marginTop: 18,
+    textAlign: "center",
+    fontSize: 14,
+    color: colors.textLight
+  };
+
+  const linkStyle = {
+    color: colors.primary,
+    textDecoration: 'none',
+    fontWeight: 600
+  };
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-      }}
-    >
-      <div className="auth-container">
+    <div style={containerStyle}>
+      <div style={authContainerStyle}>
         {/* Left image section */}
-        <div
-          className="auth-visual"
-          style={{
-            flex: 1,
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=700&fit=crop)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: 40,
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(135deg, rgba(45,157,106,0.85) 0%, rgba(52,211,153,0.75) 100%)",
-              zIndex: 1,
-            }}
-          />
-          <div style={{ position: "relative", zIndex: 2, color: colors.white }}>
-            <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16 }}>
+        <div style={visualStyle}>
+          <div style={overlayStyle} />
+          <div style={visualContentStyle}>
+            <h2 style={visualHeadingStyle}>
               Join Our Community
             </h2>
-            <p style={{ fontSize: 15, lineHeight: 1.6 }}>
+            <p style={visualTextStyle}>
               Create your profile, connect with alumni, discover opportunities,
               and build lasting relationships.
             </p>
@@ -142,47 +268,27 @@ function Register() {
         </div>
 
         {/* Right form card */}
-        <div className="auth-form">
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <div
-              style={{
-                width: 70,
-                height: 70,
-                margin: "0 auto 12px",
-              }}
-            >
+        <div style={formContainerStyle}>
+          <div style={headerStyle}>
+            <div style={logoContainerStyle}>
               <img
                 src={logo}
                 alt="CAHCET Logo"
-                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                style={logoStyle}
               />
             </div>
-            <h2
-              style={{
-                margin: "12px 0 4px",
-                color: colors.heading,
-                fontSize: 26,
-                fontWeight: 700,
-              }}
-            >
+            <h2 style={titleStyle}>
               CAHCET
             </h2>
-            <p
-              style={{
-                margin: "8px 0 0",
-                color: colors.primary,
-                fontSize: 16,
-                fontWeight: 600,
-              }}
-            >
+            <p style={subtitleStyle}>
               Alumni Portal
             </p>
           </div>
 
           {/* Progress Indicator */}
-          <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>
+          <div style={progressContainerStyle}>
             {[1, 2, 3].map((step) => (
-              <div key={step} style={{ flex: 1 }}>
+              <div key={step} style={progressStepStyle}>
                 <div
                   style={{
                     height: 6,
@@ -211,51 +317,51 @@ function Register() {
           {/* Steps */}
           {currentStep === 1 && (
             <>
-              <label>I am a</label>
+              <label style={labelStyle}>I am a</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               >
                 <option value="alumni">Alumni</option>
                 <option value="student">Current Student</option>
               </select>
 
-              <label>Full name</label>
+              <label style={labelStyle}>Full name</label>
               <input
                 type="text"
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               />
 
-              <label>Email</label>
+              <label style={labelStyle}>Email</label>
               <input
                 type="email"
                 placeholder="your.email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               />
             </>
           )}
 
           {currentStep === 2 && (
             <>
-              <label>Phone number</label>
+              <label style={labelStyle}>Phone number</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               />
 
-              <label>Graduation year</label>
+              <label style={labelStyle}>Graduation year</label>
               <select
                 value={graduationYear}
                 onChange={(e) => setGraduationYear(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               >
                 <option value="">Select year</option>
                 {years.map((year) => (
@@ -263,11 +369,11 @@ function Register() {
                 ))}
               </select>
 
-              <label>Department</label>
+              <label style={labelStyle}>Department</label>
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               >
                 <option value="">Select department</option>
                 {departments.map((dept) => (
@@ -279,40 +385,32 @@ function Register() {
 
           {currentStep === 3 && (
             <>
-              <label>Password</label>
+              <label style={labelStyle}>Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               />
 
-              <label>Confirm password</label>
+              <label style={labelStyle}>Confirm password</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                style={styles.input}
+                style={inputStyleWithResponsive}
               />
             </>
           )}
 
           {message && (
-            <div
-              style={{
-                marginTop: 14,
-                padding: 12,
-                background: success ? "#d4edda" : "#fff3cd",
-                borderRadius: 8,
-                marginBottom: 14,
-              }}
-            >
+            <div style={messageStyle}>
               {message}
             </div>
           )}
 
           {/* Buttons */}
-          <div style={{ display: "flex", gap: 12 }}>
+          <div style={buttonContainerStyle}>
             {currentStep > 1 && (
               <Button onClick={handlePrevStep} fullWidth variant="outline">
                 Back
@@ -333,9 +431,9 @@ function Register() {
             )}
           </div>
 
-          <div style={{ marginTop: 18, textAlign: "center" }}>
+          <div style={footerStyle}>
             Already have an account?{" "}
-            <Link to="/login">Login</Link>
+            <Link to="/login" style={linkStyle}>Login</Link>
           </div>
         </div>
       </div>

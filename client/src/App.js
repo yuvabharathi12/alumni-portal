@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 import PublicDashboard from "./pages/PublicDashboard";
@@ -14,9 +14,14 @@ import Events from "./pages/Events";
 import Jobs from "./pages/Jobs";
 import AdminCreateEvent from "./pages/AdminCreateEvent";
 import PostJob from "./pages/PostJob";
-import ManageUsers from "./pages/ManageUsers"; // ✅ NEW
+import ManageUsers from "./pages/ManageUsers";
+
 import Footer from "./components/Footer";
 
+
+// =============================
+// Protected Route Component
+// =============================
 function ProtectedRoute({ children, requiredRole }) {
   const token = localStorage.getItem("token");
 
@@ -25,6 +30,7 @@ function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to="/login" />;
   }
 
+  // Role-based protection
   if (requiredRole) {
     try {
       const decoded = jwtDecode(token);
@@ -40,126 +46,149 @@ function ProtectedRoute({ children, requiredRole }) {
   return children;
 }
 
+
+// =============================
+// Layout Wrapper
+// Hides footer on login/register
+// =============================
+function Layout({ children }) {
+  const location = useLocation();
+
+  const hideFooterRoutes = ["/login", "/register"];
+  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
+
+  return (
+    <>
+      {children}
+      {!shouldHideFooter && <Footer />}
+    </>
+  );
+}
+
+
+// =============================
+// Main App Component
+// =============================
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* ✅ Public landing page */}
-        <Route path="/" element={<PublicDashboard />} />
+      <Layout>
+        <Routes>
 
-        {/* ✅ Auth pages */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+          {/* Public landing page */}
+          <Route path="/" element={<PublicDashboard />} />
 
-        {/* ✅ Dashboard */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* Auth pages */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* ✅ Admin */}
-        <Route
-          path="/admin/approvals"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminApprovals />
-            </ProtectedRoute>
-          }
-        />
+          {/* Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin/bulk-upload"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminBulkUpload />
-            </ProtectedRoute>
-          }
-        />
+          {/* Admin Routes */}
+          <Route
+            path="/admin/approvals"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminApprovals />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin/carousel"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminCarousel />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/admin/bulk-upload"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminBulkUpload />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin/events/create"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminCreateEvent />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/admin/carousel"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminCarousel />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ NEW - Manage Users */}
-        <Route
-          path="/admin/users"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <ManageUsers />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/admin/events/create"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminCreateEvent />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ Alumni */}
-        <Route
-          path="/alumni/profile"
-          element={
-            <ProtectedRoute>
-              <AlumniProfile />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/alumni/directory"
-          element={
-            <ProtectedRoute>
-              <AlumniDirectory />
-            </ProtectedRoute>
-          }
-        />
+          {/* Alumni Routes */}
+          <Route
+            path="/alumni/profile"
+            element={
+              <ProtectedRoute>
+                <AlumniProfile />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ Common */}
-        <Route
-          path="/events"
-          element={
-            <ProtectedRoute>
-              <Events />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/alumni/directory"
+            element={
+              <ProtectedRoute>
+                <AlumniDirectory />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/jobs"
-          element={
-            <ProtectedRoute>
-              <Jobs />
-            </ProtectedRoute>
-          }
-        />
+          {/* Common Routes */}
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <Events />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/jobs/post"
-          element={
-            <ProtectedRoute>
-              <PostJob />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-      <Footer />
+          <Route
+            path="/jobs"
+            element={
+              <ProtectedRoute>
+                <Jobs />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/jobs/post"
+            element={
+              <ProtectedRoute>
+                <PostJob />
+              </ProtectedRoute>
+            }
+          />
+
+        </Routes>
+      </Layout>
     </BrowserRouter>
   );
 }
 
 export default App;
-
-// UI: improved
