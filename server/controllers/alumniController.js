@@ -85,19 +85,27 @@ exports.getMyProfile = async (req, res) => {
 // Get All Alumni Profiles (Directory)
 exports.getAllProfiles = async (req, res) => {
   try {
-    const { department, batchYear, company, search } = req.query;
+    const { department, batchYear, company, name, role, designation } = req.query;
 
-    // Get all approved alumni users
-    const users = await User.find({ 
-      status: "approved", 
-      role: "alumni" 
-    }).select("_id name email");
+    let userQuery = { status: "approved" };
+    if (name) {
+      userQuery.name = { $regex: name, $options: "i" };
+    }
+    if (role) {
+      userQuery.role = role;
+    } else {
+      userQuery.role = "alumni"; // Default to only show alumni if no role is specified
+    }
 
-    // Get all profiles with optional filters
-    let profileQuery = {};
+    const users = await User.find(userQuery).select("_id name email");
+
+    const userIds = users.map(user => user._id);
+
+    let profileQuery = { userId: { $in: userIds } };
     if (department) profileQuery.department = department;
     if (batchYear) profileQuery.batchYear = batchYear;
     if (company) profileQuery.currentCompany = { $regex: company, $options: "i" };
+    if (designation) profileQuery.designation = { $regex: designation, $options: "i" }; // Added designation filter
 
     const profiles = await AlumniProfile.find(profileQuery)
       .populate("userId", "name email")

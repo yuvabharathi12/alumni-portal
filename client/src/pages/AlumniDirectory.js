@@ -19,15 +19,19 @@ function AlumniDirectory() {
     department: "",
     batchYear: "",
     company: "",
+    name: "",
+    role: "alumni",
+    designation: "", // Added designation filter
   });
   const [loading, setLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(true); // State to toggle filter visibility
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, filters.department, filters.batchYear, filters.company, filters.name, filters.role, filters.designation]); // Added new filters to dependency array
 
   const fetchProfiles = async () => {
     setLoading(true);
@@ -36,6 +40,9 @@ function AlumniDirectory() {
       if (filters.department) params.append("department", filters.department);
       if (filters.batchYear) params.append("batchYear", filters.batchYear);
       if (filters.company) params.append("company", filters.company);
+      if (filters.name) params.append("name", filters.name);
+      if (filters.role && filters.role !== "all") params.append("role", filters.role);
+      if (filters.designation) params.append("designation", filters.designation);
 
       const res = await axios.get(
         `http://localhost:5000/api/alumni/profiles?${params.toString()}`,
@@ -70,9 +77,13 @@ function AlumniDirectory() {
       department: "",
       batchYear: "",
       company: "",
+      name: "",
+      role: "alumni",
+      designation: "",
     });
-    setTimeout(() => fetchProfiles(), 100);
+    // fetchProfiles will be called by useEffect due to dependency array change
   };
+
 
   return (
     <div style={{ background: "transparent", minHeight: "100vh" }}>
@@ -85,24 +96,30 @@ function AlumniDirectory() {
           padding: "40px 20px",
         }}
       >
-
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0, color: colors.heading }}>Alumni Filters</h2>
+          <Button onClick={() => setShowFilters(!showFilters)} variant="secondary">
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </Button>
+        </div>
 
         {/* Filters Card */}
-        <div
-          style={{
-            ...styles.card,
-            marginBottom: "30px",
-          }}
-        >
-          <h3
+        {showFilters && (
+          <div
             style={{
-              margin: "0 0 20px 0",
-              color: colors.primary,
-              fontSize: "18px",
+              ...styles.card,
+              marginBottom: "30px",
             }}
           >
-            Search & Filter
-          </h3>
+            <h3
+              style={{
+                margin: "0 0 20px 0",
+                color: colors.primary,
+                fontSize: "18px",
+              }}
+            >
+              Search & Filter
+            </h3>
 
           <div
             style={{
@@ -112,6 +129,28 @@ function AlumniDirectory() {
               marginBottom: "16px",
             }}
           >
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Search by name"
+                value={filters.name}
+                onChange={handleFilterChange}
+                style={{ ...styles.input, marginBottom: 0 }}
+              />
+            </div>
+
             <div>
               <label
                 style={{
@@ -197,6 +236,56 @@ function AlumniDirectory() {
                 style={{ ...styles.input, marginBottom: 0 }}
               />
             </div>
+
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Designation
+              </label>
+              <input
+                type="text"
+                name="designation"
+                placeholder="e.g., Software Engineer"
+                value={filters.designation}
+                onChange={handleFilterChange}
+                style={{ ...styles.input, marginBottom: 0 }}
+              />
+            </div>
+
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: colors.text,
+                }}
+              >
+                Role
+              </label>
+              <select
+                name="role"
+                value={filters.role}
+                onChange={handleFilterChange}
+                style={{
+                  ...styles.input,
+                  marginBottom: 0,
+                  cursor: "pointer",
+                }}
+              >
+                <option value="alumni">Alumni</option>
+                <option value="admin">Admin</option>
+                <option value="all">All Roles</option>
+              </select>
+            </div>
           </div>
 
           <div style={{ display: "flex", gap: "10px" }}>
@@ -208,7 +297,8 @@ function AlumniDirectory() {
               Clear Filters
             </Button>
           </div>
-        </div>
+        </div> /* This closes the filter card's inner div */
+        ) }
 
         {/* Results Count */}
         <div

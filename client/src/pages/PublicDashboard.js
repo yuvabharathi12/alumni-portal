@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import ImageCarousel from "../components/ImageCarousel";
 import axios from "axios";
 import { colors } from "../styles/theme";
-import Stats from "../src/components/Stats";
+import AlumniSpotlightSection from "../components/public/AlumniSpotlightSection"; // Import the new component
 
 function PublicDashboard() {
   const [images, setImages] = useState([]);
@@ -43,16 +43,7 @@ function PublicDashboard() {
         {/* ✅ Carousel */}
         <ImageCarousel images={images} />
 
-        {/* Stats */}
         <div style={{ marginTop: "28px" }}>
-          <h2 style={{ color: colors.heading, marginBottom: "16px" }}>Community at a glance</h2>
-          <Stats stats={[
-            { label: 'Alumni', value: 5240, prefix: '', suffix: '', color: colors.secondary },
-            { label: 'Events', value: 128, prefix: '', suffix: '', color: colors.primary.main || colors.primary },
-            { label: 'Jobs Posted', value: 342, prefix: '', suffix: '', color: colors.info?.main || '#0288d1' },
-            { label: 'Mentors', value: 86, prefix: '', suffix: '', color: colors.success?.main || '#2e7d32' },
-          ]} />
-
           <h2 style={{ color: colors.heading, margin: '28px 0 12px' }}>About CAHCET</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
             <div style={card}>
@@ -76,8 +67,10 @@ function PublicDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Alumni Spotlight Section */}
+        <AlumniSpotlightSection />
       </div>
-      {/* Decorative images removed as requested */}
     </div>
   );
 }
