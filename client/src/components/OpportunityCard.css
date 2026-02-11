@@ -1,0 +1,45 @@
+/* client/src/components/OpportunityCard.css */
+
+.opportunity-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: 25px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes button to bottom */
+  border: 1px solid rgba(var(--color-border-rgb), 0.5);
+  height: 100%; /* Ensure cards in a row have same height */
+}
+
+.opportunity-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.opportunity-card-title {
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-heading);
+  margin-bottom: 10px;
+}
+
+.opportunity-card-company {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 15px;
+}
+
+.opportunity-card-description {
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1; /* Allows description to take up available space */
+}
+
+/* Override default btn margin for placement */
+.opportunity-card .btn {
+  margin-top: auto; /* Pushes button to the bottom if content is variable */
+}

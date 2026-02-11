@@ -1,0 +1,77 @@
+/* client/src/components/CompanyLogos.css */
+
+.company-logos-section {
+  padding: 40px 20px;
+  background: var(--color-background);
+  text-align: center;
+  margin-top: 40px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.company-logos-section h3 {
+  font-size: 1.5rem;
+  color: var(--color-heading);
+  margin-bottom: 30px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.logos-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px; /* Spacing between logos */
+  align-items: center;
+}
+
+.company-logo-item {
+  flex: 0 0 auto; /* Prevent stretching */
+  padding: 10px;
+  opacity: 0.7; /* Slightly dim logos */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.company-logo-item:hover {
+  opacity: 1; /* Full opacity on hover */
+  transform: translateY(-5px); /* Subtle lift */
+}
+
+.company-logo-item img {
+  max-height: 50px; /* Standardize logo height */
+  width: auto;
+  filter: grayscale(100%); /* Grayscale logos */
+  transition: filter 0.3s ease;
+}
+
+.company-logo-item:hover img {
+  filter: grayscale(0%); /* Color on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .company-logos-section h3 {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+  .logos-container {
+    gap: 20px;
+  }
+  .company-logo-item img {
+    max-height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .company-logos-section {
+    padding: 30px 15px;
+  }
+  .company-logos-section h3 {
+    font-size: 1.1rem;
+  }
+  .logos-container {
+    gap: 15px;
+  }
+  .company-logo-item img {
+    max-height: 35px;
+  }
+}

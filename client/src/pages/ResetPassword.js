@@ -1,18 +1,19 @@
-import { useState, useEffect } from "react";
-import "../styles/global.css";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { resetPassword } from "../services/api";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.png"; // Import the logo
 
-function Login() {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
+  const { token } = useParams();
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,29 +23,35 @@ function Login() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setMessage("");
+    setIsError(false);
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      setIsError(true);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      const response = await resetPassword(token, password);
+      setMessage(response.data.message);
+      setIsError(false);
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Login failed");
+      setMessage(error.response?.data?.message || "An error occurred. Please try again.");
+      setIsError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleLogin();
-    }
-  };
-
+  // --- Styling constants (copied from Login.js) ---
   const containerStyle = {
     minHeight: '100vh',
     background: "transparent",
@@ -170,10 +177,6 @@ function Login() {
     padding: isMobile ? '12px' : styles.input.padding
   };
 
-  const buttonContainerStyle = {
-    marginTop: 12
-  };
-
   const messageStyle = {
     marginTop: 14,
     padding: 12,
@@ -184,7 +187,7 @@ function Login() {
     fontSize: 14
   };
 
-  const registerLinkStyle = {
+  const backToLoginLinkStyle = {
     marginTop: 18,
     textAlign: 'center',
     fontSize: 14,
@@ -196,20 +199,23 @@ function Login() {
     textDecoration: 'none',
     fontWeight: 600
   };
+  // --- End Styling constants ---
 
   return (
     <div style={containerStyle}>
       <div style={cardContainerStyle}>
+        {/* Left image section */}
         <div style={imageStyle}>
           <div style={overlayStyle}></div>
           <div style={imageContentStyle}>
-            <h2 style={imageHeadingStyle}>Welcome Back</h2>
+            <h2 style={imageHeadingStyle}>Set New Password</h2>
             <p style={imageTextStyle}>
-              Access the alumni network, explore career opportunities, and stay connected with your community.
+              Enter and confirm your new password to regain access to your account.
             </p>
           </div>
         </div>
 
+        {/* Right form container */}
         <div style={formContainerStyle}>
           <div style={headerStyle}>
             <div style={logoContainerStyle}>
@@ -217,65 +223,56 @@ function Login() {
             </div>
             <h2 style={titleStyle}>CAHCET</h2>
             <p style={subtitleStyle}>Alumni Portal</p>
-            <p style={descriptionStyle}>Sign in to your account</p>
+            <p style={descriptionStyle}>Enter your new password below.</p>
           </div>
 
-          <div>
-            <label style={labelStyle}>Email</label>
-            <input
-              type="email"
-              placeholder="your.email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={handleKeyPress}
-              style={inputStyleWithResponsive}
-              onFocus={(e) => (e.target.style.borderColor = colors.primary)}
-              onBlur={(e) => (e.target.style.borderColor = colors.border)}
-            />
-
-            <label style={{ ...labelStyle, marginTop: 12 }}>Password</label>
+          <form onSubmit={handleSubmit}>
+            <label style={labelStyle}>New Password</label>
             <input
               type="password"
-              placeholder="Your password"
+              id="password"
+              placeholder="Enter new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
+              required
               style={inputStyleWithResponsive}
               onFocus={(e) => (e.target.style.borderColor = colors.primary)}
               onBlur={(e) => (e.target.style.borderColor = colors.border)}
             />
-            <div style={{ textAlign: 'right', marginTop: 8 }}>
-              <Link to="/forgot-password" style={linkStyle}>
-                Forgot password?
-              </Link>
-            </div>
-            <Button
-              onClick={handleLogin}
-              disabled={loading}
-              fullWidth
-              size="lg"
-              style={buttonContainerStyle}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <label style={{ ...labelStyle, marginTop: 12 }}>Confirm New Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              style={inputStyleWithResponsive}
+              onFocus={(e) => (e.target.style.borderColor = colors.primary)}
+              onBlur={(e) => (e.target.style.borderColor = colors.border)}
+            />
+
+            <Button type="submit" disabled={loading} fullWidth size="lg" style={{ marginTop: 20 }}>
+              {loading ? "Resetting..." : "Reset Password"}
             </Button>
+          </form>
 
-            {message && (
-              <div style={messageStyle}>
-                {message}
-              </div>
-            )}
-
-            <div style={registerLinkStyle}>
-              Don't have an account?{' '}
-              <Link to="/register" style={linkStyle}>
-                Register
-              </Link>
+          {message && (
+            <div style={messageStyle}>
+              {message}
             </div>
+          )}
+
+          <div style={backToLoginLinkStyle}>
+            Back to{' '}
+            <Link to="/login" style={linkStyle}>
+              Login
+            </Link>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Login;
+export default ResetPassword;

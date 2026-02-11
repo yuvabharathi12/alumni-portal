@@ -1,0 +1,44 @@
+/* client/src/components/FeaturedOpportunities.css */
+
+.featured-opportunities-section {
+  padding: 60px 20px;
+  background: var(--color-background);
+  text-align: center;
+  margin-top: 40px;
+}
+
+.featured-opportunities-heading {
+  font-size: 2rem;
+  color: var(--color-heading);
+  margin-bottom: 40px;
+  font-weight: var(--font-weight-bold);
+}
+
+.opportunities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .featured-opportunities-section {
+    padding: 40px 15px;
+  }
+  .featured-opportunities-heading {
+    font-size: 1.75rem;
+    margin-bottom: 30px;
+  }
+  .opportunities-grid {
+    grid-template-columns: 1fr; /* Stack on smaller screens */
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-opportunities-heading {
+    font-size: 1.5rem;
+  }
+}

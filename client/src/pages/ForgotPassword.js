@@ -1,18 +1,16 @@
-import { useState, useEffect } from "react";
-import "../styles/global.css";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { forgotPassword } from "../services/api";
+import { Link } from "react-router-dom";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.png"; // Import the logo
 
-function Login() {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,29 +20,25 @@ function Login() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setMessage("");
+    setIsError(false);
+
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      const response = await forgotPassword(email);
+      setMessage(response.data.message);
+      setIsError(false);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Login failed");
+      setMessage(error.response?.data?.message || "An error occurred. Please try again.");
+      setIsError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleLogin();
-    }
-  };
-
+  // --- Styling constants (copied from Login.js) ---
   const containerStyle = {
     minHeight: '100vh',
     background: "transparent",
@@ -170,10 +164,6 @@ function Login() {
     padding: isMobile ? '12px' : styles.input.padding
   };
 
-  const buttonContainerStyle = {
-    marginTop: 12
-  };
-
   const messageStyle = {
     marginTop: 14,
     padding: 12,
@@ -184,7 +174,7 @@ function Login() {
     fontSize: 14
   };
 
-  const registerLinkStyle = {
+  const registerLinkStyle = { // Renamed from registerLinkStyle to backToLoginLinkStyle
     marginTop: 18,
     textAlign: 'center',
     fontSize: 14,
@@ -196,20 +186,23 @@ function Login() {
     textDecoration: 'none',
     fontWeight: 600
   };
+  // --- End Styling constants ---
 
   return (
     <div style={containerStyle}>
       <div style={cardContainerStyle}>
+        {/* Left image section */}
         <div style={imageStyle}>
           <div style={overlayStyle}></div>
           <div style={imageContentStyle}>
-            <h2 style={imageHeadingStyle}>Welcome Back</h2>
+            <h2 style={imageHeadingStyle}>Forgot Your Password?</h2>
             <p style={imageTextStyle}>
-              Access the alumni network, explore career opportunities, and stay connected with your community.
+              Don't worry, we can help you regain access to your alumni account.
             </p>
           </div>
         </div>
 
+        {/* Right form container */}
         <div style={formContainerStyle}>
           <div style={headerStyle}>
             <div style={logoContainerStyle}>
@@ -217,65 +210,44 @@ function Login() {
             </div>
             <h2 style={titleStyle}>CAHCET</h2>
             <p style={subtitleStyle}>Alumni Portal</p>
-            <p style={descriptionStyle}>Sign in to your account</p>
+            <p style={descriptionStyle}>Enter your email to receive a password reset link.</p>
           </div>
 
-          <div>
+          <form onSubmit={handleSubmit}>
             <label style={labelStyle}>Email</label>
             <input
               type="email"
-              placeholder="your.email@example.com"
+              id="email"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={handleKeyPress}
+              required
               style={inputStyleWithResponsive}
               onFocus={(e) => (e.target.style.borderColor = colors.primary)}
               onBlur={(e) => (e.target.style.borderColor = colors.border)}
             />
 
-            <label style={{ ...labelStyle, marginTop: 12 }}>Password</label>
-            <input
-              type="password"
-              placeholder="Your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
-              style={inputStyleWithResponsive}
-              onFocus={(e) => (e.target.style.borderColor = colors.primary)}
-              onBlur={(e) => (e.target.style.borderColor = colors.border)}
-            />
-            <div style={{ textAlign: 'right', marginTop: 8 }}>
-              <Link to="/forgot-password" style={linkStyle}>
-                Forgot password?
-              </Link>
-            </div>
-            <Button
-              onClick={handleLogin}
-              disabled={loading}
-              fullWidth
-              size="lg"
-              style={buttonContainerStyle}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <Button type="submit" disabled={loading} fullWidth size="lg" style={{ marginTop: 20 }}>
+              {loading ? "Sending..." : "Request Reset Link"}
             </Button>
+          </form>
 
-            {message && (
-              <div style={messageStyle}>
-                {message}
-              </div>
-            )}
-
-            <div style={registerLinkStyle}>
-              Don't have an account?{' '}
-              <Link to="/register" style={linkStyle}>
-                Register
-              </Link>
+          {message && (
+            <div style={messageStyle}>
+              {message}
             </div>
+          )}
+
+          <div style={registerLinkStyle}>
+            Remembered your password?{' '}
+            <Link to="/login" style={linkStyle}>
+              Login
+            </Link>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Login;
+export default ForgotPassword;

@@ -5,7 +5,11 @@ import PublicDashboard from "./pages/PublicDashboard";
 import AdminApprovals from "./pages/AdminApprovals";
 import AdminBulkUpload from "./pages/AdminBulkUpload";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Register from "./pages/Register"; // Keep the original Register component for now, but it won't be directly used via /register route
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
+
 import Dashboard from "./pages/Dashboard";
 import AlumniProfile from "./pages/AlumniProfile";
 import AlumniDirectory from "./pages/AlumniDirectory";
@@ -49,13 +53,13 @@ function ProtectedRoute({ children, requiredRole }) {
 
 // =============================
 // Layout Wrapper
-// Hides footer on login/register
+// Hides footer on login/register/verify-email/verify-otp
 // =============================
 function Layout({ children }) {
   const location = useLocation();
 
-  const hideFooterRoutes = ["/login", "/register"];
-  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
+  const hideFooterRoutes = ["/login", "/register", "/forgot-password", "/reset-password"];
+  const shouldHideFooter = hideFooterRoutes.some(route => location.pathname.startsWith(route));
 
   return (
     <>
@@ -81,6 +85,8 @@ function App() {
           {/* Auth pages */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Dashboard */}
           <Route

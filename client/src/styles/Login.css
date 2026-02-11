@@ -1,0 +1,228 @@
+
+/* client/src/styles/Login.css */
+
+.login-container {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: stretch;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  min-height: auto;
+}
+
+.login-image-section {
+  flex: 1;
+  background-image: url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=700&fit=crop);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 40px;
+  position: relative;
+  min-height: 200px;
+}
+
+.login-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(45, 157, 106, 0.85) 0%, rgba(52, 211, 153, 0.75) 100%);
+  z-index: 1;
+}
+
+.login-image-content {
+  position: relative;
+  z-index: 2;
+  color: #ffffff; /* colors.white */
+}
+
+.login-image-heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.login-image-text {
+  margin-top: 0;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.login-form-container {
+  flex: 0 0 480px;
+  background: #ffffff; /* colors.white */
+  padding: 32px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-logo-container {
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.login-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.login-title {
+  margin: 12px 0 4px 0;
+  color: #1a202c; /* colors.heading */
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.login-subtitle {
+  margin: 8px 0 0 0;
+  color: #38a169; /* colors.primary */
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.login-description {
+  margin: 8px 0 0 0;
+  color: #4a5568; /* colors.textSecondary */
+  font-size: 14px;
+}
+
+.login-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #2d3748; /* colors.text */
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.login-input {
+  display: block;
+  width: 100%;
+  padding: 10px 14px; /* styles.input.padding */
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5568;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #e2e8f0; /* colors.border */
+  border-radius: 8px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  outline: none; /* inputStyleWithResponsive */
+}
+
+.login-input:focus {
+  border-color: #38a169; /* colors.primary */
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.25);
+}
+
+.login-button-container {
+  margin-top: 12px;
+}
+
+.login-message {
+  margin-top: 14px;
+  padding: 12px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  color: #856404;
+  font-size: 14px;
+}
+
+.login-register-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #a0aec0; /* colors.textLight */
+}
+
+.login-register-link a {
+  color: #38a169; /* colors.primary */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 0;
+    align-items: flex-start;
+  }
+
+  .login-card-container {
+    flex-direction: column;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh;
+  }
+
+  .login-image-section {
+    min-height: 180px;
+    padding: 24px 20px;
+    justify-content: center;
+  }
+
+  .login-image-heading {
+    font-size: 22px;
+    margin: 0 0 12px 0;
+  }
+
+  .login-image-text {
+    font-size: 14px;
+  }
+
+  .login-form-container {
+    flex: 1;
+    padding: 24px 20px;
+  }
+
+  .login-logo-container {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+  }
+
+  .login-description {
+    font-size: 13px;
+  }
+
+  .login-input {
+    font-size: 16px;
+    padding: 12px;
+  }
+}

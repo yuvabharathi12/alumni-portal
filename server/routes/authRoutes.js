@@ -1,81 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const otpController = require("../controllers/otpController");
+const authController = require("../controllers/authController"); // Import the authController
+
+// =====================
+// OTP RELATED ROUTES
+// =====================
+router.post("/send-otp", otpController.sendOtp);
+router.post("/verify-otp", otpController.verifyOtp);
 
 // =====================
 // REGISTER
 // =====================
-router.post("/register", async (req, res) => {
-  const { name, email, password, role } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
-    if (user)
-      return res.status(400).json({ message: "Email already exists" });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      status: "pending", // ✅ Use "status" not "isApproved"
-    });
-
-    await user.save();
-
-    res.status(201).json({
-      message: "Registration successful. Waiting admin approval.",
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.post("/register", authController.register);
 
 // =====================
 // LOGIN
 // =====================
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+router.post("/login", authController.login);
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ message: "Invalid credentials" });
-
-    // ✅ Check "status" not "isApproved"
-    if (user.status !== "approved")
-      return res.status(403).json({
-        message: "Account not approved yet. Please wait for admin approval.",
-      });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET || "secretkey",
-      { expiresIn: "7d" }
-    );
-
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// =====================
+// FORGOT PASSWORD / RESET PASSWORD
+// =====================
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password/:token", authController.resetPassword);
 
 module.exports = router;
