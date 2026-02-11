@@ -1,230 +1,219 @@
-# Alumni Portal
+# 🚀 Alumni Portal
 
-A full-stack web application connecting college alumni with current students, enabling networking, job opportunities, and event management.
+## Connecting Alumni, Fostering Opportunities
 
-**Institution:** C Abdul Hakeem College of Engineering & Technology (CAHCET)
+The Alumni Portal is a full-stack web application designed to bridge the gap between college alumni and current students at C Abdul Hakeem College of Engineering & Technology (CAHCET). It facilitates networking, streamlines job opportunities, and simplifies event management within the academic community.
 
-## 📋 Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Setup](#setup)
-- [Running the Application](#running-the-application)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
+---
 
-## ✨ Features
+## ✨ Key Features
 
-### For Users
-- ✅ User registration and login
-- ✅ Alumni profile management
-- ✅ Browse alumni directory with search/filter
-- ✅ Job posting and browsing
-- ✅ Event management and registration
-- ✅ JWT-based authentication
-- ✅ Role-based access control
+### For All Users
+- **User Authentication:** Secure registration, login, and robust JWT-based authentication.
+- **Profile Management:** Comprehensive alumni profiles with editable details.
+- **Directory & Search:** Browse and search the alumni directory with advanced filters.
+- **Job Board:** Post and apply for jobs relevant to the CAHCET community.
+- **Event Management:** Discover, register for, and manage college events.
+- **Role-Based Access Control:** Tailored experiences and permissions for Admins, Alumni, and Students.
 
-### For Admins
-- ✅ Approve/block pending users
-- ✅ **Bulk upload users via CSV** (NEW)
-- ✅ Manage carousel banner images
-- ✅ Create and manage events
-- ✅ View analytics and user data
+### Exclusive Admin Capabilities
+- **User Approval System:** Efficiently approve or block pending user registrations.
+- **Bulk User Upload:** Seamlessly onboard multiple users via CSV file uploads.
+- **Carousel Management:** Dynamically update and manage homepage banner images.
+- **Event Creation:** Organize and publish new events for the community.
+- **User Management & Analytics:** Oversee user data and gain insights into platform activity.
+
+---
 
 ## 🛠️ Tech Stack
 
+This project leverages a modern MERN stack with additional powerful libraries:
+
 ### Frontend
-- **React 19** - UI library
-- **React Router v7** - Client-side routing
-- **Axios** - HTTP client
-- **JWT-decode** - Token parsing
+- **React 19:** Building dynamic and responsive user interfaces.
+- **React Router v7:** Declarative routing for seamless navigation.
+- **Axios:** Promise-based HTTP client for API interactions.
+- **JWT-decode:** Client-side decoding of JWT tokens.
+- **Styling:** Custom CSS, including dedicated modules for components (e.g., `Public.module.css`).
 
 ### Backend
-- **Node.js + Express 5** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - ODM for MongoDB
-- **bcryptjs** - Password hashing
-- **JWT** - Authentication tokens
-- **Multer** - File uploads
-- **CORS** - Cross-origin requests
+- **Node.js + Express 5:** Fast, unopinionated, minimalist web framework.
+- **MongoDB:** Flexible NoSQL database for scalable data storage.
+- **Mongoose:** Elegant MongoDB object modeling for Node.js.
+- **bcryptjs:** Secure password hashing for user authentication.
+- **JSON Web Token (JWT):** Compact, URL-safe means of representing claims between two parties.
+- **Multer:** Middleware for handling `multipart/form-data`, primarily for file uploads.
+- **CORS:** Node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+
+---
 
 ## 📁 Project Structure
 
 ```
 alumni-portal/
-├── client/                 # React frontend
-│   ├── public/
-│   │   ├── index.html     # HTML entry point
-│   │   └── ...
-│   └── src/
-│       ├── pages/         # Page components
-│       │   ├── Login.js
-│       │   ├── Dashboard.js
-│       │   ├── AdminBulkUpload.js (NEW)
-│       │   ├── AlumniDirectory.js
-│       │   ├── AdminApprovals.js
-│       │   └── ...
-│       ├── components/    # Reusable components
-│       ├── services/      # API service
-│       ├── styles/        # Theme and styling
-│       ├── App.js         # Main routing
-│       └── index.js       # React entry point
+├── client/                 # React Frontend Application
+│   ├── public/             # Public assets (index.html, manifest, favicons)
+│   └── src/                # React source code
+│       ├── pages/          # Individual page components (Login, Dashboard, Admin, etc.)
+│       ├── components/     # Reusable UI components (Buttons, Cards, Navbar, etc.)
+│       ├── services/       # API interaction logic
+│       ├── styles/         # Global styles and theme definitions
+│       ├── assets/         # Static images and icons
+│       ├── App.js          # Main application component and routing setup
+│       └── index.js        # React app entry point
 │
-├── server/                # Express backend
-│   ├── models/            # MongoDB schemas
-│   │   ├── User.js
-│   │   ├── AlumniProfile.js
-│   │   ├── Event.js
-│   │   ├── Job.js
-│   │   └── CarouselImage.js
-│   ├── controllers/       # Business logic
-│   ├── routes/            # API endpoints
-│   ├── middleware/        # Auth & permissions
-│   ├── config/            # Database config
-│   ├── server.js          # Entry point
-│   ├── .env               # Environment variables
-│   └── .gitignore         # Git ignore rules
+├── server/                 # Express.js Backend API
+│   ├── models/             # Mongoose schemas for MongoDB collections
+│   ├── controllers/        # Business logic for API endpoints
+│   ├── routes/             # API endpoint definitions and routing
+│   ├── middleware/         # Authentication, authorization, and error handling middleware
+│   ├── config/             # Database connection configuration
+│   ├── utils/              # Helper functions (email service, OTP generation)
+│   ├── server.js           # Main server entry point
+│   ├── .env.example        # Example environment variables (DO NOT COMMIT .env)
+│   └── seedAdmin.js        # Script to seed initial admin user
 │
-└── PROJECT_DOCUMENTATION.html  # Full documentation
+└── README.md               # Project overview and documentation
 ```
 
-## 🚀 Installation
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up and run the Alumni Portal locally.
 
 ### Prerequisites
-- **Node.js** (v16 or higher) - [Download](https://nodejs.org/)
-- **MongoDB** (Local or Atlas) - [Setup Guide](https://www.mongodb.com/docs/manual/installation/)
-- **Git** - [Download](https://git-scm.com/)
+- **Node.js:** v16 or higher ([Download Node.js](https://nodejs.org/en/download/))
+- **MongoDB:** Local installation or a cloud service like MongoDB Atlas ([MongoDB Installation Guide](https://www.mongodb.com/docs/manual/installation/))
+- **Git:** Version control system ([Download Git](https://git-scm.com/downloads))
 
-### Clone Repository
+### 1. Clone the Repository
+
 ```bash
 git clone <your-repo-url>
 cd alumni-portal
 ```
 
-## ⚙️ Setup
-
-### 1. Backend Setup
+### 2. Backend Setup (`server/`)
 
 ```bash
 cd server
 
-# Install dependencies
+# Install backend dependencies
 npm install
 
-# Create .env file
-# Add these variables:
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/alumni-portal
-JWT_SECRET=your_super_secret_key_here_change_this
-PORT=5000
-NODE_ENV=development
+# Create a .env file based on .env.example
+cp .env.example .env
+
+# Edit the .env file and add your configuration:
+# MONGO_URI="mongodb+srv://<username>:<password>@cluster0.mongodb.net/alumni-portal?retryWrites=true&w=majority"
+# JWT_SECRET="your_strong_jwt_secret_key_here"
+# PORT=5000
+# NODE_ENV=development
+# EMAIL_USER="your_email@example.com" # For OTP and password reset emails
+# EMAIL_PASS="your_email_password"    # Or app-specific password
 ```
+**Important:** Do not commit your `.env` file to version control. It's already included in `.gitignore`.
 
-**Important:** Never commit the `.env` file to git. It's added to `.gitignore`.
-
-### 2. Frontend Setup
+### 3. Frontend Setup (`client/`)
 
 ```bash
 cd ../client
 
-# Install dependencies
+# Install frontend dependencies
 npm install
 ```
 
+---
+
 ## ▶️ Running the Application
 
-### Start Backend Server
+Ensure both the backend and frontend are running simultaneously.
+
+### Start Backend
+Open a new terminal, navigate to the `server/` directory, and run:
 ```bash
 cd server
 npm start
-# Or for development with auto-reload:
-npm run dev
+# For development with live-reloading:
+# npm run dev
 ```
-Backend runs on: `http://localhost:5000`
+The backend API will be accessible at: `http://localhost:5000`
 
-### Start Frontend App (in new terminal)
+### Start Frontend
+Open another new terminal, navigate to the `client/` directory, and run:
 ```bash
 cd client
 npm start
 ```
-Frontend runs on: `http://localhost:3000`
+The React application will open in your browser, typically at: `http://localhost:3000`
 
-## 🔐 User Roles & Access
+---
 
-| Role | Features |
-|------|----------|
-| **Admin** | Approve users, Bulk upload, Manage carousel, Create events |
-| **Alumni** | Edit profile, Browse directory, Post jobs, Register events |
-| **Student** | Browse alumni, Apply jobs, Register events |
+## 🔐 Admin Access & Development Seeding
 
-## 📊 API Documentation
+### Default Admin Credentials
+For quick testing and development, an admin user can be seeded:
+- **Email:** `admin@cahcet.com`
+- **Password:** `admin123`
 
-### Authentication
-```
-POST /api/auth/register          - Register new user
-POST /api/auth/login             - User login
-```
-
-### Admin Routes
-```
-GET  /api/admin/pending-users    - Get pending approvals
-PUT  /api/admin/approve/:id      - Approve user
-PUT  /api/admin/block/:id        - Block user
-POST /api/admin/bulk-upload      - Upload users via CSV (NEW)
+### Seed Development Data
+To populate your local database with an initial admin user and some alumni profiles:
+```bash
+# From the project root:
+cd server
+node seedAdmin.js
+node seedAlumni.js
 ```
 
-### Alumni Routes
-```
-GET  /api/alumni/profiles        - Get all alumni directory
-GET  /api/alumni/profile/me      - Get own profile
-POST /api/alumni/profile         - Create/update profile
-GET  /api/alumni/profile/:id     - Get specific profile
-```
+---
 
-### Jobs Routes
-```
-GET  /api/jobs/list              - Get all jobs
-POST /api/jobs/post              - Post new job
-DELETE /api/jobs/:id             - Delete job
-```
+## 📈 API Documentation (Key Endpoints)
 
-### Events Routes
-```
-GET  /api/events/list            - Get all events
-POST /api/events/create          - Create event
-DELETE /api/events/:id           - Delete event
-```
+A brief overview of key API endpoints. For comprehensive documentation, refer to the source code and Postman collection (if available).
 
-### Carousel Routes
-```
-GET  /api/carousel/images        - Get banner images
-POST /api/carousel/upload        - Upload image
-DELETE /api/carousel/:id         - Delete image
-```
+### Authentication & User Management
+- `POST /api/auth/register`: Create a new user account.
+- `POST /api/auth/login`: Authenticate user and receive JWT.
+- `POST /api/auth/send-otp`: Send OTP for email verification.
+- `POST /api/auth/verify-otp`: Verify OTP for registration.
+- `POST /api/auth/forgot-password`: Initiate password reset.
+- `POST /api/auth/reset-password/:token`: Complete password reset.
 
-## 📦 Bulk Upload Feature (NEW)
+### Admin Operations (Requires Admin Role)
+- `GET /api/admin/pending-users`: Retrieve users awaiting approval.
+- `PUT /api/admin/approve/:id`: Approve a user by ID.
+- `PUT /api/admin/block/:id`: Block a user by ID.
+- `POST /api/admin/bulk-upload`: Upload multiple users via CSV.
 
-### How to Use
-1. Login as Admin
-2. Go to Dashboard → "Bulk Upload Users"
-3. Download CSV template
-4. Fill in user details (name, email, password, role)
-5. Upload CSV file
-6. Review preview
-7. Click "Upload Users"
+### Alumni Profiles
+- `GET /api/alumni/profiles`: Get all alumni profiles (searchable/filterable).
+- `GET /api/alumni/profile/me`: Get the authenticated user's profile.
+- `POST /api/alumni/profile`: Create or update the authenticated user's profile.
+- `GET /api/alumni/profile/:id`: Get a specific alumni profile by ID.
 
-### CSV Format
-```csv
-name,email,password,role
-John Doe,john@example.com,password123,alumni
-Jane Smith,jane@example.com,password456,alumni
-Ahmed Khan,ahmed@example.com,pass789,student
-```
+### Job Listings
+- `GET /api/jobs/list`: Retrieve all job postings.
+- `POST /api/jobs/post`: Create a new job posting.
+- `DELETE /api/jobs/:id`: Delete a job posting by ID.
 
-## 🗄️ Database Schema
+### Events
+- `GET /api/events/list`: Retrieve all events.
+- `POST /api/events/create`: Create a new event.
+- `DELETE /api/events/:id`: Delete an event by ID.
 
-### User
+### Carousel Images
+- `GET /api/carousel/images`: Get all carousel images.
+- `POST /api/carousel/upload`: Upload a new carousel image.
+- `DELETE /api/carousel/:id`: Delete a carousel image by ID.
+
+---
+
+## 🗄️ Database Schema Overview
+
+### User Model
 ```javascript
+// Represents a user, their authentication details, and role.
 {
   _id: ObjectId,
   name: String (required),
@@ -237,11 +226,12 @@ Ahmed Khan,ahmed@example.com,pass789,student
 }
 ```
 
-### AlumniProfile
+### AlumniProfile Model
 ```javascript
+// Stores detailed alumni information, linked to a User.
 {
   _id: ObjectId,
-  userId: ObjectId (ref: User),
+  userId: ObjectId (ref: 'User', required, unique), // Link to User model
   registerNumber: String (unique, required),
   department: String,
   batchYear: String,
@@ -250,109 +240,95 @@ Ahmed Khan,ahmed@example.com,pass789,student
   location: String,
   linkedinUrl: String,
   phone: String,
-  skills: [String],
+  skills: [String], // Array of skills
   bio: String,
+  profilePicture: String, // URL to profile picture (NEW)
   createdAt: Date,
   updatedAt: Date
 }
 ```
 
-## 🔧 Development
-
-### Test Data
-```bash
-cd server
-
-# Seed admin user
-node seedAdmin.js
-
-# Seed alumni profiles
-node seedAlumni.js
+### Job Model
+```javascript
+// Details of job postings.
+{
+  _id: ObjectId,
+  postedBy: ObjectId (ref: 'User'), // User who posted the job
+  title: String (required),
+  company: String (required),
+  location: String,
+  description: String (required),
+  requirements: [String],
+  salary: String,
+  applicationLink: String,
+  jobType: String, // e.g., "Full-time", "Part-time"
+  createdAt: Date,
+  updatedAt: Date
+}
 ```
 
-### Default Admin Credentials
-```
-Email: admin@cahcet.com
-Password: admin123
-```
-
-## 📝 Environment Variables
-
-Create `.env` file in server folder:
-
-```env
-# Database
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/alumni-portal
-
-# JWT Secret (use a strong random string)
-JWT_SECRET=change_this_to_a_strong_secret_key_12345
-
-# Server Port
-PORT=5000
-
-# Node Environment
-NODE_ENV=development
+### Event Model
+```javascript
+// Details of college events.
+{
+  _id: ObjectId,
+  createdBy: ObjectId (ref: 'User'), // User who created the event
+  title: String (required),
+  description: String (required),
+  date: Date (required),
+  location: String (required),
+  organizer: String,
+  imageUrl: String,
+  registrationLink: String,
+  attendees: [ObjectId], // Array of User IDs attending (NEW)
+  createdAt: Date,
+  updatedAt: Date
+}
 ```
 
-## 🔒 Security Features
-
-- ✅ Password hashing with bcryptjs
-- ✅ JWT token authentication
-- ✅ Role-based access control (RBAC)
-- ✅ User status verification (pending/approved/blocked)
-- ✅ Environment variables for secrets
-- ✅ Middleware authentication checks
-- ✅ CORS configuration
-
-## 📚 Documentation
-
-See `PROJECT_DOCUMENTATION.html` for complete architecture and file explanations.
-
-To view:
-1. Open `PROJECT_DOCUMENTATION.html` in browser
-2. Press Ctrl+P to print as PDF
-3. Select "Save as PDF"
-
-## 🐛 Troubleshooting
-
-### MongoDB Connection Error
-- Check `MONGO_URI` in `.env` file
-- Ensure MongoDB is running
-- Verify database credentials
-
-### Port Already in Use
-```bash
-# Change PORT in .env to 5001 or another available port
-# Or kill process using port 5000:
-# Windows: netstat -ano | findstr :5000
-# Mac/Linux: lsof -i :5000
+### CarouselImage Model
+```javascript
+// Stores information about homepage carousel images.
+{
+  _id: ObjectId,
+  imageUrl: String (required),
+  caption: String,
+  link: String,
+  createdAt: Date,
+  updatedAt: Date
+}
 ```
-
-### CORS Errors
-- Ensure backend and frontend are running on correct ports
-- Check CORS configuration in `server.js`
-
-### JWT Token Errors
-- Clear localStorage in browser (Dev Tools → Application → Clear)
-- Login again to get new token
-
-## 📞 Support
-
-For issues or questions:
-1. Check the documentation
-2. Review API endpoints
-3. Verify environment setup
-4. Check browser console for errors
-
-## 📄 License
-
-This project is created for CAHCET Alumni Portal.
-
-## 👥 Contributors
-
-- Development Team
-- CAHCET Administration
 
 ---
 
-**Last Updated:** January 29, 2026
+## 🐛 Troubleshooting & Support
+
+### Common Issues
+- **MongoDB Connection Errors:** Verify `MONGO_URI` in `.env`, ensure MongoDB service is running.
+- **Port Conflicts:** If `PORT` 5000 (backend) or 3000 (frontend) is in use, change it in `.env` (backend) or `client/package.json` (frontend, start script).
+- **CORS Issues:** Double-check CORS configuration in `server/server.js` if frontend requests are blocked.
+- **JWT Errors:** Clear browser local storage and re-login if token issues persist.
+
+### Need Help?
+1. Review this `README.md` and the existing codebase.
+2. Check your browser's developer console and server terminal for error messages.
+3. Consult the `PROJECT_DOCUMENTATION.html` for detailed architecture.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for any features, bug fixes, or improvements.
+
+## 📄 License
+
+This project is developed for the C Abdul Hakeem College of Engineering & Technology (CAHCET) Alumni Portal.
+
+## 👥 Contributors
+
+- The CAHCET Alumni Portal Development Team
+- CAHCET Administration & Faculty
+
+---
+
+**Last Updated:** February 11, 2026
