@@ -8,7 +8,10 @@ const sendEmail = require("../utils/sendEmail"); // Reusing existing email utili
 // Register User
 exports.register = async (req, res) => {
   const { name, email, password, role, emailVerifiedToken } = req.body;
-  const OTP_VERIFICATION_TOKEN_SECRET = process.env.OTP_VERIFICATION_TOKEN_SECRET || 'otpverificationsecret';
+  const otpVerificationSecret = process.env.OTP_VERIFICATION_TOKEN_SECRET;
+if (!otpVerificationSecret) {
+  throw new Error("OTP_VERIFICATION_TOKEN_SECRET is not defined in environment variables.");
+}
 
   try {
     if (!emailVerifiedToken) {
@@ -17,7 +20,7 @@ exports.register = async (req, res) => {
 
     let decoded;
     try {
-      decoded = jwt.verify(emailVerifiedToken, OTP_VERIFICATION_TOKEN_SECRET);
+      decoded = jwt.verify(emailVerifiedToken, otpVerificationSecret);
     } catch (err) {
       return res.status(401).json({ message: "Invalid or expired email verification token." });
     }
@@ -30,7 +33,8 @@ exports.register = async (req, res) => {
     if (user)
       return res.status(400).json({ message: "Email already exists" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '12', 10);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     user = new User({
       name,
@@ -46,7 +50,7 @@ exports.register = async (req, res) => {
       message: "Registration successful. Waiting admin approval.",
     });
   } catch (err) {
-    console.error(err);
+    console.error(`Registration Error: ${err.message}`);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -69,10 +73,14 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET is not defined in environment variables.");
+    }
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET || "secretkey",
-      { expiresIn: "7d" }
+      jwtSecret,
+      { expiresIn: process.env.JWT_EXPIRATION_TIME || "1h" }
     );
 
     res.json({
@@ -85,7 +93,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err);
+    console.error(`Login Error: ${err.message}`);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -108,8 +116,8 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
 
     // Send email
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`; // Frontend reset password URL
-    const message = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease go to the following link, or paste this into your browser to complete the process:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.`;
+    const resetUrlBase = `http://localhost:3000/reset-password`; // Frontend reset password URL (generic)
+    const message = `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease go to the following link: ${resetUrlBase}\\n\\nYour password reset token is: ${resetToken}\\n\\nPlease enter this token on the page to reset your password. This token is valid for 1 hour.\n\nIf you did not request this, please ignore this email and your password will remain unchanged.`;
 
     try {
       await sendEmail({
@@ -119,17 +127,17 @@ exports.forgotPassword = async (req, res) => {
       });
       res.status(200).json({ message: "A password reset link has been sent." });
     } catch (emailError) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-      await user.save();
-      console.error('Error sending reset email:', emailError);
-      return res.status(500).json({ message: "Error sending password reset email." });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save();
+            console.error(`Forgot Password (Email) Error: ${emailError.message}`);
+                  return res.status(500).json({ message: "Error sending password reset email." });
+                }
+              } catch (err) {
+                console.error(`Forgot Password (Main) Error: ${err.message}`);
+                res.status(500).json({ message: "Server error" });
+              }
+            };
 
 // Reset Password
 exports.resetPassword = async (req, res) => {
@@ -149,7 +157,8 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Password reset token is invalid or has expired." });
     }
 
-    user.password = await bcrypt.hash(password, 10);
+    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '12', 10);
+    user.password = await bcrypt.hash(password, saltRounds);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
@@ -157,7 +166,7 @@ exports.resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password has been reset successfully." });
   } catch (err) {
-    console.error(err);
+    console.error(`Reset Password Error: ${err.message}`);
     res.status(500).json({ message: "Server error" });
   }
 };
