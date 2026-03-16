@@ -7,8 +7,6 @@ set -euo pipefail
 
 cd "$(dirname "$0")/server"
 
-# Install dependencies if missing (Railway may already install, but safe to run)
-npm install
-
-# Start the backend server
-npm start
+# Start the backend server directly.
+# Railway (railpack) already provides Node and installs dependencies.
+node server.js
