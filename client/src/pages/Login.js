@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/global.css";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import api from "../services/api";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
 import logo from "../assets/logo.png";
@@ -26,7 +27,7 @@ function Login() {
     setLoading(true);
     setMessage("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await api.post("/auth/login", {
         email,
         password,
       });
