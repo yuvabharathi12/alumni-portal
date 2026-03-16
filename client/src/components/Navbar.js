@@ -254,7 +254,7 @@ function NavLink({ to, label, mobile }) {
         ...linkStyle,
         ...(isHovered && !isActive && {
           color: colors.primaryLight,
-          borderBottomColor: colors.primaryLight,
+          borderBottom: `2px solid ${colors.primaryLight}`,
         }),
       }}
       onMouseEnter={() => setIsHovered(true)}

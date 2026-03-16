@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -26,9 +27,15 @@ function AlumniDirectory() {
   const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(true); // State to toggle filter visibility
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, filters.department, filters.batchYear, filters.company, filters.name, filters.role, filters.designation]); // Added new filters to dependency array
@@ -55,6 +62,12 @@ function AlumniDirectory() {
       setProfiles(res.data);
     } catch (err) {
       console.error("Error fetching profiles:", err);
+      if (err.response?.status === 401) {
+        // Token missing/invalid; redirect to login
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
       alert("Failed to fetch alumni");
     } finally {
       setLoading(false);
