@@ -29,7 +29,6 @@ const ResetPassword = () => {
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
-      setIsError(true);
       setLoading(false);
       return;
     }
