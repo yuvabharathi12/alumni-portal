@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "../styles/global.css";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import api from "../services/api";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";

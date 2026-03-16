@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { colors, styles } from "../styles/theme";
 
@@ -11,15 +11,13 @@ function AdminCarousel() {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     fetchImages();
   }, []);
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/carousel/images");
+      const res = await api.get("/carousel/images");
       setImages(res.data);
     } catch (err) {
       console.error(err);
@@ -33,19 +31,11 @@ function AdminCarousel() {
     }
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/carousel/images",
-        {
-          title,
-          imageUrl,
-          description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.post("/carousel/images", {
+        title,
+        imageUrl,
+        description,
+      });
       setMessage("Image added successfully");
       setTitle("");
       setImageUrl("");
@@ -62,11 +52,7 @@ function AdminCarousel() {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/carousel/images/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/carousel/images/${id}`);
       setMessage("Image deleted successfully");
       fetchImages();
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import "../styles/global.css";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
@@ -89,7 +89,7 @@ function Register() {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/send-otp", { email });
+      await api.post("/auth/send-otp", { email });
       setMessage("OTP sent to your email. Please check your inbox.");
       setSuccess(true);
       setShowOtpInput(true);
@@ -109,7 +109,7 @@ function Register() {
     setMessage("");
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
+      const res = await api.post("/auth/verify-otp", {
         email,
         otp,
       });
@@ -133,7 +133,7 @@ function Register() {
     setMessage("");
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/send-otp", { email });
+      await api.post("/auth/send-otp", { email });
       setMessage("New OTP sent to your email.");
       setSuccess(true);
       setIsEmailSent(true);
@@ -173,8 +173,8 @@ function Register() {
     setLoading(true);
     setMessage("");
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
+      const res = await api.post(
+        "/auth/register",
         {
           name,
           email,

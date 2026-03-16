@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/global.css";
 import Navbar from "../components/Navbar";
 import ImageCarousel from "../components/ImageCarousel";
-import axios from "axios";
+import api from "../services/api";
 import { colors } from "../styles/theme";
 import AlumniSpotlightSection from "../components/public/AlumniSpotlightSection"; // Import the new component
 
@@ -15,7 +15,7 @@ function PublicDashboard() {
 
   const fetchImages = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/carousel/images");
+      const res = await api.get("/carousel/images");
       setImages(res.data);
     } catch (err) {
       console.error(err);

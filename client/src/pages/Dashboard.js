@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 import { colors, styles } from "../styles/theme";
 import Button from "../components/Button";
-import axios from "axios";
+import api from "../services/api";
 
 function Dashboard() {
   const [carouselImages, setCarouselImages] = useState([]);
@@ -24,8 +24,8 @@ function Dashboard() {
     const fetchStats = async () => {
       try {
         const [evRes, jobRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/events"),
-          axios.get("http://localhost:5000/api/jobs"),
+          api.get("/events"),
+          api.get("/jobs"),
         ]);
         setStats({ events: (evRes.data || []).length, jobs: (jobRes.data || []).length });
       } catch (err) {
@@ -37,7 +37,7 @@ function Dashboard() {
 
   const fetchCarouselImages = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/carousel/images");
+      const res = await api.get("/carousel/images");
       setCarouselImages(res.data);
     } catch (err) {
       console.error("Failed to fetch carousel images:", err);

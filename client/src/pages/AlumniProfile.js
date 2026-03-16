@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import PageBanner from "../components/PageBanner";
 import Button from "../components/Button";
@@ -30,14 +30,7 @@ function AlumniProfile() {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/alumni/profile/me",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.get("/alumni/profile/me");
       setProfile({
         ...res.data,
         skills: res.data.skills?.join(", ") || "",
@@ -64,15 +57,7 @@ function AlumniProfile() {
       };
 
       const method = isEdit ? "put" : "post";
-      const res = await axios[method](
-        "http://localhost:5000/api/alumni/profile",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api[method]('/alumni/profile', payload);
 
       setMessage(res.data.message);
       setIsEdit(true);

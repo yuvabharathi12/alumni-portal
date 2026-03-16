@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import PageBanner from "../components/PageBanner";
 
@@ -9,7 +9,6 @@ function AdminBulkUpload() {
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-  const token = localStorage.getItem("token");
 
   // Parse CSV file
   const parseCSV = (csvText) => {
@@ -57,16 +56,7 @@ function AdminBulkUpload() {
 
     setUploading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/admin/bulk-upload",
-        { users },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await api.post("/admin/bulk-upload", { users });
 
       setUploadResult(response.data.results);
       setUsers([]);

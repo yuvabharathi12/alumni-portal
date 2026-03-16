@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 import PageBanner from "../components/PageBanner";
 import Button from "../components/Button";
@@ -51,14 +51,7 @@ function AlumniDirectory() {
       if (filters.role && filters.role !== "all") params.append("role", filters.role);
       if (filters.designation) params.append("designation", filters.designation);
 
-      const res = await axios.get(
-        `http://localhost:5000/api/alumni/profiles?${params.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.get(`/alumni/profiles?${params.toString()}`);
       setProfiles(res.data);
     } catch (err) {
       console.error("Error fetching profiles:", err);

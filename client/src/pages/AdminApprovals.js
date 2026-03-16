@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 
 function AdminApprovals() {
@@ -14,14 +14,7 @@ function AdminApprovals() {
 
   const fetchPendingUsers = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/admin/pending-users",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.get("/admin/pending-users");
       setUsers(res.data);
     } catch (err) {
       alert("Failed to fetch pending users");
@@ -30,15 +23,7 @@ function AdminApprovals() {
 
   const approveUser = async (id) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/admin/approve/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await api.put(`/admin/approve/${id}`);
       fetchPendingUsers();
     } catch (err) {
       alert("Approval failed");
