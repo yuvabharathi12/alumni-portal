@@ -15,15 +15,28 @@ const cors = require("cors");
 
 // Define allowed origins
 const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000']; // Add your frontend origins here
+
+// If you deploy a frontend, set FRONTEND_URL in your env (e.g. https://your-app.vercel.app)
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 if (process.env.NODE_ENV === 'production') {
-  // In production, you would typically add your deployed frontend URL
-  allowedOrigins.push('https://yourproductionfrontend.com'); // IMPORTANT: Replace with your actual production frontend URL
+  // For backwards compatibility / quick test, include the common production placeholder.
+  // If you set FRONTEND_URL in production, this is not needed.
+  allowedOrigins.push('https://yourproductionfrontend.com');
 }
 
 const corsOptions = {
   origin: function (origin, callback) {
     // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
+
+    // If you want to allow all origins (development/testing), set this env var.
+    if (process.env.ALLOW_ALL_ORIGINS === 'true') {
+      return callback(null, true);
+    }
+
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
