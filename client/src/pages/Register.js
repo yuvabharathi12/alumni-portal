@@ -22,8 +22,6 @@ function Register() {
   const [phone, setPhone] = useState("");
   const [graduationYear, setGraduationYear] = useState("");
   const [department, setDepartment] = useState("");
-  const [city, setCity] = useState("");
-  const [bio, setBio] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);

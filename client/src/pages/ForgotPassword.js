@@ -9,7 +9,6 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -24,15 +23,12 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    setIsError(false);
 
     try {
       const response = await forgotPassword(email);
       setMessage(response.data.message);
-      setIsError(false);
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred. Please try again.");
-      setIsError(true);
     } finally {
       setLoading(false);
     }

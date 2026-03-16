@@ -12,7 +12,6 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -27,7 +26,6 @@ const ResetPassword = () => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    setIsError(false);
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
@@ -39,13 +37,11 @@ const ResetPassword = () => {
     try {
       const response = await resetPassword(token, password);
       setMessage(response.data.message);
-      setIsError(false);
       setTimeout(() => {
         navigate("/login");
       }, 3000);
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred. Please try again.");
-      setIsError(true);
     } finally {
       setLoading(false);
     }
