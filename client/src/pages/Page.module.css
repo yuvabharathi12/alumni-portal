@@ -1,0 +1,84 @@
+.page { background: transparent; min-height: 100vh; }
+.content { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.contentNarrow { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+.actionBar { margin-bottom: 20px; }
+.actionBarLink { text-decoration: none; }
+.loadingText { margin-top: 20px; }
+.errorText { margin-top: 20px; color: #d32f2f; }
+.emptyText { opacity: 0.7; }
+
+/* Card grid */
+.grid { margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.gridWide { composes: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+
+/* Event / Job card */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.cardTitle { margin-top: 0; color: var(--color-heading); }
+.cardText { font-size: 14px; color: var(--color-text-secondary); max-height: 72px; overflow: hidden; }
+.cardCompany { font-weight: 500; margin-bottom: 6px; }
+.cardMeta { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--color-border); font-size: 13px; color: var(--color-text-secondary); }
+.cardDate { margin-top: 12px; font-size: 12px; color: var(--color-text-secondary); }
+
+/* Modal overrides */
+.modalMeta { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border); color: var(--color-text-secondary); }
+.modalActions { margin-top: 16px; display: flex; gap: 12px; }
+
+/* Form styles */
+.formCard {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 40px;
+  box-shadow: var(--shadow-sm);
+}
+
+.formGroup { margin-bottom: 24px; }
+.formLabel { display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-heading); font-size: 14px; }
+.formLabelRow { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.formInput {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.formInput:focus { border-color: var(--color-primary); }
+.formTextarea {
+  composes: formInput;
+  min-height: 180px;
+  max-height: 400px;
+  resize: vertical;
+}
+.wordCount { font-size: 12px; color: var(--color-text-secondary); }
+.wordCountWarn { color: var(--color-secondary); }
+.formActions { display: flex; gap: 12px; justify-content: flex-end; }
+.successMsg {
+  padding: 12px 16px;
+  background: #d4edda;
+  border: 1px solid #28a745;
+  border-radius: var(--radius-md);
+  color: #155724;
+  margin-bottom: 20px;
+  font-size: 14px;
+}

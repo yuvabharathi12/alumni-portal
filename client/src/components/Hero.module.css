@@ -1,0 +1,68 @@
+.hero {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-bottom: 64px;
+  margin-top: 80px;
+}
+
+.heroCentered {
+  justify-content: center;
+}
+
+.heroLeft {
+  justify-content: flex-start;
+}
+
+.background {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.backgroundWithImage {
+  filter: saturate(0.9) brightness(0.7);
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(22,101,52,0.75), rgba(28,46,116,0.65));
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  padding: 0 24px;
+  color: white;
+}
+
+.contentCentered {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+}
+
+.subtitle {
+  margin-top: 16px;
+  font-size: var(--font-size-lg);
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+}
+
+.actionsCentered {
+  justify-content: center;
+}

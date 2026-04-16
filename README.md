@@ -30,11 +30,11 @@ The Alumni Portal is a full-stack web application designed to bridge the gap bet
 This project leverages a modern MERN stack with additional powerful libraries:
 
 ### Frontend
-- **React 19:** Building dynamic and responsive user interfaces.
+- **React 19:** Built with modern functional components using `.jsx` extensions for improved IDE support.
 - **React Router v7:** Declarative routing for seamless navigation.
 - **Axios:** Promise-based HTTP client for API interactions.
 - **JWT-decode:** Client-side decoding of JWT tokens.
-- **Styling:** Custom CSS, including dedicated modules for components (e.g., `Public.module.css`).
+- **Styling:** Fully modularized CSS. Every component implements its own scoped CSS Module (`.module.css`) to prevent style bleeding and maintain a clean, maintainable design system.
 
 ### Backend
 - **Node.js + Express 5:** Fast, unopinionated, minimalist web framework.
@@ -123,6 +123,7 @@ cd ../client
 # Install frontend dependencies
 npm install
 ```
+*Note: No `.env` configuration is needed for the frontend during local development. The API client is pre-configured to automatically connect to your local backend at `http://localhost:5000/api` when running locally.*
 
 ---
 
